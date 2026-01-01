@@ -1986,12 +1986,12 @@ corner.CornerRadius = UDim.new(0, 6)
 corner.Parent = MobileButton
 
 local Info = Window:MakeTab({
-  Title = "Tab Info",
+  Title = "Discord",
   Icon = "Info"
 })
 
 local Farming = Window:MakeTab({
-  Title = "Tab Farming",
+  Title = "Main",
   Icon = "Home"
 })
 
@@ -4208,7 +4208,7 @@ end)
 
 
 local Setting = Window:MakeTab({
-    Title = "Tab Setting",
+    Title = "Setting",
     Icon = "Setting"
 })
 
