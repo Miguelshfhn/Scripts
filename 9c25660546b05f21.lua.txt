@@ -4209,7 +4209,7 @@ end)
 
 local Setting = Window:MakeTab({
     Title = "Setting",
-    Icon = "10709810948"
+    Icon = "10734950309"
 })
 
 local plr = game.Players.LocalPlayer
