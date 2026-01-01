@@ -2049,6 +2049,23 @@ spawn(function()
     end
 end)
 
+-- UI SIZE DROPDOWN
+local UISizes = {
+    Small = 0.85,
+    Normal = 1.0,
+    Large = 1.15
+}
+
+Farming:AddDropdown({
+    Name = "UI Size",
+    Options = {"Small", "Normal", "Large"},
+    Default = "Normal",
+    Callback = function(Value)
+        Library:SetUIScale(UISizes[Value])
+    end
+})
+
+
 Farming:AddSection("Farm")
 
 Farming:AddButton({
@@ -5243,7 +5260,7 @@ end
 local bringMobToggle = false
 local BringMobToggle = Setting:AddToggle({
     Name = "Bring Mobs",
-    Default = false,
+    Default = true,
     Callback = function(Value)
         bringMobToggle = Value
         if bringMobToggle then
@@ -5263,7 +5280,7 @@ task.spawn(function()
 end)
 
 Setting:AddToggle({
-    Name = "Fast Attack",
+    Name = "Auto Attack",
     Default = true,
     Callback = function(Value)
         _G.Seriality = Value
@@ -5271,7 +5288,7 @@ Setting:AddToggle({
 })
 
 Setting:AddToggle({
-    Name = "Auto Turn on Buso",
+    Name = "Auto Active Buso",
     Default = true,
     Callback = function(Value)
         Boud = Value
@@ -5294,7 +5311,7 @@ spawn(function()
 end)
 
 Setting:AddToggle({
-    Name = "Auto Turn on Race V3",
+    Name = "Auto Active V3",
     Default = false,
     Callback = function(Value)
         _G.RaceClickAutov3 = Value
@@ -5314,7 +5331,7 @@ spawn(function()
 end)
 
 Setting:AddToggle({
-    Name = "Auto Turn on Race V4",
+    Name = "Auto Active V4",
     Default = false,
     Callback = function(Value)
         _G.RaceClickAutov4 = Value
@@ -5334,114 +5351,8 @@ spawn(function()
     end
 end)
 
-Setting:AddToggle({
-    Name = "Auto Turn on Spin Position",
-    Default = false,
-    Callback = function(Value)
-        RandomCFrame = Value
-    end
-})
 
-Setting:AddToggle({
-    Name = "Turn on Bypass Teleport",
-    Default = false,
-    Callback = function(Value)
-        _G.Bypass = Value
-    end
-})
 
-Setting:AddToggle({
-    Name = "Panic Mode",
-    Default = false,
-    Callback = function(Value)
-        _G.Safemode = Value
-    end
-})
-
--- SafeModes spawn loop
-spawn(function()
-    while task.wait(Sec) do
-        pcall(function()
-            if _G.Safemode then
-                local Calc_Health = plr.Character.Humanoid.Health / plr.Character.Humanoid.MaxHealth * 100
-                if Calc_Health < Num_self then
-                    shouldTween = true
-                    _tp(Root.CFrame * CFrame.new(0, 500, 0))
-                else
-                    shouldTween = false
-                end
-            end
-        end)
-    end
-end)
-
-Setting:AddToggle({
-    Name = "Anti AFK",
-    Default = true,
-    Callback = function(Value)
-        _G.AntiAFK = Value
-    end
-})
-
--- Anti AFK spawn
-plr.Idled:connect(function()
-    vim2:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-    wait(1)
-    vim2:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-end)
-
-Setting:AddToggle({
-    Name = "Remove Hit VFX",
-    Default = false,
-    Callback = function(Value)
-        _G.DistroyHit = Value
-    end
-})
-
--- Remove Hit VFX spawn
-spawn(function()
-    while wait(Sec) do
-        if _G.DistroyHit then
-            pcall(function()
-                local __Effect = {
-                    "SlashHit",
-                    "CurvedRing",
-                    "SwordSlash",
-                    "SlashTail"
-                }
-                for _, x in pairs(workspace["_WorldOrigin"]:GetChildren()) do
-                    if table.find(__Effect, x.Name) then
-                        x:Destroy()
-                    end
-                end
-            end)
-        end
-    end
-end)
-
-Setting:AddToggle({
-    Name = "Remove Death & Respawned VFX",
-    Default = false,
-    Callback = function(Value)
-        RDeath = Value
-    end
-})
-
--- Remove Death & Respawned VFX spawn
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if RDeath then
-                if replicated.Effect.Container:FindFirstChild("Death") then
-                    replicated.Effect.Container.Death:Destroy()
-                end
-                if replicated.Effect.Container:FindFirstChild("Respawn") then
-                    replicated.Effect.Container.Respawn:Destroy()
-                end
-            end
-        end)
-    end
-end)
 
 Setting:AddToggle({
     Name = "Disable Notify",
