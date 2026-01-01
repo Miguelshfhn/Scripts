@@ -2071,18 +2071,21 @@ Farming:AddDropdown({
 
 Farming:AddSection("Farming")
 
--- 1. Dropdown para selecionar o TIPO de Farm
+-- Variáveis Iniciais para evitar erros de comparação
+_G.FarmMode = "Auto Farm Level" -- Define um padrão
+_G.AutoFarm = false
+
+-- 1. O Dropdown seleciona APENAS o modo
 Farming:AddDropdown({
     Name = "Select Farm Mode",
-    Options = {"Level", "Nearest"},
-    Default = "Level",
+    Options = {"Auto Farm Level", "Auto Farm Nearest"},
+    Default = "Auto Farm Level",
     Callback = function(Value)
         _G.FarmMode = Value
     end
 })
 
-
--- 3. Toggle Único para INICIAR o Farm selecionado
+-- 2. O Toggle inicia o script baseando-se no modo escolhido acima
 Farming:AddToggle({
     Name = "Start Farm",
     Default = false,
@@ -2091,56 +2094,64 @@ Farming:AddToggle({
     end
 })
 
--- Lógica Principal Unificada
+-- 3. Lógica Unificada
 spawn(function()
-    while task.wait() do -- Usando task.wait() para melhor performance que wait()
+    while task.wait() do
+        -- Só roda se o Toggle "Start Farm" estiver ligado
         if _G.AutoFarm then
             pcall(function()
-                ------------------------------------------------------------------
-                -- MODO: AUTO FARM LEVEL
-                ------------------------------------------------------------------
-                if _G.FarmMode == "Level" then
+                
+                -----------------------------------------------------------------------
+                -- OPÇÃO 1: AUTO FARM LEVEL
+                -----------------------------------------------------------------------
+                if _G.FarmMode == "Auto Farm Level" then
+                    
                     local Character = plr.Character or plr.CharacterAdded:Wait()
                     local Root = Character:FindFirstChild("HumanoidRootPart")
                     local Humanoid = Character:FindFirstChild("Humanoid")
                     
+                    -- Verifica se o player está vivo
                     if Root and Humanoid and Humanoid.Health > 0 then
                         local QuestGui = plr.PlayerGui.Main.Quest
                         
                         -- PEGAR QUEST
                         if QuestGui.Visible == false then
-                            if QuestNeta()[6] then -- Verificação de segurança
+                            if QuestNeta() and QuestNeta()[6] then -- Verificação extra de segurança
                                 _tp(QuestNeta()[6])
                                 if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then
-                                    wait(1.3)
+                                    task.wait(1.3) 
                                     replicated.Remotes.CommF_:InvokeServer("StartQuest", QuestNeta()[3], QuestNeta()[2])
                                 end
                             end
 
-                        -- FARM QUEST
+                        -- FARM QUEST (Se já pegou a quest)
                         elseif QuestGui.Visible == true then
                             local QuestTitle = QuestGui.Container.QuestTitle.Title.Text
                             
+                            -- Se a quest estiver errada, abandona
                             if not string.find(QuestTitle, QuestNeta()[5]) then
                                 replicated.Remotes.CommF_:InvokeServer("AbandonQuest")
                             else
+                                -- Se a quest estiver certa, mata o inimigo
                                 if workspace.Enemies:FindFirstChild(QuestNeta()[1]) then
                                     for i, v in pairs(workspace.Enemies:GetChildren()) do
+                                        -- Verifica se o inimigo é o alvo
                                         if v.Name == QuestNeta()[1] and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
+                                            -- Loop de Ataque
                                             repeat
                                                 task.wait()
+                                                -- Importante: Aqui usamos _G.AutoFarm em vez de _G.Level
                                                 if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                                                     -- Passa true/G.AutoFarm para a função de Kill
-                                                     Attack.Kill(v, _G.AutoFarm) 
+                                                     Attack.Kill(v, _G.AutoFarm)
                                                 else
-                                                     break
+                                                     break 
                                                 end
-                                            -- A condição de parada agora verifica _G.AutoFarm e se o modo ainda é Level
-                                            until not _G.AutoFarm or _G.FarmMode ~= "Level" or v.Humanoid.Health <= 0 or not v.Parent or QuestGui.Visible == false
+                                            -- Condição de parada: Se desligar o toggle OU mudar o modo OU inimigo morrer
+                                            until not _G.AutoFarm or _G.FarmMode ~= "Auto Farm Level" or v.Humanoid.Health <= 0 or not v.Parent or QuestGui.Visible == false
                                         end
                                     end
                                 else
-                                    -- Teleporte para spawn do inimigo se não existir
+                                    -- Se o inimigo não existir, vai para o spawn dele
                                     _tp(QuestNeta()[4])
                                     if replicated:FindFirstChild(QuestNeta()[1]) then
                                         _tp(replicated:FindFirstChild(QuestNeta()[1]).HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
@@ -2150,24 +2161,22 @@ spawn(function()
                         end
                     end
 
-                ------------------------------------------------------------------
-                -- MODO: AUTO FARM NEAREST
-                ------------------------------------------------------------------
-                elseif _G.FarmMode == "Nearest" then
+                -----------------------------------------------------------------------
+                -- OPÇÃO 2: AUTO FARM NEAREST
+                -----------------------------------------------------------------------
+                elseif _G.FarmMode == "Auto Farm Nearest" then
+                    
                     for i, v in pairs(workspace.Enemies:GetChildren()) do
                         if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-                            -- Verifica distância (opcional, mas recomendado para 'Nearest')
-                            if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                                if (v.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude < 300 then -- Exemplo de range
-                                    repeat
-                                        task.wait()
-                                        Attack.Kill(v, _G.AutoFarm)
-                                    -- Condição de parada verifica _G.AutoFarm e se o modo mudou
-                                    until not _G.AutoFarm or _G.FarmMode ~= "Nearest" or not v.Parent or v.Humanoid.Health <= 0
-                                end
-                            end
+                             -- Loop de Ataque Nearest
+                            repeat
+                                task.wait()
+                                Attack.Kill(v, _G.AutoFarm)
+                            -- Condição de parada: Se desligar o toggle OU mudar o modo OU inimigo morrer
+                            until not _G.AutoFarm or _G.FarmMode ~= "Auto Farm Nearest" or not v.Parent or v.Humanoid.Health <= 0
                         end
                     end
+
                 end
             end)
         end
