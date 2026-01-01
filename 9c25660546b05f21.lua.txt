@@ -2422,13 +2422,15 @@ spawn(function()
                         return closest        
                     end        
 
-                    local mob = GetClosestMob()        
-                    if mob then        
-                        _tp(mob.PrimaryPart.CFrame)        
-                        EquipWeapon(_G.SelectWeapon)  
-                        _G.Kill(mob, true)  
+                    local targetMob = GetClosestMob()        
+                    if targetMob then        
+                        -- REPEAT para travar no mob ate ele morrer (evita trocar de alvo)
+                        repeat
+                            task.wait()
+                            Attack.Kill(targetMob, _G.AutoFarm_Bone)
+                        until not _G.AutoFarm_Bone or not targetMob.Parent or targetMob.Humanoid.Health <= 0
                     else        
-                        -- Teleporte para o spot de spawn inicial se não achar mobs
+                        -- Se não houver mobs, vai para o spot inicial
                         _tp(CFrame.new(-9495.68, 453.58, 5977.34))        
                     end        
                 end  
@@ -2436,6 +2438,7 @@ spawn(function()
         end    
     end
 end)
+
 
 
 
