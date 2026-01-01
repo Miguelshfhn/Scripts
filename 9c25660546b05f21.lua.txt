@@ -1975,9 +1975,9 @@ end
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau"))()
 
 local Window = Library:MakeWindow({
-  Title = "TrongNguyen : Blox Fruits",
-  SubTitle = "by NguyenHoangTrong",
-  ScriptFolder = "RedzLibraryBF"
+  Title = "Zenith Hub",
+  SubTitle = "By ZenithWz",
+  ScriptFolder = "Zenithbf"
 })
 
 local Minimizer = Window:NewMinimizer({
@@ -1985,28 +1985,15 @@ local Minimizer = Window:NewMinimizer({
 })
 
 local MobileButton = Minimizer:CreateMobileMinimizer({
-    Image = "rbxassetid://120213707198275",
+    Image = "rbxassetid://0",
     BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 })
 
-MobileButton.Size = UDim2.new(0, 50, 0, 50) 
+MobileButton.Size = UDim2.new(0, 50, 0, 50)
 
 local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 6) 
+corner.CornerRadius = UDim.new(0, 6)
 corner.Parent = MobileButton
-
-local RunService = game:GetService("RunService")
-
-local stroke = Instance.new("UIStroke")
-stroke.Thickness = 2
-stroke.Parent = MobileButton
-
-RunService.RenderStepped:Connect(function()
-    local hue = tick() % 6 / 6
-    local color = Color3.fromHSV(hue, 1, 1)
-
-    stroke.Color = color
-end)
 
 local Info = Window:MakeTab({
   Title = "Tab Info",
