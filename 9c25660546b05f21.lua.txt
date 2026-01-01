@@ -1995,76 +1995,6 @@ local Farming = Window:MakeTab({
   Icon = "home"
 })
 
-local _Weapon = {
-    "Melee",
-    "Sword",
-    "Blox Fruit",
-    "Gun"
-}
-Farming:AddDropdown({
-  Name = "Select Weapon",
-  Options = _Weapon,
-  Default = "Melee",
-  Callback = function(Value)
-    _G.ChooseWP = Value
-  end
-})
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.ChooseWP == "Melee" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Melee" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            elseif _G.ChooseWP == "Sword" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Sword" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            elseif _G.ChooseWP == "Gun" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Gun" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            elseif _G.ChooseWP == "Blox Fruit" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Blox Fruit" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            end
-        end)
-    end
-end)
-
--- UI SIZE DROPDOWN
-local UISizes = {
-    Small = 0.85,
-    Normal = 1.0,
-    Large = 1.15
-}
-
-Farming:AddDropdown({
-    Name = "UI Size",
-    Options = {"Small", "Normal", "Large"},
-    Default = "Normal",
-    Callback = function(Value)
-        Library:SetUIScale(UISizes[Value])
-    end
-})
-
 
 Farming:AddSection("Farming")
 
@@ -2117,10 +2047,6 @@ spawn(function()
     end
 end)
 
-
--- Section: Miscellanea / Quest
-Farming:AddSection("Other")
-
 Farming:AddToggle({
     Name = "Auto Farm Nearest",
     Default = false,
@@ -2149,6 +2075,8 @@ spawn(function()
     end
 end)
 
+Farming:AddSection("Raid")
+
 Farming:AddToggle({
     Name = "Auto Factory Raid",
     Default = false,
@@ -2176,6 +2104,8 @@ spawn(function()
         end)
     end
 end)
+
+Farming:AddSection("Material")
 
 Farming:AddDropdown({
   Name = "Select Material",
@@ -2235,39 +2165,8 @@ spawn(function()
     end
 end)
 
--- Auto Farm Ectoplasm
-Farming:AddToggle({
-    Name = "Auto Farm Ectoplasm",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoEctoplasm = Value
-    end
-})
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.AutoEctoplasm then
-                local EctoTable = {
-                    "Ship Deckhand",
-                    "Ship Engineer",
-                    "Ship Steward",
-                    "Ship Officer",
-                    "Arctic Warrior"
-                }
-                local v = GetConnectionEnemies(EctoTable)
-                if Attack.Alive(v) then
-                    repeat
-                        wait()
-                        Attack.Kill(v, _G.AutoEctoplasm)
-                    until not _G.AutoEctoplasm or not v.Parent or v.Humanoid.Health <= 0
-                else
-                    replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923.21252441406, 126.9760055542, 32852.83203125))
-                end
-            end
-        end)
-    end
-end)
 
+Farming:AddSection("Collect")
 
 Farming:AddToggle({
     Name = "Auto Collect Berry",
@@ -4209,7 +4108,7 @@ end)
 
 local Setting = Window:MakeTab({
     Title = "Setting",
-    Icon = "setting"
+    Icon = "Settings"
 })
 
 local plr = game.Players.LocalPlayer
@@ -4271,7 +4170,79 @@ local function BringMob()
     end
 end
 
-Setting:AddSection("Settings")
+Setting:AddSection("Settings Farm")
+
+local _Weapon = {
+    "Melee",
+    "Sword",
+    "Blox Fruit",
+    "Gun"
+}
+Farming:AddDropdown({
+  Name = "Select Weapon",
+  Options = _Weapon,
+  Default = "Melee",
+  Callback = function(Value)
+    _G.ChooseWP = Value
+  end
+})
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.ChooseWP == "Melee" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Melee" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.ChooseWP == "Sword" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Sword" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.ChooseWP == "Gun" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Gun" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.ChooseWP == "Blox Fruit" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Blox Fruit" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+-- UI SIZE DROPDOWN
+local UISizes = {
+    Small = 0.85,
+    Normal = 1.0,
+    Large = 1.15
+}
+
+Farming:AddDropdown({
+    Name = "UI Size",
+    Options = {"Small", "Normal", "Large"},
+    Default = "Normal",
+    Callback = function(Value)
+        Library:SetUIScale(UISizes[Value])
+    end
+})
+
+Farming:AddSection("Global Settings")
 
 local bringMobToggle = false
 local BringMobToggle = Setting:AddToggle({
