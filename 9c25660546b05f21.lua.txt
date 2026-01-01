@@ -1966,7 +1966,7 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlred
 
 local Window = Library:MakeWindow({
   Title = "Zenith Hub",
-  SubTitle = "By ZenithWz",
+  SubTitle = "By wz7xwz",
   ScriptFolder = "Zenithbf"
 })
 
@@ -1993,6 +1993,79 @@ local Info = Window:MakeTab({
 local Farming = Window:MakeTab({
   Title = "Main",
   Icon = "home"
+})
+
+
+Farming:AddSection("Global Settings")
+
+local _Weapon = {
+    "Melee",
+    "Sword",
+    "Blox Fruit",
+    "Gun"
+}
+Farming:AddDropdown({
+  Name = "Select Weapon",
+  Options = _Weapon,
+  Default = "Melee",
+  Callback = function(Value)
+    _G.ChooseWP = Value
+  end
+})
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.ChooseWP == "Melee" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Melee" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.ChooseWP == "Sword" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Sword" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.ChooseWP == "Gun" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Gun" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            elseif _G.ChooseWP == "Blox Fruit" then
+                for _, v in pairs(plr.Backpack:GetChildren()) do
+                    if v.ToolTip == "Blox Fruit" then
+                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
+                            _G.SelectWeapon = v.Name
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+-- UI SIZE DROPDOWN
+local UISizes = {
+    Small = 0.85,
+    Normal = 1.0,
+    Large = 1.15
+}
+
+Farming:AddDropdown({
+    Name = "UI Size",
+    Options = {"Small", "Normal", "Large"},
+    Default = "Normal",
+    Callback = function(Value)
+        Library:SetUIScale(UISizes[Value])
+    end
 })
 
 
@@ -4172,77 +4245,6 @@ end
 
 Setting:AddSection("Settings Farm")
 
-local _Weapon = {
-    "Melee",
-    "Sword",
-    "Blox Fruit",
-    "Gun"
-}
-Farming:AddDropdown({
-  Name = "Select Weapon",
-  Options = _Weapon,
-  Default = "Melee",
-  Callback = function(Value)
-    _G.ChooseWP = Value
-  end
-})
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.ChooseWP == "Melee" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Melee" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            elseif _G.ChooseWP == "Sword" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Sword" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            elseif _G.ChooseWP == "Gun" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Gun" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            elseif _G.ChooseWP == "Blox Fruit" then
-                for _, v in pairs(plr.Backpack:GetChildren()) do
-                    if v.ToolTip == "Blox Fruit" then
-                        if plr.Backpack:FindFirstChild(tostring(v.Name)) then
-                            _G.SelectWeapon = v.Name
-                        end
-                    end
-                end
-            end
-        end)
-    end
-end)
-
--- UI SIZE DROPDOWN
-local UISizes = {
-    Small = 0.85,
-    Normal = 1.0,
-    Large = 1.15
-}
-
-Farming:AddDropdown({
-    Name = "UI Size",
-    Options = {"Small", "Normal", "Large"},
-    Default = "Normal",
-    Callback = function(Value)
-        Library:SetUIScale(UISizes[Value])
-    end
-})
-
-Farming:AddSection("Global Settings")
 
 local bringMobToggle = false
 local BringMobToggle = Setting:AddToggle({
