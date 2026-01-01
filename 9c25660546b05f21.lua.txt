@@ -2363,6 +2363,89 @@ spawn(function()
 end)
 
 
+Farming:AddSection("Bone")
+
+-- TOGGLES
+Farming:AddToggle({
+    Name = "Auto Bone Farm",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoBoneFarm = Value
+    end
+})
+
+Farming:AddToggle({
+    Name = "Accept Quest",
+    Default = false,
+    Callback = function(Value)
+        _G.AcceptQuest = Value
+    end
+})
+
+-- AUTO QUEST + FARM
+spawn(function()
+    while task.wait() do
+        if _G.AutoBoneFarm then
+            pcall(function()
+                local plr = game.Players.LocalPlayer
+                local char = plr.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if not hrp then return end
+
+                local QuestUI = plr.PlayerGui.Main.Quest
+                local npcPos = CFrame.new(-9516.99316, 172.017181, 6078.46533)
+
+                local MOBS = {
+                    "Reborn Skeleton",
+                    "Living Zombie",
+                    "Demonic Soul",
+                    "Posessed Mummy"
+                }
+
+                -- PEGAR QUEST
+                if _G.AcceptQuest and not QuestUI.Visible then
+                    if (npcPos.Position - hrp.Position).Magnitude > 5 then
+                        _tp(npcPos)
+                    else
+                        task.wait(0.3)
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(
+                            "StartQuest",
+                            "HauntedQuest2",
+                            1
+                        )
+                        task.wait(1)
+                    end
+                    return
+                end
+
+                -- MOB MAIS PRÓXIMO
+                local closest, shortest = nil, math.huge
+                for _, mob in pairs(workspace.Enemies:GetChildren()) do
+                    if table.find(MOBS, mob.Name)
+                    and mob:FindFirstChild("Humanoid")
+                    and mob.Humanoid.Health > 0
+                    and mob.PrimaryPart then
+                        local dist = (mob.PrimaryPart.Position - hrp.Position).Magnitude
+                        if dist < shortest then
+                            shortest = dist
+                            closest = mob
+                        end
+                    end
+                end
+
+                if closest then
+                    _tp(closest.PrimaryPart.CFrame)
+                    EquipWeapon(_G.SelectWeapon)
+                    G.Kill(closest, true)
+                else
+                    if _G.AcceptQuest then
+                        _tp(npcPos)
+                    end
+                end
+            end)
+        end
+    end
+end)
 
 
 
