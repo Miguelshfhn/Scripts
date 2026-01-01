@@ -2365,6 +2365,7 @@ end)
 
 Farming:AddSection("Bone")
 
+
 Farming:AddToggle({
     Name = "Auto Farm Bone",
     Default = false,
@@ -2381,6 +2382,24 @@ Farming:AddToggle({
     end
 })
 
+Farming:AddToggle({
+    Name = "Auto Random Bone",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Random_Bone = Value
+    end
+})
+
+-- Loop de Random Bone
+spawn(function()
+    while task.wait(1) do
+        if _G.Auto_Random_Bone then
+            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
+        end
+    end
+end)
+
+-- Loop de Farm e Quest
 spawn(function()
     while task.wait() do
         if _G.AutoFarm_Bone then
@@ -2393,6 +2412,7 @@ spawn(function()
                 local MOBS = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}  
                 local PosQ = CFrame.new(-9516.99316, 172.017181, 6078.46533, 0, 0, -1, 0, 1, 0, 1, 0, 0)
 
+                -- Lógica de Quest
                 if _G.AcceptQuest and not QuestUI.Visible then        
                     local distToNPC = (PosQ.Position - hrp.Position).Magnitude  
                     if distToNPC > 5 then  
@@ -2403,6 +2423,7 @@ spawn(function()
                         task.wait(1) 
                     end  
                 else  
+                    -- Procura o mob mais próximo da lista
                     local function GetClosestMob()        
                         local closest, shortest = nil, math.huge        
                         for _, mob in pairs(workspace.Enemies:GetChildren()) do        
@@ -2424,13 +2445,13 @@ spawn(function()
 
                     local targetMob = GetClosestMob()        
                     if targetMob then        
-                        -- REPEAT para travar no mob ate ele morrer (evita trocar de alvo)
+                        -- Trava no mob até ele morrer usando sua função Attack.Kill
                         repeat
                             task.wait()
                             Attack.Kill(targetMob, _G.AutoFarm_Bone)
                         until not _G.AutoFarm_Bone or not targetMob.Parent or targetMob.Humanoid.Health <= 0
                     else        
-                        -- Se não houver mobs, vai para o spot inicial
+                        -- Se não houver mobs vivos, vai para o spot de spawn
                         _tp(CFrame.new(-9495.68, 453.58, 5977.34))        
                     end        
                 end  
@@ -2446,12 +2467,13 @@ end)
 
 
 
+
 local Setting = Window:MakeTab({
     Title = "Setting",
     Icon = "Settings"
 })
 
-Setting:AddSection("Farm Settings")
+Setting:AddSection("Player Settings")
 Setting:AddSlider({
     Name = "Tween Speed",
     Min = 50,          -- Velocidade mínima (mais devagar)
@@ -2565,6 +2587,15 @@ end
 Setting:AddSection("Settings Farm")
 
 
+
+Setting:AddToggle({
+    Name = "Auto Attack",
+    Default = true,
+    Callback = function(Value)
+        _G.Seriality = Value
+    end
+})
+
 local bringMobToggle = false
 local BringMobToggle = Setting:AddToggle({
     Name = "Bring Mobs",
@@ -2578,7 +2609,6 @@ local BringMobToggle = Setting:AddToggle({
         end
     end
 })
-
 task.spawn(function()
     while task.wait(0) do
         if bringMobToggle then
@@ -2587,13 +2617,6 @@ task.spawn(function()
     end
 end)
 
-Setting:AddToggle({
-    Name = "Auto Attack",
-    Default = true,
-    Callback = function(Value)
-        _G.Seriality = Value
-    end
-})
 
 Setting:AddToggle({
     Name = "Auto Active Buso",
@@ -2617,6 +2640,8 @@ spawn(function()
         end)
     end
 end)
+
+Setting:AddSection("Race")
 
 Setting:AddToggle({
     Name = "Auto Active V3",
@@ -2660,7 +2685,7 @@ spawn(function()
 end)
 
 
-
+Setting:AddSection("Other")
 
 Setting:AddToggle({
     Name = "Disable Notify",
