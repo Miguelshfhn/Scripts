@@ -2252,6 +2252,110 @@ spawn(function()
 end)
 
 
+Farming:AddSection("Raid")
+
+Farming:AddToggle({
+    Name = "Auto Factory Raid",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoFactory = Value
+    end
+})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.AutoFactory then
+                
+                -- só faz algo se a Factory estiver ativa
+                if IsFactoryActive() then
+                    local v = GetConnectionEnemies("Core")
+
+                    if v then
+                        repeat
+                            task.wait()
+                            EquipWeapon(_G.SelectWeapon)
+                            _tp(v.PrimaryPart.CFrame * CFrame.new(0, 0, -5))
+                        until v.Humanoid.Health <= 0 or not _G.AutoFactory
+                    end
+                end
+
+            end
+        end)
+    end
+end)
+
+-- Toggle Auto Raid Castle
+Farming:AddToggle({
+    Name = "Auto Raid Pirate",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoRaidCastle = Value
+    end
+})
+
+-- Sistema Auto Raid Castle
+spawn(function()
+    while task.wait(Sec) do
+        if _G.AutoRaidCastle then
+            pcall(function()
+
+                local TargetCFrame = CFrame.new(
+                    -5496.17432, 313.768921, -2841.53027,
+                    0.924894512, 7.37058015e-09, 0.380223751,
+                    3.5881019e-08, 1, -1.06665446e-07,
+                    -0.380223751, 1.12297109e-07, 0.924894512
+                )
+
+                local CheckCFrame = CFrame.new(
+                    -5539.3115234375, 313.80053710938, -2972.3723144531
+                )
+
+                -- Se estiver perto do Castle
+                if (CheckCFrame.Position - Root.Position).Magnitude <= 500 then
+                    for _, e in pairs(workspace.Enemies:GetChildren()) do
+                        if not _G.AutoRaidCastle then break end
+
+                        if e:FindFirstChild("HumanoidRootPart")
+                        and e:FindFirstChild("Humanoid")
+                        and e.Humanoid.Health > 0 then
+
+                            if (e.HumanoidRootPart.Position - Root.Position).Magnitude <= 2000 then
+                                repeat
+                                    task.wait()
+                                    G.Kill(e, _G.AutoRaidCastle)
+                                until not _G.AutoRaidCastle
+                                or not e.Parent
+                                or e.Humanoid.Health <= 0
+                                or not workspace.Enemies:FindFirstChild(e.Name)
+                            end
+                        end
+                    end
+
+                -- Se NÃO estiver perto, verifica inimigos e teleporta
+                else
+                    local EnemyList = {
+                        "Galley Pirate","Galley Captain","Raider","Mercenary",
+                        "Vampire","Zombie","Snow Trooper","Winter Warrior",
+                        "Lab Subordinate","Horned Warrior","Magma Ninja","Lava Pirate",
+                        "Ship Deckhand","Ship Engineer","Ship Steward","Ship Officer",
+                        "Arctic Warrior","Snow Lurker","Sea Soldier","Water Fighter"
+                    }
+
+                    for _, n in pairs(replicated:GetChildren()) do
+                        if not _G.AutoRaidCastle then break end
+
+                        if table.find(EnemyList, n.Name) then
+                            _tp(TargetCFrame)
+                            break
+                        end
+                    end
+                end
+
+            end)
+        end
+    end
+end)
 
 
 
