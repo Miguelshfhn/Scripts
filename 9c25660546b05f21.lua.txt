@@ -2083,35 +2083,60 @@ spawn(function()
     while wait(Sec) do
         if _G.Level then
             pcall(function()
-                local QuestTitle = plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text
-                if not string.find(QuestTitle, QuestNeta()[5]) then
-                    replicated.Remotes.CommF_:InvokeServer("AbandonQuest")
-                end
-                if plr.PlayerGui.Main.Quest.Visible == false then
-                    _tp(QuestNeta()[6])
-                    if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then
-                        replicated.Remotes.CommF_:InvokeServer("StartQuest", QuestNeta()[3], QuestNeta()[2])
-                    end
-                elseif plr.PlayerGui.Main.Quest.Visible == true then
-                    if workspace.Enemies:FindFirstChild(QuestNeta()[1]) then
-                        for i, v in pairs(workspace.Enemies:GetChildren()) do
-                            if Attack.Alive(v) then
-                                if v.Name == QuestNeta()[1] then
-                                    if string.find(QuestTitle, QuestNeta()[5]) then
-                                        repeat
-                                            wait()
-                                            Attack.Kill(v, _G.Level)
-                                        until not _G.Level or v.Humanoid.Health <= 0 or not v.Parent or plr.PlayerGui.Main.Quest.Visible == false
-                                    else
-                                        replicated.Remotes.CommF_:InvokeServer("AbandonQuest")
+                -- [CORREÇÃO 1] Definir o Root e Character dentro do loop para funcionar após a morte
+                local Character = plr.Character or plr.CharacterAdded:Wait()
+                local Root = Character:FindFirstChild("HumanoidRootPart")
+                local Humanoid = Character:FindFirstChild("Humanoid")
+                
+                -- Só executa se o personagem estiver vivo e carregado
+                if Root and Humanoid and Humanoid.Health > 0 then
+                    
+                    local QuestGui = plr.PlayerGui.Main.Quest
+                    
+                    -- Lógica: Se a Quest NÃO estiver visível (Precisa pegar)
+                    if QuestGui.Visible == false then
+                        _tp(QuestNeta()[6])
+                        
+                        -- Verifica a distância para o NPC
+                        if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then
+                            -- [CORREÇÃO 2] Espera 1.3 segundos antes de pegar a quest
+                            wait(1.3) 
+                            replicated.Remotes.CommF_:InvokeServer("StartQuest", QuestNeta()[3], QuestNeta()[2])
+                        end
+
+                    -- Lógica: Se a Quest ESTIVER visível (Verificar se é a certa ou Farmar)
+                    elseif QuestGui.Visible == true then
+                        local QuestTitle = QuestGui.Container.QuestTitle.Title.Text
+                        
+                        -- Se a quest atual não for a correta, abandona
+                        if not string.find(QuestTitle, QuestNeta()[5]) then
+                            replicated.Remotes.CommF_:InvokeServer("AbandonQuest")
+                        else
+                            -- Se for a quest certa, começa a matar
+                            if workspace.Enemies:FindFirstChild(QuestNeta()[1]) then
+                                for i, v in pairs(workspace.Enemies:GetChildren()) do
+                                    if Attack.Alive(v) then
+                                        if v.Name == QuestNeta()[1] then
+                                            -- Loop de ataque
+                                            repeat
+                                                wait()
+                                                -- Atualiza o Root dentro do loop de ataque também por segurança
+                                                if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                                                     Attack.Kill(v, _G.Level)
+                                                else
+                                                     break -- Sai do repeat se morrer
+                                                end
+                                            until not _G.Level or v.Humanoid.Health <= 0 or not v.Parent or QuestGui.Visible == false
+                                        end
                                     end
                                 end
+                            else
+                                -- Se o inimigo não existir, vai para o spawn dele
+                                _tp(QuestNeta()[4])
+                                if replicated:FindFirstChild(QuestNeta()[1]) then
+                                    _tp(replicated:FindFirstChild(QuestNeta()[1]).HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+                                end
                             end
-                        end
-                    else
-                        _tp(QuestNeta()[4])
-                        if replicated:FindFirstChild(QuestNeta()[1]) then
-                            _tp(replicated:FindFirstChild(QuestNeta()[1]).HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
                         end
                     end
                 end
