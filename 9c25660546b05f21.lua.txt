@@ -2382,6 +2382,17 @@ Farming:AddToggle({
     end
 })
 
+-- POSIÇÃO INICIAL (VAI PRIMEIRO AQUI)
+local FirstPos = CFrame.new(
+    -9513.63867, 164.010269, 5786.66895,
+    -0.0950724334, 9.31791888e-08, 0.995470345,
+    7.18874515e-09, 1, -9.29166148e-08,
+    -0.995470345, -1.67762626e-09, -0.0950724334
+)
+
+-- CONTROLE PRA IR UMA VEZ SÓ
+local WentFirstPos = false
+
 -- AUTO QUEST + FARM
 spawn(function()
     while task.wait() do
@@ -2401,6 +2412,14 @@ spawn(function()
                     "Demonic Soul",
                     "Posessed Mummy"
                 }
+
+                -- PASSO 0: IR PRIMEIRO NO FIRST POS
+                if not WentFirstPos then
+                    _tp(FirstPos)
+                    WentFirstPos = true
+                    task.wait(0.5)
+                    return
+                end
 
                 -- PEGAR QUEST
                 if _G.AcceptQuest and not QuestUI.Visible then
@@ -2443,10 +2462,11 @@ spawn(function()
                     end
                 end
             end)
+        else
+            WentFirstPos = false -- reseta quando desligar
         end
     end
 end)
-
 
 
 
