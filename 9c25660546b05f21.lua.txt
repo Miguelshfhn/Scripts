@@ -2365,12 +2365,11 @@ end)
 
 Farming:AddSection("Bone")
 
--- TOGGLES
 Farming:AddToggle({
-    Name = "Auto Bone Farm",
+    Name = "Auto Farm Bone",
     Default = false,
     Callback = function(Value)
-        _G.AutoBoneFarm = Value
+        _G.AutoFarm_Bone = Value
     end
 })
 
@@ -2382,91 +2381,62 @@ Farming:AddToggle({
     end
 })
 
--- POSIÇÃO INICIAL (VAI PRIMEIRO AQUI)
-local FirstPos = CFrame.new(
-    -9513.63867, 164.010269, 5786.66895,
-    -0.0950724334, 9.31791888e-08, 0.995470345,
-    7.18874515e-09, 1, -9.29166148e-08,
-    -0.995470345, -1.67762626e-09, -0.0950724334
-)
-
--- CONTROLE PRA IR UMA VEZ SÓ
-local WentFirstPos = false
-
--- AUTO QUEST + FARM
 spawn(function()
     while task.wait() do
-        if _G.AutoBoneFarm then
+        if _G.AutoFarm_Bone then
             pcall(function()
                 local plr = game.Players.LocalPlayer
-                local char = plr.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
                 if not hrp then return end
 
-                local QuestUI = plr.PlayerGui.Main.Quest
-                local npcPos = CFrame.new(-9516.99316, 172.017181, 6078.46533)
+                local QuestUI = plr.PlayerGui.Main.Quest        
+                local MOBS = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}  
+                local PosQ = CFrame.new(-9516.99316, 172.017181, 6078.46533, 0, 0, -1, 0, 1, 0, 1, 0, 0)
 
-                local MOBS = {
-                    "Reborn Skeleton",
-                    "Living Zombie",
-                    "Demonic Soul",
-                    "Posessed Mummy"
-                }
+                if _G.AcceptQuest and not QuestUI.Visible then        
+                    local distToNPC = (PosQ.Position - hrp.Position).Magnitude  
+                    if distToNPC > 5 then  
+                        _tp(PosQ) 
+                    else  
+                        task.wait(0.5)
+                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1)
+                        task.wait(1) 
+                    end  
+                else  
+                    local function GetClosestMob()        
+                        local closest, shortest = nil, math.huge        
+                        for _, mob in pairs(workspace.Enemies:GetChildren()) do        
+                            local isTarget = false
+                            for _, name in pairs(MOBS) do
+                                if mob.Name == name then isTarget = true break end
+                            end
+                            
+                            if isTarget and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then        
+                                local dist = (mob.PrimaryPart.Position - hrp.Position).Magnitude        
+                                if dist < shortest then   
+                                    shortest = dist   
+                                    closest = mob   
+                                end        
+                            end        
+                        end        
+                        return closest        
+                    end        
 
-                -- PASSO 0: IR PRIMEIRO NO FIRST POS
-                if not WentFirstPos then
-                    _tp(FirstPos)
-                    WentFirstPos = true
-                    task.wait(0.5)
-                    return
-                end
-
-                -- PEGAR QUEST
-                if _G.AcceptQuest and not QuestUI.Visible then
-                    if (npcPos.Position - hrp.Position).Magnitude > 5 then
-                        _tp(npcPos)
-                    else
-                        task.wait(0.3)
-                        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(
-                            "StartQuest",
-                            "HauntedQuest2",
-                            1
-                        )
-                        task.wait(1)
-                    end
-                    return
-                end
-
-                -- MOB MAIS PRÓXIMO
-                local closest, shortest = nil, math.huge
-                for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                    if table.find(MOBS, mob.Name)
-                    and mob:FindFirstChild("Humanoid")
-                    and mob.Humanoid.Health > 0
-                    and mob.PrimaryPart then
-                        local dist = (mob.PrimaryPart.Position - hrp.Position).Magnitude
-                        if dist < shortest then
-                            shortest = dist
-                            closest = mob
-                        end
-                    end
-                end
-
-                if closest then
-                    _tp(closest.PrimaryPart.CFrame)
-                    EquipWeapon(_G.SelectWeapon)
-                    G.Kill(closest, true)
-                else
-                    if _G.AcceptQuest then
-                        _tp(npcPos)
-                    end
-                end
-            end)
-        else
-            WentFirstPos = false -- reseta quando desligar
-        end
+                    local mob = GetClosestMob()        
+                    if mob then        
+                        _tp(mob.PrimaryPart.CFrame)        
+                        EquipWeapon(_G.SelectWeapon)  
+                        _G.Kill(mob, true)  
+                    else        
+                        -- Teleporte para o spot de spawn inicial se não achar mobs
+                        _tp(CFrame.new(-9495.68, 453.58, 5977.34))        
+                    end        
+                end  
+            end)    
+        end    
     end
 end)
+
 
 
 
