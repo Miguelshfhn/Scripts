@@ -3372,7 +3372,7 @@ spawn(function()
 end)
 
 local Quests = Window:MakeTab({
-  Title = "Tab Items Farm",
+  Title = "Sub Farming",
   Icon = "sword"
 })
 
