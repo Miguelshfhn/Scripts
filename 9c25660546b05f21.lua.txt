@@ -2071,118 +2071,116 @@ Farming:AddDropdown({
 
 Farming:AddSection("Farming")
 
--- Variáveis Iniciais para evitar erros de comparação
-_G.FarmMode = "Auto Farm Level" -- Define um padrão
-_G.AutoFarm = false
+-- ===============================
+-- VARIÁVEIS
+-- ===============================
+_G.FarmMode = "Auto Farm Level"
+_G.StartFarm = false
 
--- 1. O Dropdown seleciona APENAS o modo
+-- ===============================
+-- DROPDOWN - SELECT FARM
+-- ===============================
 Farming:AddDropdown({
-    Name = "Select Farm Mode",
-    Options = {"Auto Farm Level", "Auto Farm Nearest"},
+    Name = "Select Farm",
+    Options = {
+        "Auto Farm Level",
+        "Auto Farm Nearest"
+    },
     Default = "Auto Farm Level",
     Callback = function(Value)
         _G.FarmMode = Value
     end
 })
 
--- 2. O Toggle inicia o script baseando-se no modo escolhido acima
+-- ===============================
+-- TOGGLE - START FARM
+-- ===============================
 Farming:AddToggle({
     Name = "Start Farm",
     Default = false,
     Callback = function(Value)
-        _G.AutoFarm = Value
+        _G.StartFarm = Value
     end
 })
 
--- 3. Lógica Unificada
+-- ===============================
+-- LOOP PRINCIPAL
+-- ===============================
 spawn(function()
-    while task.wait() do
-        -- Só roda se o Toggle "Start Farm" estiver ligado
-        if _G.AutoFarm then
-            pcall(function()
-                
-                -----------------------------------------------------------------------
-                -- OPÇÃO 1: AUTO FARM LEVEL
-                -----------------------------------------------------------------------
-                if _G.FarmMode == "Auto Farm Level" then
-                    
-                    local Character = plr.Character or plr.CharacterAdded:Wait()
-                    local Root = Character:FindFirstChild("HumanoidRootPart")
-                    local Humanoid = Character:FindFirstChild("Humanoid")
-                    
-                    -- Verifica se o player está vivo
-                    if Root and Humanoid and Humanoid.Health > 0 then
-                        local QuestGui = plr.PlayerGui.Main.Quest
-                        
-                        -- PEGAR QUEST
-                        if QuestGui.Visible == false then
-                            if QuestNeta() and QuestNeta()[6] then -- Verificação extra de segurança
-                                _tp(QuestNeta()[6])
-                                if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then
-                                    task.wait(1.3) 
-                                    replicated.Remotes.CommF_:InvokeServer("StartQuest", QuestNeta()[3], QuestNeta()[2])
-                                end
-                            end
+    while wait(Sec or 0.5) do
+        pcall(function()
+            if not _G.StartFarm then return end
 
-                        -- FARM QUEST (Se já pegou a quest)
-                        elseif QuestGui.Visible == true then
-                            local QuestTitle = QuestGui.Container.QuestTitle.Title.Text
-                            
-                            -- Se a quest estiver errada, abandona
-                            if not string.find(QuestTitle, QuestNeta()[5]) then
-                                replicated.Remotes.CommF_:InvokeServer("AbandonQuest")
-                            else
-                                -- Se a quest estiver certa, mata o inimigo
-                                if workspace.Enemies:FindFirstChild(QuestNeta()[1]) then
-                                    for i, v in pairs(workspace.Enemies:GetChildren()) do
-                                        -- Verifica se o inimigo é o alvo
-                                        if v.Name == QuestNeta()[1] and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
-                                            -- Loop de Ataque
-                                            repeat
-                                                task.wait()
-                                                -- Importante: Aqui usamos _G.AutoFarm em vez de _G.Level
-                                                if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                                                     Attack.Kill(v, _G.AutoFarm)
-                                                else
-                                                     break 
-                                                end
-                                            -- Condição de parada: Se desligar o toggle OU mudar o modo OU inimigo morrer
-                                            until not _G.AutoFarm or _G.FarmMode ~= "Auto Farm Level" or v.Humanoid.Health <= 0 or not v.Parent or QuestGui.Visible == false
+            -- ===============================
+            -- AUTO FARM LEVEL
+            -- ===============================
+            if _G.FarmMode == "Auto Farm Level" then
+                local Character = plr.Character or plr.CharacterAdded:Wait()
+                local Root = Character:FindFirstChild("HumanoidRootPart")
+                local Humanoid = Character:FindFirstChild("Humanoid")
+
+                if Root and Humanoid and Humanoid.Health > 0 then
+                    local QuestGui = plr.PlayerGui.Main.Quest
+
+                    if not QuestGui.Visible then
+                        _tp(QuestNeta()[6])
+
+                        if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then
+                            wait(1.3)
+                            replicated.Remotes.CommF_:InvokeServer(
+                                "StartQuest",
+                                QuestNeta()[3],
+                                QuestNeta()[2]
+                            )
+                        end
+
+                    else
+                        local QuestTitle = QuestGui.Container.QuestTitle.Title.Text
+
+                        if not string.find(QuestTitle, QuestNeta()[5]) then
+                            replicated.Remotes.CommF_:InvokeServer("AbandonQuest")
+                        else
+                            for _, v in pairs(workspace.Enemies:GetChildren()) do
+                                if v.Name == QuestNeta()[1] and Attack.Alive(v) then
+                                    repeat
+                                        wait()
+                                        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                                            Attack.Kill(v, true)
+                                        else
+                                            break
                                         end
-                                    end
-                                else
-                                    -- Se o inimigo não existir, vai para o spawn dele
-                                    _tp(QuestNeta()[4])
-                                    if replicated:FindFirstChild(QuestNeta()[1]) then
-                                        _tp(replicated:FindFirstChild(QuestNeta()[1]).HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
-                                    end
+                                    until not _G.StartFarm
+                                        or not v.Parent
+                                        or v.Humanoid.Health <= 0
+                                        or not QuestGui.Visible
                                 end
                             end
                         end
                     end
-
-                -----------------------------------------------------------------------
-                -- OPÇÃO 2: AUTO FARM NEAREST
-                -----------------------------------------------------------------------
-                elseif _G.FarmMode == "Auto Farm Nearest" then
-                    
-                    for i, v in pairs(workspace.Enemies:GetChildren()) do
-                        if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-                             -- Loop de Ataque Nearest
-                            repeat
-                                task.wait()
-                                Attack.Kill(v, _G.AutoFarm)
-                            -- Condição de parada: Se desligar o toggle OU mudar o modo OU inimigo morrer
-                            until not _G.AutoFarm or _G.FarmMode ~= "Auto Farm Nearest" or not v.Parent or v.Humanoid.Health <= 0
-                        end
-                    end
-
                 end
-            end)
-        end
+            end
+
+            -- ===============================
+            -- AUTO FARM NEAREST
+            -- ===============================
+            if _G.FarmMode == "Auto Farm Nearest" then
+                for _, v in pairs(workspace.Enemies:GetChildren()) do
+                    if v:FindFirstChild("Humanoid")
+                    and v:FindFirstChild("HumanoidRootPart")
+                    and v.Humanoid.Health > 0 then
+
+                        repeat
+                            wait()
+                            Attack.Kill(v, true)
+                        until not _G.StartFarm
+                            or not v.Parent
+                            or v.Humanoid.Health <= 0
+                    end
+                end
+            end
+        end)
     end
 end)
-
 
 
 Farming:AddSection("Collect")
