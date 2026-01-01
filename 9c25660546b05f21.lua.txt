@@ -1992,7 +1992,7 @@ local Info = Window:MakeTab({
 
 local Farming = Window:MakeTab({
   Title = "Main",
-  Icon = "Home"
+  Icon = "10723407389"
 })
 
 local _Weapon = {
@@ -4209,7 +4209,7 @@ end)
 
 local Setting = Window:MakeTab({
     Title = "Setting",
-    Icon = "Setting"
+    Icon = "10709810948"
 })
 
 local plr = game.Players.LocalPlayer
