@@ -2537,7 +2537,7 @@ FruitTab:AddDropdown({
     end,
 })
 
--- Auto Buy Chip com trava de segurança
+-- Auto Buy Chip (Trava se estiver em Raid)
 FruitTab:AddToggle({
     Title = "Buy Chip With Fruit",
     Description = "Doesn't buy if already in raid",
@@ -2547,7 +2547,6 @@ FruitTab:AddToggle({
         
         task.spawn(function()
             while _G.AutoBuyChip do
-                -- Só tenta comprar se NÃO estiver em raid e NÃO tiver o chip
                 if not IsInRaid() and not GetBP("Special Microchip") then
                     local I = {}
                     for _, data in next, replicated.Remotes.CommF_:InvokeServer("GetFruits") do
@@ -2563,16 +2562,16 @@ FruitTab:AddToggle({
                         end
                     end
                 end
-                task.wait(3)
+                task.wait(2) -- Verificação de compra levemente mais rápida
             end
         end)
     end,
 })
 
--- Auto Start Raid com trava de segurança
+-- Auto Start Raid (INÍCIO RÁPIDO - 5 SEGUNDOS)
 FruitTab:AddToggle({
     Title = "Auto Start Raid",
-    Description = "Only starts if not already in a raid",
+    Description = "Starts every 5s if not in raid",
     Default = false,
     Callback = function(Value)
         _G.Auto_StartRaid = Value
@@ -2581,17 +2580,21 @@ FruitTab:AddToggle({
 
 spawn(function()
     while true do
+        -- Delay de 5 segundos solicitado entre as tentativas
         task.wait(5)
-        -- Só inicia se o toggle estiver ON e NÃO estiver em raid
+        
         if _G.Auto_StartRaid and not IsInRaid() then
             pcall(function()
                 if GetBP("Special Microchip") then
                     if World2 then
+                        -- Teleporte e clique imediato
                         _tp(CFrame.new(-6438.73535, 250.645355, -4501.50684))
+                        task.wait(0.1) -- Delay mínimo apenas para o motor do jogo processar a posição
                         fireclickdetector(workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
                     elseif World3 then
+                        -- Tenta o portal e o botão quase simultaneamente para velocidade máxima
                         replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
-                        task.wait(0.5)
+                        task.wait(0.2) -- Reduzido de 0.5 para 0.2
                         _tp(CFrame.new(-5033.50879, 315.014252, -2947.77539))
                         fireclickdetector(workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
                     end
@@ -2601,7 +2604,7 @@ spawn(function()
     end
 end)
 
--- Auto Complete Raid (Ataque e Teleporte)
+-- Auto Complete Raid (Ataque e Teleporte entre Ilhas)
 FruitTab:AddToggle({
     Title = "Auto Complete Raid",
     Description = "Uses Attack.Kill to clear islands",
@@ -2617,9 +2620,12 @@ spawn(function()
             pcall(function()
                 local nextIsland = getNextIsland()
                 if nextIsland then
-                    _tp(nextIsland.CFrame * CFrame.new(0, 50, 0))
+                    -- Vai para a ilha
+                    _tp(nextIsland.CFrame * CFrame.new(0, 70, 0))
+                    
                     for _, mob in pairs(workspace.Enemies:GetChildren()) do
                         if mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then
+                            -- Só ataca se o mob estiver na mesma ilha (raio de 1500)
                             local dist = (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
                             if dist <= 1500 then
                                 Attack.Kill(mob, _G.Raiding)
@@ -2653,18 +2659,18 @@ spawn(function()
     end
 end)
 
--- Update Status Label (Opcional - caso você tenha o objeto RaidS)
+-- Update Status Label
 spawn(function()
     while task.wait(0.5) do
         pcall(function()
             local status = IsInRaid() and "True" or "False"
-            -- Se RaidS existir na sua UI, ele atualizará aqui:
             if RaidS and RaidS.SetDesc then
                 RaidS:SetDesc(" Raiding Status : " .. status)
             end
         end)
     end
 end)
+
 
 
 
