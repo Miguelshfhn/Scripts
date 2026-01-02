@@ -2476,44 +2476,152 @@ end)
 
 FruitTab:AddSection("Raids [Coming Soon]")
 
-local replicated = game:GetService("ReplicatedStorage")
-local plr = game:GetService("Players").LocalPlayer
+--------------------------------------------------------------------------------
+-- 1. Dropdown de Select Chip
+--------------------------------------------------------------------------------
+FruitTab:AddDropdown({
+    Title = "Select Chip",
+    Description = "Escolha o Chip para comprar",
+    Options = {
+        "Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", 
+        "Magma", "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"
+    },
+    Default = "Flame",
+    Callback = function(Value)
+        _G.SelectChip = Value
+    end,
+})
 
--- // LISTA DE CHIPS PARA O DROPDOWN
-local RaidChips = {
-    "Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", "Magma", 
-    "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"
-}
+--------------------------------------------------------------------------------
+-- 2. Toggle Auto Buy Chip
+--------------------------------------------------------------------------------
+FruitTab:AddToggle({
+    Title = "Auto Buy Chip",
+    Description = "Compra o chip selecionado automaticamente",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoBuyChip = Value
+    end,
+})
 
--- // FUNÇÕES AUXILIARES DE RAID (ISLAND CHECK)
-function IsIslandRaid(cu)
-    local locs = workspace:FindFirstChild("_WorldOrigin") and workspace["_WorldOrigin"]:FindFirstChild("Locations")
-    if not locs then return nil end
+-- Lógica Auto Buy Chip
+task.spawn(function()
+    while true do
+        task.wait(3)
+        if _G.AutoBuyChip then
+            pcall(function()
+                -- Verifica se já tem o chip
+                if not GetBP("Special Microchip") then  
+                    local validFruits = {} 
+                    
+                    -- Obtém lista de frutas para pagar o chip
+                    local fruitsData = game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("GetFruits")
+                    
+                    for _, data in pairs(fruitsData) do  
+                        local rarity = tostring(data.Rarity or ""):lower()  
+                        -- Critérios para usar a fruta como pagamento
+                        if data.Price <= 1150000 or rarity == "common" or rarity == "uncommon" or rarity == "rare" then  
+                            table.insert(validFruits, data.Name)  
+                        end  
+                    end  
 
-    local targetIslandName = "Island " .. cu
-    if locs:FindFirstChild(targetIslandName) then
+                    -- Tenta comprar usando as frutas válidas
+                    for _, fruitName in pairs(validFruits) do  
+                        if not GetBP("Special Microchip") then  
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("LoadFruit", fruitName)  
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)  
+                        end  
+                    end  
+                end
+            end)
+        end
+    end
+end)
+
+--------------------------------------------------------------------------------
+-- 3. Toggle Auto Start Raid (Antes do Complete Raid)
+--------------------------------------------------------------------------------
+FruitTab:AddToggle({
+    Title = "Auto Start Raid",
+    Description = "Inicia a Raid automaticamente (World 2 ou 3)",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_StartRaid = Value
+    end,
+})
+
+-- Lógica Auto Start Raid
+task.spawn(function()
+    while true do
+        task.wait(5) -- Verifica a cada 5 segundos
+        if _G.Auto_StartRaid then  
+            pcall(function()  
+                local MainGui = game:GetService("Players").LocalPlayer.PlayerGui.Main
+                
+                -- Só tenta iniciar se a Raid NÃO estiver ativa (Timer invisível)  
+                if MainGui.TopHUDList.RaidTimer.Visible == false then  
+                    
+                    -- Verifica se o player possui o Microchip  
+                    if GetBP("Special Microchip") then  
+                        
+                        -- Verifica o Mundo para teleportar ao local correto
+                        if game.PlaceId == 4442272183 then -- World 2
+                            _tp(CFrame.new(-6438.73535, 250.645355, -4501.50684))
+                            fireclickdetector(workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+                            
+                        elseif game.PlaceId == 7449423635 then -- World 3
+                            -- Tenta via Remote primeiro
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
+                            task.wait(0.5)
+                            -- Fallback TP
+                            _tp(CFrame.new(-5033.50879, 315.014252, -2947.77539))
+                            fireclickdetector(workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
+                        end
+                    end
+                end  
+            end)  
+        end  
+    end
+end)
+
+--------------------------------------------------------------------------------
+-- 4. Toggle Auto Complete Raid (Com sua função Attack.Kill)
+--------------------------------------------------------------------------------
+FruitTab:AddToggle({
+    Title = "Auto Complete Raid",
+    Description = "Mata os NPCs e avança as ilhas",
+    Default = false,
+    Callback = function(Value)
+        _G.Raiding = Value
+    end,
+})
+
+-- Funções Auxiliares para Raid
+local function IsIslandRaid(id)
+    local locs = workspace["_WorldOrigin"].Locations
+    if locs:FindFirstChild("Island " .. id) then
         local min = 4500
         local targetIsland = nil
 
-        for _, v in ipairs(locs:GetChildren()) do
-            if v.Name == targetIslandName then
-                local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                if dist <= min then
-                    min = dist
+        for _, v in ipairs(locs:GetChildren()) do  
+            if v.Name == "Island " .. id then  
+                local dist = (v.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude  
+                if dist < min then  
+                    min = dist  
                     targetIsland = v
-                end
-            end
+                end  
+            end  
         end
         return targetIsland
     end
 end
 
-function getNextIsland()
+local function getNextIsland()
     local order = {5, 4, 3, 2, 1}
     for _, id in ipairs(order) do
         local island = IsIslandRaid(id)
         if island then
-            local dist = (island.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+            local dist = (island.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
             if dist <= 4500 then
                 return island
             end
@@ -2521,123 +2629,33 @@ function getNextIsland()
     end
 end
 
--- // 1. DROPDOWN DE SELECT CHIP
-FruitTab:AddDropdown({
-    Title = "Select Raid Chip",
-    Description = "Choose the chip to buy/start",
-    Options = RaidChips,
-    Default = "Flame",
-    Callback = function(Value)
-        _G.SelectChip = Value
-    end,
-})
-
--- // 2. TOGGLE AUTO BUY CHIP
-FruitTab:AddToggle({
-    Title = "Auto Buy Chip",
-    Description = "Buys the selected chip using trash fruits",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoBuyChip = Value
-    end,
-})
-
+-- Lógica Principal Auto Complete Raid
 task.spawn(function()
-    while task.wait(1) do
-        if _G.AutoBuyChip then
+    while true do
+        task.wait()
+        if _G.Raiding then
             pcall(function()
-                if not GetBP("Special Microchip") then
-                    local trashFruits = {} 
-                    
-                    -- Pega frutas para sacrificar (Common/Uncommon/Rare ou < 1M)
-                    for _, data in next, replicated.Remotes.CommF_:InvokeServer("GetFruits") do
-                        local rarity = tostring(data.Rarity or ""):lower()
-                        if data.Price <= 1150000 or rarity == "common" or rarity == "uncommon" or rarity == "rare" then
-                            table.insert(trashFruits, data.Name)
-                        end
-                    end
-
-                    -- Tenta comprar o chip selecionado no Dropdown
-                    for _, fruitName in pairs(trashFruits) do
-                        if not GetBP("Special Microchip") and _G.SelectChip then
-                            replicated.Remotes.CommF_:InvokeServer("LoadFruit", fruitName)
-                            replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- // 3. TOGGLE AUTO START RAID (Antes do Complete Raid)
-FruitTab:AddToggle({
-    Title = "Auto Start Raid",
-    Description = "Teleports to lab and presses the button",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_StartRaid = Value
-    end,
-})
-
-task.spawn(function()
-    while task.wait(2) do
-        if _G.Auto_StartRaid then
-            pcall(function()
-                -- Só tenta iniciar se o Timer da Raid NÃO estiver visível
-                if plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible == false then
-                    if GetBP("Special Microchip") then
-                        if World2 then
-                            _tp(CFrame.new(-6438.73535, 250.645355, -4501.50684))
-                            fireclickdetector(workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
-                        elseif World3 then
-                            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
-                            task.wait(0.5)
-                            _tp(CFrame.new(-5033.50879, 315.014252, -2947.77539))
-                            fireclickdetector(workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- // 4. TOGGLE AUTO COMPLETE RAID (Usando Attack.Kill)
-FruitTab:AddToggle({
-    Title = "Auto Complete Raid",
-    Description = "Kills mobs and moves to next island",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoCompleteRaid = Value
-    end,
-})
-
-task.spawn(function()
-    while task.wait() do
-        if _G.AutoCompleteRaid then
-            pcall(function()
-                -- Verifica se a Raid está ativa (Timer visível)
+                local plr = game:GetService("Players").LocalPlayer
+                
                 if plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible == true then
                     
-                    -- 1. Matar Inimigos (Usando sua função Attack.Kill)
+                    -- 1. Matar Inimigos Próximos usando Attack.Kill
                     for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                        if mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
-                            -- Checa distância para não tentar matar mobs de outra ilha longe demais
-                            if (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude < 3000 then
-                                repeat
-                                    task.wait()
-                                    -- Usa sua função de ataque aqui
-                                    Attack.Kill(mob, _G.AutoCompleteRaid)
-                                until not _G.AutoCompleteRaid or not mob.Parent or mob.Humanoid.Health <= 0
+                        if mob:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") then
+                            if mob.Humanoid.Health > 0 then
+                                local dist = (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                                if dist <= 1000 then
+                                    -- Usa sua função Attack.Kill aqui
+                                    Attack.Kill(mob, _G.Raiding)
+                                end
                             end
                         end
                     end
 
-                    -- 2. Mover para a próxima ilha
+                    -- 2. Ir para a próxima ilha
                     local nextIsland = getNextIsland()
                     if nextIsland then
-                        -- Teleporte para a ilha detectada
+                        -- TP para a ilha
                         _tp(nextIsland.CFrame * CFrame.new(0, 50, 0))
                     end
                 end
@@ -2646,22 +2664,26 @@ task.spawn(function()
     end
 end)
 
--- // 5. TOGGLE AUTO AWAKENED FRUIT
+--------------------------------------------------------------------------------
+-- 5. Toggle Auto Awakened Fruit
+--------------------------------------------------------------------------------
 FruitTab:AddToggle({
     Title = "Auto Awaken Fruit",
-    Description = "Auto awakens fruit at end of raid",
+    Description = "Desperta a fruta automaticamente ao fim da Raid",
     Default = false,
     Callback = function(Value)
         _G.Auto_Awakener = Value
     end,
 })
 
+-- Lógica Auto Awaken
 task.spawn(function()
-    while task.wait(3) do
+    while true do
+        task.wait(1)
         if _G.Auto_Awakener then
             pcall(function()
-                replicated.Remotes.CommF_:InvokeServer("Awakener", "Check")
-                replicated.Remotes.CommF_:InvokeServer("Awakener", "Awaken")
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Awakener", "Check")
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Awakener", "Awaken")
             end)
         end
     end
