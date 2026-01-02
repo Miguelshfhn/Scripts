@@ -2319,44 +2319,50 @@ Farming:AddToggle({
 })
 
 spawn(function()
-    local function processEnemy(EnemyName)
-        local Character = game.Players.LocalPlayer.Character
-        local Root = Character and Character:FindFirstChild("HumanoidRootPart")
-        if not Root then return end
+    local plr = game.Players.LocalPlayer
 
-        local TargetMob = nil
-        local MaxDistance = math.huge
+    local function processEnemy(v, EnemyName)
+        if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+            if v.Name == EnemyName then
+                repeat
+                    wait()
+                    Attack.Kill(v, getgenv().AutoMaterial)
+                until not getgenv().AutoMaterial or not v.Parent or v.Humanoid.Health <= 0
+            end
+        end
+    end
 
-        -- Busca o mob mais próximo dentro da lista de inimigos
+    local function getClosestEnemy(EnemyList)
+        local closestEnemy = nil
+        local shortestDistance = math.huge
+        local char = plr.Character
+        if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
+        local rootPos = char.HumanoidRootPart.Position
+
         for _, v in pairs(workspace.Enemies:GetChildren()) do
-            if v.Name == EnemyName and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and v:FindFirstChild("HumanoidRootPart") then
-                local Distance = (Root.Position - v.HumanoidRootPart.Position).Magnitude
-                if Distance < MaxDistance then
-                    MaxDistance = Distance
-                    TargetMob = v
+            for _, EnemyName in ipairs(EnemyList) do
+                if v:FindFirstChild("HumanoidRootPart") and string.find(v.Name, EnemyName) then
+                    local distance = (rootPos - v.HumanoidRootPart.Position).Magnitude
+                    if distance < shortestDistance then
+                        shortestDistance = distance
+                        closestEnemy = v
+                    end
                 end
             end
         end
 
-        -- Se encontrou o mais próximo, ataca ele
-        if TargetMob then
-            repeat
-                wait()
-                Attack.Kill(TargetMob, getgenv().AutoMaterial)
-            until not getgenv().AutoMaterial or not TargetMob.Parent or TargetMob.Humanoid.Health <= 0
-        end
+        return closestEnemy
     end
 
     local function handleEnemySpawns()
-        local Character = game.Players.LocalPlayer.Character
-        local Root = Character and Character:FindFirstChild("HumanoidRootPart")
-        if not Root then return end
-
         for _, v in pairs(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()) do
             for _, EnemyName in ipairs(MMon) do
                 if string.find(v.Name, EnemyName) then
-                    if (Root.Position - v.Position).Magnitude >= 10 then
-                        _tp(v.CFrame * Pos)
+                    local char = plr.Character
+                    if char and char:FindFirstChild("HumanoidRootPart") then
+                        if (char.HumanoidRootPart.Position - v.Position).Magnitude >= 10 then
+                            _tp(v.CFrame * Pos)
+                        end
                     end
                 end
             end
@@ -2368,14 +2374,12 @@ spawn(function()
             pcall(function()
                 if getgenv().SelectMaterial then
                     MaterialMon(getgenv().SelectMaterial)
-                    -- O TP para MPos só deve ocorrer se não houver inimigos por perto
-                    if #workspace.Enemies:GetChildren() == 0 then
-                        _tp(MPos)
-                    end
+                    _tp(MPos)
                 end
 
-                for _, EnemyName in ipairs(MMon) do
-                    processEnemy(EnemyName)
+                local closest = getClosestEnemy(MMon)
+                if closest then
+                    processEnemy(closest, closest.Name)
                 end
 
                 handleEnemySpawns()
@@ -2669,8 +2673,8 @@ local function TweenObject(Object, TargetCFrame, Speed)
     tween:Play()
 end
 
--- Pega posição média dos mobs
-local function GetMobPosition(MobName)
+-- Pega posição média dos mobs da quest atual
+local function GetQuestMobPosition(MobName)
     local pos = Vector3.zero
     local count = 0
     for _, v in pairs(workspace.Enemies:GetChildren()) do
@@ -2686,29 +2690,30 @@ local function GetMobPosition(MobName)
     return pos / count
 end
 
--- Bring principal (verifica todos os farms e materiais)
-local function BringMob()
-    -- Só puxa se algum farm ou AutoMaterial estiver ativo
-    if not (_G.AutoFarm_Bone or _G.AutoFarmNear or _G.Level or getgenv().AutoMaterial) then return end
+-- Bring principal: só traz mobs da quest atual
+local function BringQuestMob()
+    -- Só puxa se algum farm ou Level estiver ativo
+    if not (_G.Level or getgenv().AutoMaterial) then return end
 
     local char = plr.Character
     if not char or not char:FindFirstChild("HumanoidRootPart") then return end
     local playerHRP = char.HumanoidRootPart
 
+    -- Pega o nome do mob da quest atual
+    local QuestGui = plr.PlayerGui.Main.Quest
+    if not QuestGui.Visible then return end
+    local QuestMobName = QuestNeta()[1] -- Nome do inimigo da quest
+
     local enemies = workspace.Enemies:GetChildren()
     if #enemies == 0 then return end
 
     local totalpos = {}
-    for _, v in pairs(enemies) do
-        if not totalpos[v.Name] then
-            totalpos[v.Name] = GetMobPosition(v.Name)
-        end
-    end
+    totalpos[QuestMobName] = GetQuestMobPosition(QuestMobName)
 
     for _, v in pairs(enemies) do
         local hum = v:FindFirstChild("Humanoid")
         local hrp = v:FindFirstChild("HumanoidRootPart")
-        if hum and hrp and hum.Health > 0 then
+        if hum and hrp and hum.Health > 0 and v.Name == QuestMobName then
             local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
             if distPlayer <= RANGE_PLAYER then
                 local mobPos = totalpos[v.Name]
@@ -2733,7 +2738,7 @@ task.spawn(function()
     while task.wait() do
         local t0 = tick()
         while tick() - t0 < BRING_TIME do
-            BringMob()
+            BringQuestMob()
             task.wait(0.2)
         end
         local t1 = tick()
