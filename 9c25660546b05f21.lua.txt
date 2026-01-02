@@ -2260,6 +2260,122 @@ spawn(function()
     end
 end)
 
+-- Tab Stats
+local Stats = Window:MakeTab({
+    Title = "Stats",
+    Icon = "BarChart2"
+})
+
+-- Section: Stats Upgrade
+Stats:AddSection("Stats Upgrade")
+
+-- Slider
+Stats:AddSlider({
+    Name = "Stats Value",
+    Min = 0,
+    Max = 1000,
+    Default = 10,
+    Rounding = 1,
+    Callback = function(Value)
+        pSats = Value
+    end
+})
+
+-- Auto Melee
+Stats:AddToggle({
+    Name = "Auto Melee",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Melee = Value
+    end
+})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Melee then
+                statsSetings("Melee", pSats)
+            end
+        end)
+    end
+end)
+
+-- Auto Sword
+Stats:AddToggle({
+    Name = "Auto Swords",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Sword = Value
+    end
+})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Sword then
+                statsSetings("Sword", pSats)
+            end
+        end)
+    end
+end)
+
+-- Auto Gun
+Stats:AddToggle({
+    Name = "Auto Gun",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Gun = Value
+    end
+})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Gun then
+                statsSetings("Gun", pSats)
+            end
+        end)
+    end
+end)
+
+-- Auto Blox Fruit
+Stats:AddToggle({
+    Name = "Auto Blox Fruit",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_DevilFruit = Value
+    end
+})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_DevilFruit then
+                statsSetings("Devil", pSats)
+            end
+        end)
+    end
+end)
+
+-- Auto Defense
+Stats:AddToggle({
+    Name = "Auto Defense",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Defense = Value
+    end
+})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Defense then
+                statsSetings("Defense", pSats)
+            end
+        end)
+    end
+end)
+
 
 
 
@@ -2553,114 +2669,7 @@ Setting:AddButton({
   end
 })
 
--- Section: Stats Upgrade
-Setting:AddSection("Stats Upgrade")
 
-Setting:AddSlider({
-    Name = "Stats Value",
-    Min = 0,
-    Max = 1000,
-    Default = 10,
-    Rounding = 1,
-    Callback = function(Value)
-        pSats = Value
-    end
-})
-
-Setting:AddToggle({
-    Name = "Auto Melee",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Melee = Value
-    end
-})
-
--- Auto Melee spawn
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.Auto_Melee then
-                statsSetings("Melee", pSats)
-            end
-        end)
-    end
-end)
-
-Setting:AddToggle({
-    Name = "Auto Swords",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Sword = Value
-    end
-})
-
--- Auto Swords spawn
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.Auto_Sword then
-                statsSetings("Sword", pSats)
-            end
-        end)
-    end
-end)
-
-Setting:AddToggle({
-    Name = "Auto Gun",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Gun = Value
-    end
-})
-
--- Auto Gun spawn
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.Auto_Gun then
-                statsSetings("Gun", pSats)
-            end
-        end)
-    end
-end)
-
-Setting:AddToggle({
-    Name = "Auto Blox Fruit",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_DevilFruit = Value
-    end
-})
-
--- Auto Blox Fruit spawn
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.Auto_DevilFruit then
-                statsSetings("Devil", pSats)
-            end
-        end)
-    end
-end)
-
-Setting:AddToggle({
-    Name = "Auto Defense",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Defense = Value
-    end
-})
-
--- Auto Defense spawn
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.Auto_Defense then
-                statsSetings("Defense", pSats)
-            end
-        end)
-    end
-end)
 
 local player = game.Players.LocalPlayer
 local function IsEntityAlive(entity)
