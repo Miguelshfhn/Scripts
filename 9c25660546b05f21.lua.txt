@@ -2405,6 +2405,63 @@ spawn(function()
 end)
 
 
+-- Tab Travel
+local Island = Window:MakeTab({
+    Title = "Travel",
+    Icon = "map-pin"
+})
+
+local replicated = game:GetService("ReplicatedStorage")
+
+-- Separator Worlds
+Island:AddSeparator("Worlds")
+
+-- Sea 1
+Island:AddButton({
+    Name = "Teleport Sea 1",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("TravelMain")
+    end
+})
+
+-- Sea 2
+Island:AddButton({
+    Name = "Teleport Sea 2",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("TravelDressrosa")
+    end
+})
+
+-- Sea 3
+Island:AddButton({
+    Name = "Teleport Sea 3",
+    Callback = function()
+        replicated.Remotes.CommF_:InvokeServer("TravelZou")
+    end
+})
+
+-- Separator Island
+Island:AddSeparator("Island")
+
+-- Lista de ilhas
+local Location = {}
+for _, e in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+    table.insert(Location, e.Name)
+end
+
+-- Dropdown de ilhas
+Island:AddDropdown({
+    Name = "Select Island",
+    Options = Location,
+    Default = nil,
+    Callback = function(Value)
+        _G.Island = Value
+        pcall(function()
+            replicated.Remotes.CommF_:InvokeServer("requestEntrance", workspace._WorldOrigin.Locations[Value].CFrame)
+        end)
+    end
+})
+
 
 
 
