@@ -2511,7 +2511,7 @@ Travel:AddToggle({
 
 local FruitTab = Window:MakeTab({
     Title = "Fruit/Raids",
-    Icon = "map"
+    Icon = "cherry"
 })
 
 FruitTab:AddSection("Fruit")
