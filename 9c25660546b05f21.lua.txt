@@ -2474,7 +2474,223 @@ spawn(function()
     end
 end)
 
-FruitTab:AddSection("Raids [Coming Soon]")
+FruitTab:AddSection("Raids")
+
+
+-- Definições iniciais de tabelas e variáveis necessárias
+local RaidChips = {
+    "Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", 
+    "Magma", "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"
+}
+
+-- Funções Auxiliares para Raid (Detecção de Ilha)
+function IsIslandRaid(cu)
+    local locs = game:GetService("Workspace")["_WorldOrigin"].Locations
+    if locs:FindFirstChild("Island " .. cu) then
+        local min = 4500
+        -- Encontrar a ilha mais próxima com esse ID
+        for _, v in ipairs(locs:GetChildren()) do
+            if v.Name == "Island " .. cu then
+                local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                if dist < min then
+                    min = dist
+                end
+            end
+        end
+        -- Retornar a ilha correta
+        for _, v in ipairs(locs:GetChildren()) do
+            if v.Name == "Island " .. cu then
+                local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                if dist <= min then
+                    return v
+                end
+            end
+        end
+    end
+end
+
+function getNextIsland()
+    local order = {5, 4, 3, 2, 1}
+    for _, id in ipairs(order) do
+        local island = IsIslandRaid(id)
+        if island then
+            local dist = (island.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+            if dist <= 4500 then
+                return island
+            end
+        end
+    end
+end
+
+-- ==============================
+-- UI COMPONENTS (FruitTab)
+-- ==============================
+
+-- 1. Select Chip Dropdown
+FruitTab:AddDropdown({
+    Title = "Select Chip",
+    Description = "Choose the chip for the raid",
+    Options = RaidChips,
+    Default = "Flame",
+    Callback = function(Value)
+        _G.SelectChip = Value
+    end,
+})
+
+-- Lógica de Auto Seleção de Chip baseada nas frutas do inventário
+spawn(function()
+    while task.wait(1) do -- Ajustado para task.wait para melhor performance
+        if _G.AutoSelectDungeon then
+            pcall(function()
+                if GetBP("Flame-Flame") then _G.SelectChip = "Flame"
+                elseif GetBP("Ice-Ice") then _G.SelectChip = "Ice"
+                elseif GetBP("Quake-Quake") then _G.SelectChip = "Quake"
+                elseif GetBP("Light-Light") then _G.SelectChip = "Light"
+                elseif GetBP("Dark-Dark") then _G.SelectChip = "Dark"
+                elseif GetBP("String-String") then _G.SelectChip = "String"
+                elseif GetBP("Rumble-Rumble") then _G.SelectChip = "Rumble"
+                elseif GetBP("Magma-Magma") then _G.SelectChip = "Magma"
+                elseif GetBP("Human-Human: Buddha Fruit") then _G.SelectChip = "Human: Buddha"
+                elseif GetBP("Dough-Dough") then _G.SelectChip = "Dough"
+                elseif GetBP("Sand-Sand") then _G.SelectChip = "Sand"
+                elseif GetBP("Bird-Bird: Phoenix") then _G.SelectChip = "Bird: Phoenix"
+                else _G.SelectChip = "Flame" -- Fallback
+                end
+            end)
+        end
+    end
+end)
+
+-- 2. Auto Buy Chip Toggle
+FruitTab:AddToggle({
+    Title = "Buy Chip With Fruit",
+    Description = "Use your lowest fruit in your bag",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoBuyChip = Value
+        
+        task.spawn(function()
+            while _G.AutoBuyChip do
+                if not GetBP("Special Microchip") then
+                    local I = {} -- Lista de frutas válidas
+                    for _, data in next, replicated.Remotes.CommF_:InvokeServer("GetFruits") do
+                        local rarity = tostring(data.Rarity or ""):lower()
+                        if data.Price <= 1150000 or rarity == "common" or rarity == "uncommon" or rarity == "rare" then
+                            table.insert(I, data.Name)
+                        end
+                    end
+                    -- Compra
+                    for _, fruitName in pairs(I) do
+                        if not GetBP("Special Microchip") then
+                            replicated.Remotes.CommF_:InvokeServer("LoadFruit", fruitName)
+                            replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+                        end
+                    end
+                end
+                task.wait(3)
+            end
+        end)
+    end,
+})
+
+-- 3. Auto Start Raid Toggle
+FruitTab:AddToggle({
+    Title = "Auto Start Raid",
+    Description = "Starts raid automatically",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_StartRaid = Value
+    end,
+})
+
+-- Lógica Auto Start
+spawn(function()
+    while true do
+        task.wait(5) -- Loop de verificação
+        if _G.Auto_StartRaid then
+            pcall(function()
+                if plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible == false then
+                    if GetBP("Special Microchip") then
+                        if World2 then
+                            _tp(CFrame.new(-6438.73535, 250.645355, -4501.50684))
+                            fireclickdetector(workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+                        elseif World3 then
+                            replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
+                            task.wait(0.5)
+                            _tp(CFrame.new(-5033.50879, 315.014252, -2947.77539))
+                            fireclickdetector(workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- 4. Auto Complete Raid Toggle (Com integração Attack.Kill)
+FruitTab:AddToggle({
+    Title = "Auto Complete Raid",
+    Description = "Kills enemies and moves islands",
+    Default = false,
+    Callback = function(Value)
+        _G.Raiding = Value
+    end,
+})
+
+spawn(function()
+    while task.wait() do
+        pcall(function()
+            if _G.Raiding then
+                -- Verifica se a Raid está ativa (Timer visível)
+                if plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible == true then
+                    
+                    -- Lógica de mover para a ilha
+                    local nextIsland = getNextIsland()
+                    if nextIsland then
+                        -- Teleporta para a ilha (ponto seguro acima dela)
+                        _tp(nextIsland.CFrame * CFrame.new(0, 50, 0))
+
+                        -- Lógica de Kill Integrada (Usa Attack.Kill)
+                        for _, mob in pairs(workspace.Enemies:GetChildren()) do
+                            if mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") then
+                                if mob.Humanoid.Health > 0 then
+                                    -- Verifica distância para não focar em mobs longe demais (glitch)
+                                    local dist = (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                                    if dist <= 1500 then -- Distância aumentada para cobrir a ilha da Raid
+                                        -- Chama a sua função Attack.Kill
+                                        Attack.Kill(mob, _G.Raiding)
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end)
+    end
+end)
+
+-- 5. Auto Awakening Toggle
+FruitTab:AddToggle({
+    Title = "Auto Awakening",
+    Description = "Awakens fruit automatically at the end",
+    Default = false,
+    Callback = function(Value)
+        G.Auto_Awakener = Value
+    end,
+})
+
+spawn(function()
+    while task.wait(1) do
+        pcall(function()
+            if G.Auto_Awakener then
+                replicated.Remotes.CommF:InvokeServer("Awakener", "Check")
+                replicated.Remotes.CommF:InvokeServer("Awakener", "Awaken")
+            end
+        end)
+    end
+end)
+
 
 
 
