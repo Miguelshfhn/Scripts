@@ -2511,48 +2511,114 @@ spawn(function()
     end
 end)
 
-Setting:AddButton({
-  Name = "Redeem All Codes",
-  Debounce = 0.5,
-  Callback = function()
-        local codes = {
-            "LIGHTNINGABUSE","1LOSTADMIN","ADMINFIGHT","GIFTING_HOURS","NOMOREHACK",
-            "BANEXPLOIT","WildDares","BossBuild","GetPranked","EARN_FRUITS",
-            "SUB2GAMERROBOT_RESET1","KITT_RESET","Bignews","CHANDLER","Fudd10",
-            "fudd10_v2","Sub2UncleKizaru","FIGHT4FRUIT","kittgaming","TRIPLEABUSE",
-            "Sub2CaptainMaui","Sub2Fer999","Enyu_is_Pro","Magicbus","JCWK",
-            "Starcodeheo","Bluxxy","SUB2GAMERROBOT_EXP1","Sub2NoobMaster123",
-            "Sub2Daigrock","Axiore","TantaiGaming","StrawHatMaine","Sub2OfficialNoobie",
-            "TheGreatAce","JULYUPDATE_RESET","ADMINHACKED","SEATROLLING","24NOADMIN",
-            "ADMIN_TROLL","NEWTROLL","SECRET_ADMIN","staffbattle","NOEXPLOIT",
-            "NOOB2ADMIN","CODESLIDE","fruitconcepts","krazydares"
-        }
+-- Section: Stats Upgrade
+Setting:AddSection("Stats Upgrade")
 
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local RemotesFolder = ReplicatedStorage:WaitForChild("Remotes")
-        local RedeemRemote = RemotesFolder:FindFirstChild("Redeem")
-
-        if not RedeemRemote then
-            warn("Không tìm thấy Remote 'Redeem' trong ReplicatedStorage.Remotes!")
-            return
-        end
-
-        for _, code in ipairs(codes) do
-            task.wait(0)
-            pcall(function()
-                if RedeemRemote.InvokeServer then
-                    RedeemRemote:InvokeServer(code)
-                else
-                    RedeemRemote:FireServer(code)
-                end
-                print("Đã thử redeem code:", code)
-            end)
-        end
-
-        print("✅ Hoàn tất quá trình redeem tất cả code Blox Fruits!")
-  end
+Setting:AddSlider({
+    Name = "Stats Value",
+    Min = 0,
+    Max = 1000,
+    Default = 10,
+    Rounding = 1,
+    Callback = function(Value)
+        pSats = Value
+    end
 })
 
+Setting:AddToggle({
+    Name = "Auto Melee",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Melee = Value
+    end
+})
+
+-- Auto Melee spawn
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Melee then
+                statsSetings("Melee", pSats)
+            end
+        end)
+    end
+end)
+
+Setting:AddToggle({
+    Name = "Auto Swords",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Sword = Value
+    end
+})
+
+-- Auto Swords spawn
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Sword then
+                statsSetings("Sword", pSats)
+            end
+        end)
+    end
+end)
+
+Setting:AddToggle({
+    Name = "Auto Gun",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Gun = Value
+    end
+})
+
+-- Auto Gun spawn
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Gun then
+                statsSetings("Gun", pSats)
+            end
+        end)
+    end
+end)
+
+Setting:AddToggle({
+    Name = "Auto Blox Fruit",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_DevilFruit = Value
+    end
+})
+
+-- Auto Blox Fruit spawn
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_DevilFruit then
+                statsSetings("Devil", pSats)
+            end
+        end)
+    end
+end)
+
+Setting:AddToggle({
+    Name = "Auto Defense",
+    Default = false,
+    Callback = function(Value)
+        _G.Auto_Defense = Value
+    end
+})
+
+-- Auto Defense spawn
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Auto_Defense then
+                statsSetings("Defense", pSats)
+            end
+        end)
+    end
+end)
 
 local player = game.Players.LocalPlayer
 local function IsEntityAlive(entity)
