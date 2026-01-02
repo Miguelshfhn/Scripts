@@ -2549,6 +2549,8 @@ Setting:AddButton({
             end)
         end
 
+        print("✅ Hoàn tất quá trình redeem tất cả code Blox Fruits!")
+  end
 })
 
 
