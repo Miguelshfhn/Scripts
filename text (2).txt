@@ -1190,10 +1190,9 @@ QuestCheck = function()
             PosQ = CFrame.new(1389.744, 88.151, -1298.907)
             PosM = CFrame.new(1354.347, 87.272, -1393.946)
         elseif a == 100 or a <= 119 then
-    Mon = "Snowman"; Qdata = 2; Qname = "SnowQuest"; NameMon = "Snowman"
-    PosQ = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, -0, 0.939684391, -0, 1, -0, -0.939684391, -0, -0.342042685)
-    PosM = CFrame.new(1201.6412353515625, 144.57958984375, -1550.0670166015625)
-
+            Mon = "Snowman"; Qdata = 2; Qname = "SnowQuest"; NameMon = "Snowman"
+            PosQ = CFrame.new(1389.744, 88.151, -1298.907)
+            PosM = CFrame.new(6241.995, 51.522, -1243.977)
         elseif a == 120 or a <= 149 then
             Mon = "Chief Petty Officer"; Qdata = 1; Qname = "MarineQuest2"; NameMon = "Chief Petty Officer"
             PosQ = CFrame.new(-5039.586, 27.350, 4324.680)
@@ -1363,10 +1362,12 @@ QuestCheck = function()
                 replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923.212, 126.976, 32852.832))
             end
         elseif a == 1350 or a <= 1374 then
-    Mon = "Arctic Warrior"; Qdata = 1; Qname = "FrostQuest"; NameMon = "Arctic Warrior"
+    Mon = "Arctic Warrior"
+    Qdata = 1
+    Qname = "FrostQuest"
+    NameMon = "Arctic Warrior"
     PosQ = CFrame.new(5667.658, 26.799, -6486.089)
     PosM = CFrame.new(5966.246, 62.970, -6179.382)
-end
         elseif a == 1375 or a <= 1424 then
             Mon = "Snow Lurker"; Qdata = 2; Qname = "FrostQuest"; NameMon = "Snow Lurker"
             PosQ = CFrame.new(5667.658, 26.799, -6486.089)
@@ -1392,18 +1393,17 @@ end
             PosQ = CFrame.new(-723.433, 147.429, 5931.993)
             PosM = CFrame.new(-723.433, 147.429, 5931.993)
         elseif a == 1575 or a <= 1599 then
-    Mon = "Dragon Crew Warrior"; Qdata = 1; Qname = "AmazonQuest"; NameMon = "Dragon Crew Warrior"
-    PosQ = CFrame.new(6737.06055, 127.417763, -712.300659, -0.463954359, -7.19574755e-09, 0.885859072, 7.69187665e-08, 1, 4.84078626e-08, -0.885859072, 9.05982276e-08, -0.463954359)
-    PosM = CFrame.new(6709.76367, 52.3442993, -1139.02966, -0.763515472, 0, 0.645789504, 0, 1, 0, -0.645789504, 0, -0.763515472)
-elseif a == 1600 or a <= 1624 then
-    Mon = "Dragon Crew Archer"; Qdata = 2; Qname = "AmazonQuest"; NameMon = "Dragon Crew Archer"
-    PosQ = CFrame.new(6737.06055, 127.417763, -712.300659, -0.463954359, -7.19574755e-09, 0.885859072, 7.69187665e-08, 1, 4.84078626e-08, -0.885859072, 9.05982276e-08, -0.463954359)
-    PosM = CFrame.new(6668.76172, 481.376923, 329.12207, -0.121787429, 0, -0.992556155, 0, 1, 0, 0.992556155, 0, -0.121787429)
-elseif a == 1625 or a <= 1649 then
-    Mon = "Hydra Enforcer"; Qdata = 1; Qname = "VenomCrewQuest"; NameMon = "Hydra Enforcer"
-    PosQ = CFrame.new(5206.40185546875, 1004.10498046875, 748.3504638671875)
-    PosM = CFrame.new(4547.11523, 1003.10217, 334.194824, 0.388810456, -0, -0.921317935, 0, 1, -0, 0.921317935, 0, 0.388810456)
-
+            Mon = "Dragon Crew Warrior"; Qdata = 1; Qname = "AmazonQuest"; NameMon = "Dragon Crew Warrior"
+            PosQ = CFrame.new(6779.032, 111.168, -801.213)
+            PosM = CFrame.new(6779.032, 111.168, -801.213)
+        elseif a == 1600 or a <= 1624 then
+            Mon = "Dragon Crew Archer"; Qdata = 2; Qname = "AmazonQuest"; NameMon = "Dragon Crew Archer"
+            PosQ = CFrame.new(6955.897, 546.665, 309.040)
+            PosM = CFrame.new(6955.897, 546.665, 309.040)
+        elseif a == 1625 or a <= 1649 then
+            Mon = "Hydra Enforcer"; Qdata = 1; Qname = "VenomCrewQuest"; NameMon = "Hydra Enforcer"
+            PosQ = CFrame.new(4620.615, 1002.295, 399.086)
+            PosM = CFrame.new(4620.615, 1002.295, 399.086)
         elseif a == 1650 or a <= 1699 then
             Mon = "Venomous Assailant"; Qdata = 2; Qname = "VenomCrewQuest"; NameMon = "Venomous Assailant"
             PosQ = CFrame.new(4697.591, 1100.651, 946.401)
