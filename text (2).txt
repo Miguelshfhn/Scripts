@@ -2474,7 +2474,7 @@ spawn(function()
     end
 end)
 
-FruitTab:AddSection("Raids [Coming Soon]")
+FruitTab:AddSection("Raids")
 
 
 -- Definições iniciais de tabelas e variáveis necessárias
@@ -2953,34 +2953,47 @@ Setting:AddSlider({
     end
 })
 
-local plr = game.Players.LocalPlayer
+-- SERVICES / PLAYER
+local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local plr = Players.LocalPlayer
+
+-- FLAGS (não cria toggle, só usa)
+_G.AutoFarmNear = _G.AutoFarmNear or false
+_G.AutoFarm_Bone = _G.AutoFarm_Bone or false
+_G.Level = _G.Level or false
 
 -- CONFIG
-local BRING_TIME = 3
-local RELEASE_TIME = 5
-local RANGE_PLAYER = 200
-local RANGE_PULL = 150
-local TWEEN_SPEED = 50
+local BRING_TIME = 1.5
+local RELEASE_TIME = 3
+local RANGE_PLAYER = 250
+local RANGE_PULL = 200
+local TWEEN_SPEED = 35
 
--- Tween suave
+--------------------------------------------------
+-- TWEEN SUAVE
+--------------------------------------------------
 local function TweenObject(Object, TargetCFrame, Speed)
     Speed = Speed or TWEEN_SPEED
     if not Object or not TargetCFrame then return end
+
     local Distance = (TargetCFrame.Position - Object.Position).Magnitude
     local Time = Distance / Speed
-    local tween = TweenService:Create(
+
+    TweenService:Create(
         Object,
         TweenInfo.new(Time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out),
         {CFrame = TargetCFrame}
-    )
-    tween:Play()
+    ):Play()
 end
 
--- Pega posição média dos mobs da quest atual
+--------------------------------------------------
+-- POSIÇÃO MÉDIA DOS MOBS DA QUEST
+--------------------------------------------------
 local function GetQuestMobPosition(MobName)
     local pos = Vector3.zero
     local count = 0
+
     for _, v in pairs(workspace.Enemies:GetChildren()) do
         if v.Name == MobName
         and v:FindFirstChild("HumanoidRootPart")
@@ -2990,43 +3003,46 @@ local function GetQuestMobPosition(MobName)
             count += 1
         end
     end
+
     if count == 0 then return nil end
     return pos / count
 end
 
--- Bring principal: só traz mobs da quest atual
+--------------------------------------------------
+-- BRING (SÓ MOB DA QUEST ATUAL)
+--------------------------------------------------
 local function BringQuestMob()
-    -- Só puxa se algum farm ou Level estiver ativo
-    if not (_G.Level or getgenv().AutoMaterial) then return end
+    -- só ativa se algum farm estiver ligado
+    if not (_G.Level or _G.AutoFarmNear or _G.AutoFarm_Bone or getgenv().AutoMaterial) then
+        return
+    end
 
     local char = plr.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-    local playerHRP = char.HumanoidRootPart
+    if not char then return end
+    local playerHRP = char:FindFirstChild("HumanoidRootPart")
+    if not playerHRP then return end
 
-    -- Pega o nome do mob da quest atual
     local QuestGui = plr.PlayerGui.Main.Quest
     if not QuestGui.Visible then return end
-    local QuestMobName = QuestNeta()[1] -- Nome do inimigo da quest
 
-    local enemies = workspace.Enemies:GetChildren()
-    if #enemies == 0 then return end
+    local QuestMobName = QuestNeta()[1]
+    local mobPos = GetQuestMobPosition(QuestMobName)
+    if not mobPos then return end
 
-    local totalpos = {}
-    totalpos[QuestMobName] = GetQuestMobPosition(QuestMobName)
+    for _, v in pairs(workspace.Enemies:GetChildren()) do
+        if v.Name == QuestMobName then
+            local hum = v:FindFirstChild("Humanoid")
+            local hrp = v:FindFirstChild("HumanoidRootPart")
 
-    for _, v in pairs(enemies) do
-        local hum = v:FindFirstChild("Humanoid")
-        local hrp = v:FindFirstChild("HumanoidRootPart")
-        if hum and hrp and hum.Health > 0 and v.Name == QuestMobName then
-            local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
-            if distPlayer <= RANGE_PLAYER then
-                local mobPos = totalpos[v.Name]
-                if mobPos then
-                    local dist = (hrp.Position - mobPos).Magnitude
-                    if dist > 6 and dist <= RANGE_PULL then
-                        TweenObject(hrp, CFrame.new(mobPos), TWEEN_SPEED)
-                        hrp.CanCollide = false
-                    end
+            if hum and hrp and hum.Health > 0 then
+                local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
+                local distMob = (hrp.Position - mobPos).Magnitude
+
+                if distPlayer <= RANGE_PLAYER
+                and distMob <= RANGE_PULL
+                and distMob > 6 then
+                    TweenObject(hrp, CFrame.new(mobPos), TWEEN_SPEED)
+                    hrp.CanCollide = false
                 end
             end
         end
@@ -3037,7 +3053,9 @@ local function BringQuestMob()
     end)
 end
 
--- LOOP de Bring (3s trazer / 5s soltar)
+--------------------------------------------------
+-- LOOP BRING (3s PUXA / 5s SOLTA)
+--------------------------------------------------
 task.spawn(function()
     while task.wait() do
         local t0 = tick()
@@ -3045,13 +3063,13 @@ task.spawn(function()
             BringQuestMob()
             task.wait(0.2)
         end
+
         local t1 = tick()
         while tick() - t1 < RELEASE_TIME do
             task.wait()
         end
     end
 end)
-
 
 Setting:AddSection("Settings Farm")
 
