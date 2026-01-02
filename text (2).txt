@@ -2590,19 +2590,7 @@ task.spawn(function()
     end
 end)
 
---------------------------------------------------------------------------------
--- 4. TOGGLE: AUTO COMPLETE RAID (KILL AURA + TWEEN)
---------------------------------------------------------------------------------
-FruitTab:AddToggle({
-    Title = "Auto Complete Raid",
-    Description = "Mata os NPCs e vai para a próxima ilha",
-    Default = false,
-    Callback = function(Value)
-        _G.Raiding = Value
-    end,
-})
-
--- Funções Auxiliares de Raid (Do seu código original)
+-- Função Auxiliar: Detectar Ilha da Raid (Mantive igual pois funciona bem)
 local function IsIslandRaid(id)
     local locs = workspace:FindFirstChild("_WorldOrigin") and workspace["_WorldOrigin"]:FindFirstChild("Locations")
     if not locs then return nil end
@@ -2625,6 +2613,7 @@ local function IsIslandRaid(id)
     end
 end
 
+-- Função Auxiliar: Pegar próxima ilha (5 -> 1)
 local function getNextIsland()
     local order = {5, 4, 3, 2, 1}
     for _, id in ipairs(order) do
@@ -2638,38 +2627,68 @@ local function getNextIsland()
     end
 end
 
-local function attackNearbyEnemies()
-    if not workspace:FindFirstChild("Enemies") then return end
-    for _, mob in pairs(workspace.Enemies:GetChildren()) do
-        if mob:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then
-            local dist = (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-            if dist <= 1000 then
-                -- Chama sua função de Kill Global
-                if _G.Raiding then 
-                     pcall(function() G.Kill(mob, _G.Raiding) end)
-                end
-            end
-        end
-    end
+-- Função Auxiliar: Verifica se a Raid está rolando (Timer visível)
+local function IsRaidActive()
+    local success, visible = pcall(function()
+        return plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible
+    end)
+    return success and visible
 end
 
-task.spawn(function()
-    while task.wait(0.1) do
+--------------------------------------------------------------------------------
+-- TOGGLE: AUTO COMPLETE RAID (CORRIGIDO)
+--------------------------------------------------------------------------------
+FruitTab:AddToggle({
+    Title = "Auto Complete Raid",
+    Description = "Mata os NPCs usando Attack.Kill e avança as ilhas",
+    Default = false,
+    Callback = function(Value)
+        _G.Raiding = Value
+    end,
+})
+
+spawn(function()
+    while task.wait() do
         if _G.Raiding then
             pcall(function()
-                -- LÓGICA: Só executa se a Raid estiver ATIVA visualmente
+                -- Só executa se o Timer da Raid estiver visível
                 if IsRaidActive() then
-                    attackNearbyEnemies()
                     
-                    local nextIsland = getNextIsland()
-                    if nextIsland then
-                        _tp(nextIsland.CFrame * CFrame.new(0, 50, 0))
+                    -- 1. Verifica se tem inimigos vivos na Raid
+                    local enemyFound = false
+                    
+                    for i, v in pairs(workspace.Enemies:GetChildren()) do
+                        if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                            enemyFound = true
+                            
+                            -- AQUI ESTÁ A LÓGICA DO SEU AUTO FARM
+                            -- Ele foca no inimigo até matar ou a raid acabar
+                            repeat
+                                task.wait()
+                                -- Usa a SUA função Attack.Kill
+                                Attack.Kill(v, _G.Raiding) 
+                            until not _G.Raiding or not v.Parent or v.Humanoid.Health <= 0 or not IsRaidActive()
+                            
+                            -- Se matou um, sai do loop for para reavaliar (pode ter spawnado outro ou precisar mudar de ilha)
+                            break 
+                        end
                     end
+
+                    -- 2. Se NÃO encontrou inimigos (enemyFound == false), vai para a próxima ilha para spawnar eles
+                    if not enemyFound then
+                        local nextIsland = getNextIsland()
+                        if nextIsland then
+                            -- Teleporta para o centro da ilha para ativar o spawn dos mobs
+                            _tp(nextIsland.CFrame * CFrame.new(0, 50, 0))
+                        end
+                    end
+                    
                 end
             end)
         end
     end
 end)
+
 
 --------------------------------------------------------------------------------
 -- 5. TOGGLE: AUTO AWAKEN
