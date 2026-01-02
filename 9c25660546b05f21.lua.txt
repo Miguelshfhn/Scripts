@@ -1770,7 +1770,7 @@ end
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau"))()
 
 local Window = Library:MakeWindow({
-  Title = "Zenith Hub",
+  Title = "Zenith Hub [Beta]",
   SubTitle = "By wz7xwz",
   ScriptFolder = "Zenithbf"
 })
@@ -1780,7 +1780,7 @@ local Minimizer = Window:NewMinimizer({
 })
 
 local MobileButton = Minimizer:CreateMobileMinimizer({
-    Image = "rbxassetid://70750145714438",
+    Image = "rbxassetid://122120728138392",
     BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 })
 
@@ -2224,7 +2224,7 @@ spawn(function()
                 -- DISTÂNCIA PARA DECIDIR SE USA A ENTRADA
                 local distEntrance = (hrp.Position - EntranceVector).Magnitude
 
-                if distEntrance > 2500 and not EntranceUsed then
+                if distEntrance > 1000 and not EntranceUsed then
                     EntranceUsed = true
                     replicated.Remotes.CommF_:InvokeServer("requestEntrance", EntranceCFrame)
 
