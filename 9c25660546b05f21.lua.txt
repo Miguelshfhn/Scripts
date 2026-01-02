@@ -2211,86 +2211,71 @@ end)
 
 -- Loop de Farm e Quest
 spawn(function()
-    local replicated = game:GetService("ReplicatedStorage")
-    local EntranceUsed = false -- controle pra não repetir
-
-    -- CFrame / Vector da entrada
-    local EntranceVector = Vector3.new(-5097.93164, 316.447021, -3142.66602)
-    local EntranceCFrame = CFrame.new(
-        -5097.93164, 316.447021, -3142.66602,
-        -0.405007899, -4.31682743e-08, 0.914313197,
-        -1.90943332e-08, 1, 3.8755779e-08,
-        -0.914313197, -1.76180437e-09, -0.405007899
-    )
-
     while task.wait() do
         if _G.AutoFarm_Bone then
             pcall(function()
                 local plr = game.Players.LocalPlayer
-                local char = plr.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
                 if not hrp then return end
 
-                -- DISTÂNCIA PARA DECIDIR SE USA A ENTRADA
-                local distEntrance = (hrp.Position - EntranceVector).Magnitude
+                local QuestUI = plr.PlayerGui.Main.Quest          
+                local MOBS = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}    
+                local PosQ = CFrame.new(-9516.99316, 172.017181, 6078.46533)
+                local replicated = game:GetService("ReplicatedStorage")
 
-                if distEntrance > 1000 and not EntranceUsed then
-                    EntranceUsed = true
-                    replicated.Remotes.CommF_:InvokeServer("requestEntrance", EntranceCFrame)
-
-                    task.delay(1.5, function()
-                        -- depois de 1.5s ele continua normalmente
-                    end)
-                    return
+                -- Verificação de distância extrema (Teleporte de Entrada)
+                -- Se estiver a mais de 2000 studs da Quest, usa o portal
+                local distParaQuest = (PosQ.Position - hrp.Position).Magnitude
+                if distParaQuest > 2000 then
+                    replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
+                    task.wait(1.5) -- Espera o tempo solicitado após o teleporte
                 end
 
-                local QuestUI = plr.PlayerGui.Main.Quest        
-                local MOBS = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}  
-                local PosQ = CFrame.new(-9516.99316, 172.017181, 6078.46533, 0, 0, -1, 0, 1, 0, 1, 0, 0)
+                -- Lógica de Quest  
+                if _G.AcceptQuest and not QuestUI.Visible then          
+                    local distToNPC = (PosQ.Position - hrp.Position).Magnitude    
+                    if distToNPC > 5 then    
+                        _tp(PosQ)   
+                    else    
+                        task.wait(0.5)  
+                        replicated.Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1)  
+                        task.wait(1)   
+                    end    
+                else    
+                    -- Procura o mob mais próximo da lista  
+                    local function GetClosestMob()          
+                        local closest, shortest = nil, math.huge          
+                        for _, mob in pairs(workspace.Enemies:GetChildren()) do          
+                            local isTarget = false  
+                            for _, name in pairs(MOBS) do  
+                                if mob.Name == name then isTarget = true break end  
+                            end  
+                              
+                            if isTarget and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then          
+                                local dist = (mob.PrimaryPart.Position - hrp.Position).Magnitude          
+                                if dist < shortest then     
+                                    shortest = dist     
+                                    closest = mob     
+                                end          
+                            end          
+                        end          
+                        return closest          
+                    end          
 
-                -- Lógica de Quest
-                if _G.AcceptQuest and not QuestUI.Visible then        
-                    local distToNPC = (PosQ.Position - hrp.Position).Magnitude  
-                    if distToNPC > 5 then  
-                        _tp(PosQ) 
-                    else  
-                        task.wait(0.5)
-                        replicated.Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1)
-                        task.wait(1) 
-                    end  
-                else  
-                    -- Procura o mob mais próximo
-                    local function GetClosestMob()        
-                        local closest, shortest = nil, math.huge        
-                        for _, mob in pairs(workspace.Enemies:GetChildren()) do        
-                            if table.find(MOBS, mob.Name)
-                            and mob:FindFirstChild("Humanoid")
-                            and mob.Humanoid.Health > 0
-                            and mob.PrimaryPart then        
-                                local dist = (mob.PrimaryPart.Position - hrp.Position).Magnitude        
-                                if dist < shortest then   
-                                    shortest = dist   
-                                    closest = mob   
-                                end        
-                            end        
-                        end        
-                        return closest        
-                    end        
-
-                    local targetMob = GetClosestMob()        
-                    if targetMob then        
-                        repeat
-                            task.wait()
-                            Attack.Kill(targetMob, _G.AutoFarm_Bone)
-                        until not _G.AutoFarm_Bone
-                        or not targetMob.Parent
-                        or targetMob.Humanoid.Health <= 0
-                    else        
-                        _tp(CFrame.new(-9495.68, 453.58, 5977.34))        
-                    end        
-                end  
-            end)    
-        end    
+                    local targetMob = GetClosestMob()          
+                    if targetMob then          
+                        -- Trava no mob até ele morrer usando sua função Attack.Kill  
+                        repeat  
+                            task.wait()  
+                            Attack.Kill(targetMob, _G.AutoFarm_Bone)  
+                        until not _G.AutoFarm_Bone or not targetMob.Parent or targetMob.Humanoid.Health <= 0  
+                    else          
+                        -- Se não houver mobs vivos, vai para o spot de spawn  
+                        _tp(CFrame.new(-9495.68, 453.58, 5977.34))          
+                    end          
+                end    
+            end)      
+        end      
     end
 end)
 
