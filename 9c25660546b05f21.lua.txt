@@ -2407,7 +2407,7 @@ end)
 
 local Travel = Window:MakeTab({
     Name = "Travel",
-    Icon = "map-pin"
+    Icon = "mappin"
 })
 
 Travel:AddSection("Worlds")
