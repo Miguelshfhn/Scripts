@@ -2209,6 +2209,8 @@ spawn(function()
     end
 end)
 
+local portalDebounce = false -- Variável para controlar o uso do portal
+
 -- Loop de Farm e Quest
 spawn(function()
     while task.wait() do
@@ -2223,19 +2225,25 @@ spawn(function()
                 local PosQ = CFrame.new(-9516.99316, 172.017181, 6078.46533)
                 local replicated = game:GetService("ReplicatedStorage")
 
-                -- Verificação de distância extrema (Teleporte de Entrada)
-                -- Se estiver a mais de 2000 studs da Quest, usa o portal
+                -- Verificação de distância extrema
                 local distParaQuest = (PosQ.Position - hrp.Position).Magnitude
+                
                 if distParaQuest > 2000 then
-                    replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
-                    task.wait(1.5) -- Espera o tempo solicitado após o teleporte
+                    if not portalDebounce then
+                        portalDebounce = true -- Ativa a trava para não repetir
+                        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
+                        task.wait(1.5) -- Espera o tempo solicitado
+                    end
+                else
+                    -- Se já estiver perto (menos de 2000), reseta a trava para o futuro
+                    portalDebounce = false
                 end
 
                 -- Lógica de Quest  
                 if _G.AcceptQuest and not QuestUI.Visible then          
                     local distToNPC = (PosQ.Position - hrp.Position).Magnitude    
                     if distToNPC > 5 then    
-                        _tp(PosQ)   
+                        _tp(PosQ) -- Aqui ele continua indo normal com seu teleporte suave
                     else    
                         task.wait(0.5)  
                         replicated.Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1)  
@@ -2264,7 +2272,7 @@ spawn(function()
 
                     local targetMob = GetClosestMob()          
                     if targetMob then          
-                        -- Trava no mob até ele morrer usando sua função Attack.Kill  
+                        -- Trava no mob até ele morrer
                         repeat  
                             task.wait()  
                             Attack.Kill(targetMob, _G.AutoFarm_Bone)  
@@ -2278,6 +2286,7 @@ spawn(function()
         end      
     end
 end)
+
 
 -- Tab Stats
 local Stats = Window:MakeTab({
