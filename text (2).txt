@@ -2514,6 +2514,8 @@ local FruitTab = Window:MakeTab({
     Icon = "map"
 })
 
+FruitTab:AddSection("Fruit")
+
 -- Toggle 1: Auto Random Fruit
 FruitTab:AddToggle({
     Title = "Auto Random Fruit",
@@ -2577,6 +2579,8 @@ spawn(function()
         end
     end
 end)
+
+FruitTab:AddSection("Raids [Coming Soon]")
 
 
 -- Tab Stats
