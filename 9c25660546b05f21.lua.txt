@@ -2405,10 +2405,9 @@ spawn(function()
 end)
 
 
--- Criando a Aba Travel
 local Travel = Window:MakeTab({
     Name = "Travel",
-    Icon = "rbxassetid://4483345998" -- Você pode trocar o ID do ícone
+    Icon = "map-pin"
 })
 
 Travel:AddSection("Worlds")
