@@ -1780,7 +1780,7 @@ local Minimizer = Window:NewMinimizer({
 })
 
 local MobileButton = Minimizer:CreateMobileMinimizer({
-    Image = "rbxassetid://122120728138392",
+    Image = "rbxassetid://0",
     BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 })
 
@@ -1793,6 +1793,16 @@ corner.Parent = MobileButton
 local Info = Window:MakeTab({
   Title = "Discord",
   Icon = "Info"
+})
+
+Info:AddDiscordInvite({
+	Title = "Zenith Server discord",
+	Description = "The official Zenith Hub community — powerful scripts, constant updates, and dedicated support all in one place.",
+	Banner = "rbxassetid://", -- You can put an RGB Color: Color3.fromRGB(0, 0, 0)
+	Logo = "rbxassetid://",
+	Invite = "https://discord.gg/mV2ncyDhM9",
+	Members = Undefined, -- Optional
+	Online = Undefined, -- Optional
 })
 
 local Farming = Window:MakeTab({
