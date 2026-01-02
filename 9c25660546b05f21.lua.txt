@@ -2405,62 +2405,93 @@ spawn(function()
 end)
 
 
--- Tab Travel
-local Island = Window:MakeTab({
-    Title = "Travel",
-    Icon = "map-pin"
+local TravelTab = Window:MakeTab({
+    Name = "Travel",
+    Icon = "rbxassetid://4483345998"
 })
 
-local replicated = game:GetService("ReplicatedStorage")
-
--- Separator Worlds
-Island:AddSeparator("Worlds")
-
--- Sea 1
-Island:AddButton({
+-- --- SEÇÃO DE MARES ---
+TravelTab:AddButton({
     Name = "Teleport Sea 1",
     Callback = function()
-        replicated.Remotes.CommF_:InvokeServer("TravelMain")
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelMain")
     end
 })
 
--- Sea 2
-Island:AddButton({
+TravelTab:AddButton({
     Name = "Teleport Sea 2",
     Callback = function()
-        replicated.Remotes.CommF_:InvokeServer("TravelDressrosa")
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelDressrosa")
     end
 })
 
--- Sea 3
-Island:AddButton({
+TravelTab:AddButton({
     Name = "Teleport Sea 3",
     Callback = function()
-        replicated.Remotes.CommF_:InvokeServer("TravelZou")
+        game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou")
     end
 })
 
--- Separator Island
-Island:AddSeparator("Island")
+-- --- SEÇÃO DE ILHAS ---
 
--- Lista de ilhas
-local Location = {}
-for _, e in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
-    table.insert(Location, e.Name)
+-- Coletar nomes das ilhas
+local LocationList = {}
+for _, v in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+    table.insert(LocationList, v.Name)
 end
 
--- Dropdown de ilhas
-Island:AddDropdown({
+TravelTab:AddDropdown({
     Name = "Select Island",
-    Options = Location,
-    Default = nil,
+    Options = LocationList,
+    Default = "",
     Callback = function(Value)
         _G.Island = Value
-        pcall(function()
-            replicated.Remotes.CommF_:InvokeServer("requestEntrance", workspace._WorldOrigin.Locations[Value].CFrame)
-        end)
     end
 })
+
+TravelTab:AddToggle({
+    Name = "Teleport to Island",
+    Default = false,
+    Callback = function(Value)
+        _G.Teleport = Value
+        
+        if Value then
+            local targetIsland = workspace._WorldOrigin.Locations:FindFirstChild(_G.Island)
+            local Root = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+            
+            if targetIsland and Root then
+                spawn(function()
+                    -- 1. Subida
+                    Root.CFrame = Root.CFrame * CFrame.new(0, 700, 0)
+                    task.wait(0.2)
+                    
+                    -- 2. Movimentação
+                    while _G.Teleport do
+                        task.wait()
+                        local destination = targetIsland.CFrame * CFrame.new(0, 700, 0)
+                        Root.CFrame = destination
+                        
+                        -- Se chegar perto (eixo X e Z), sai do loop
+                        if (Vector3.new(Root.Position.X, 0, Root.Position.Z) - Vector3.new(destination.X, 0, destination.Z)).Magnitude < 20 then
+                            break
+                        end
+                    end
+                    
+                    -- 3. Descida
+                    if _G.Teleport then
+                        Root.CFrame = targetIsland.CFrame * CFrame.new(0, 5, 0)
+                    end
+                    
+                    -- Desligar o Toggle (Depende se sua UI suporta SetValue)
+                    _G.Teleport = false
+                end)
+            else
+                print("Selecione uma ilha válida!")
+            end
+        end
+    end
+})
+
 
 
 
