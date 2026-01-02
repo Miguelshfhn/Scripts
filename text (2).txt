@@ -1190,9 +1190,12 @@ QuestCheck = function()
             PosQ = CFrame.new(1389.744, 88.151, -1298.907)
             PosM = CFrame.new(1354.347, 87.272, -1393.946)
         elseif a == 100 or a <= 119 then
-            Mon = "Snowman"; Qdata = 2; Qname = "SnowQuest"; NameMon = "Snowman"
-            PosQ = CFrame.new(1389.744, 88.151, -1298.907)
-            PosM = CFrame.new(6241.995, 51.522, -1243.977)
+    Mon = "Snowman"
+    Qdata = 2
+    Qname = "SnowQuest"
+    NameMon = "Snowman"
+    PosQ = CFrame.new(1389.74451, 88.1519318, -1298.90796, -0.342042685, -0, 0.939684391, -0, 1, -0, -0.939684391, -0, -0.342042685)
+    PosM = CFrame.new(1201.6412353515625, 144.57958984375, -1550.0670166015625)
         elseif a == 120 or a <= 149 then
             Mon = "Chief Petty Officer"; Qdata = 1; Qname = "MarineQuest2"; NameMon = "Chief Petty Officer"
             PosQ = CFrame.new(-5039.586, 27.350, 4324.680)
