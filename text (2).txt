@@ -2403,6 +2403,79 @@ spawn(function()
 end)
 
 
+local FruitTab = Window:MakeTab({
+    Title = "Fruit/Raids",
+    Icon = "cherry"
+})
+
+FruitTab:AddSection("Fruit")
+
+-- Toggle 1: Auto Random Fruit
+FruitTab:AddToggle({
+    Title = "Auto Random Fruit",
+    Description = "Automatic random devil fruit",
+    Default = false,
+    Callback = function(I)
+        _G.Random_Auto = I
+    end,
+})
+
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.Random_Auto then
+                replicated.Remotes.CommF_:InvokeServer("Cousin", "Buy")
+            end
+        end)
+    end
+end)
+
+-- Toggle 2: Auto Store Fruit
+FruitTab:AddToggle({
+    Title = "Auto Store Fruit",
+    Description = "Automatic store devil fruit",
+    Default = false,
+    Callback = function(I)
+        _G.StoreF = I
+    end,
+})
+
+spawn(function()
+    while wait(Sec) do
+        if _G.StoreF then
+            pcall(function()
+                UpdStFruit()
+            end)
+        end
+    end
+end)
+
+-- Toggle 3: Auto Tween to Fruit
+FruitTab:AddToggle({
+    Title = "Auto Collect Fruit",
+    Description = "Automatic tween to get devil fruit",
+    Default = false,
+    Callback = function(I)
+        _G.TwFruits = I
+    end,
+})
+
+spawn(function()
+    while wait(Sec) do
+        if _G.TwFruits then
+            pcall(function()
+                for i, e in pairs(workspace:GetChildren()) do
+                    if string.find(e.Name, "Fruit") and e:FindFirstChild("Handle") then
+                        _tp(e.Handle.CFrame)
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+FruitTab:AddSection("Raids [Coming Soon]")
+
 
 
 
@@ -2509,78 +2582,6 @@ Travel:AddToggle({
     end,
 })
 
-local FruitTab = Window:MakeTab({
-    Title = "Fruit/Raids",
-    Icon = "cherry"
-})
-
-FruitTab:AddSection("Fruit")
-
--- Toggle 1: Auto Random Fruit
-FruitTab:AddToggle({
-    Title = "Auto Random Fruit",
-    Description = "Automatic random devil fruit",
-    Default = false,
-    Callback = function(I)
-        _G.Random_Auto = I
-    end,
-})
-
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.Random_Auto then
-                replicated.Remotes.CommF_:InvokeServer("Cousin", "Buy")
-            end
-        end)
-    end
-end)
-
--- Toggle 2: Auto Store Fruit
-FruitTab:AddToggle({
-    Title = "Auto Store Fruit",
-    Description = "Automatic store devil fruit",
-    Default = false,
-    Callback = function(I)
-        _G.StoreF = I
-    end,
-})
-
-spawn(function()
-    while wait(Sec) do
-        if _G.StoreF then
-            pcall(function()
-                UpdStFruit()
-            end)
-        end
-    end
-end)
-
--- Toggle 3: Auto Tween to Fruit
-FruitTab:AddToggle({
-    Title = "Auto Collect Fruit",
-    Description = "Automatic tween to get devil fruit",
-    Default = false,
-    Callback = function(I)
-        _G.TwFruits = I
-    end,
-})
-
-spawn(function()
-    while wait(Sec) do
-        if _G.TwFruits then
-            pcall(function()
-                for i, e in pairs(workspace:GetChildren()) do
-                    if string.find(e.Name, "Fruit") and e:FindFirstChild("Handle") then
-                        _tp(e.Handle.CFrame)
-                    end
-                end
-            end)
-        end
-    end
-end)
-
-FruitTab:AddSection("Raids [Coming Soon]")
 
 
 -- Tab Stats
