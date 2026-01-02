@@ -2477,15 +2477,29 @@ end)
 FruitTab:AddSection("Raids [Coming Soon]")
 
 -------------------------------------------------------------------------
--- VARIÁVEIS E FUNÇÕES GERAIS
+-- [1] CONFIGURAÇÃO INICIAL E DETECÇÃO DE MUNDO
 -------------------------------------------------------------------------
-local plr = game.Players.LocalPlayer
 local replicated = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-local World2 = game.PlaceId == 4442272183
-local World3 = game.PlaceId == 7449423635
+local plr = game.Players.LocalPlayer
+local pid = game.PlaceId
 
--- Função para verificar se está em Raid (Timer visível)
+-- Detecção correta dos mundos (incluindo os IDs novos)
+local World2 = (pid == 4442272183 or pid == 79091703265657)
+local World3 = (pid == 7449423635 or pid == 100117331123089)
+
+-- Variáveis Globais de Controle
+_G.SelectChip = "Flame" -- Padrão
+_G.AutoBuyChip = false
+_G.Auto_StartRaid = false
+_G.AutoCompleteRaid = false
+_G.Auto_Awakener = false
+
+-- Função Auxiliar: Verifica se tem item no inventário
+local function GetBP(ItemName)
+    return plr.Backpack:FindFirstChild(ItemName) or plr.Character:FindFirstChild(ItemName)
+end
+
+-- Função Auxiliar: Verifica se a Raid está ativa (Timer na tela)
 local function IsInRaid()
     local gui = plr.PlayerGui.Main
     if gui:FindFirstChild("Timer") and gui.Timer.Visible then return true end
@@ -2493,69 +2507,58 @@ local function IsInRaid()
     return false
 end
 
--- Função auxiliar GetBP (Caso não tenha definida globalmente)
-function GetBP(ItemName)
-    if plr.Backpack:FindFirstChild(ItemName) or plr.Character:FindFirstChild(ItemName) then
-        return true
-    end
-    return false
-end
-
--- Lista de Raids para o Dropdown
-local RaidsList = {
-    "Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", "Magma", 
-    "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"
-}
-
 -------------------------------------------------------------------------
--- UI ELEMENTS (Adicione na sua Tab Fruit)
+-- [2] ELEMENTOS DA UI (TAB FRUIT)
 -------------------------------------------------------------------------
 
--- 1. Dropdown de Selecionar Chip
+-- Dropdown de Seleção
 FruitTab:AddDropdown({
     Title = "Select Raid Chip",
-    Description = "Select the type of chip to buy/use",
-    Options = RaidsList,
+    Description = "Select which raid to do",
+    Options = {
+        "Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", "Magma", 
+        "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"
+    },
     Default = "Flame",
     Callback = function(Value)
         _G.SelectChip = Value
     end,
 })
 
--- 2. Toggle Auto Buy Chip
+-- Toggle Comprar Chip
 FruitTab:AddToggle({
     Title = "Auto Buy Chip",
-    Description = "Buys chip using trash fruits or money",
+    Description = "Buy chip with Common/Uncommon fruits or Cash",
     Default = false,
     Callback = function(Value)
         _G.AutoBuyChip = Value
     end,
 })
 
--- 3. Toggle Auto Start Raid
+-- Toggle Iniciar Raid
 FruitTab:AddToggle({
     Title = "Auto Start Raid",
-    Description = "Teleports and starts the raid",
+    Description = "Teleports to lab and starts raid",
     Default = false,
     Callback = function(Value)
         _G.Auto_StartRaid = Value
     end,
 })
 
--- 4. Toggle Auto Complete Raid
+-- Toggle Completar Raid (Kill Aura + Next Island)
 FruitTab:AddToggle({
     Title = "Auto Complete Raid",
-    Description = "Kills aura and moves to next island",
+    Description = "Kills mobs and moves to next island",
     Default = false,
     Callback = function(Value)
         _G.AutoCompleteRaid = Value
     end,
 })
 
--- 5. Toggle Auto Awaken
+-- Toggle Awaken
 FruitTab:AddToggle({
     Title = "Auto Awakened Fruit",
-    Description = "Auto awakens skill at the end",
+    Description = "Awakens skill automatically",
     Default = false,
     Callback = function(Value)
         _G.Auto_Awakener = Value
@@ -2563,117 +2566,140 @@ FruitTab:AddToggle({
 })
 
 -------------------------------------------------------------------------
--- LÓGICA DO SCRIPT (INTEGRAÇÃO INTELIGENTE)
+-- [3] LÓGICA DE COMBATE E MOVIMENTO (LOOP RÁPIDO)
 -------------------------------------------------------------------------
+task.spawn(function()
+    while true do
+        task.wait() -- Loop ultra rápido para combate fluido
+        if _G.AutoCompleteRaid and IsInRaid() then
+            pcall(function()
+                -- 3.1: Matar Inimigos (Usa sua função Attack.Kill)
+                local enemies = workspace.Enemies:GetChildren()
+                for _, v in pairs(enemies) do
+                    if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                        -- Checa distância para não tentar matar mob do mar
+                        if (v.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude < 1500 then
+                            -- Chama sua função global de ataque
+                            if Attack and Attack.Kill then
+                                Attack.Kill(v, true)
+                            else
+                                -- Fallback simples caso sua função não esteja carregada
+                                v.Humanoid.Health = 0 
+                                plr.Character.HumanoidRootPart.CFrame = v.HumanoidRootPart.CFrame * CFrame.new(0,10,0)
+                            end
+                        end
+                    end
+                end
 
--- Loop Principal de Gerenciamento (Compra -> Inicia -> Completa)
-spawn(function()
-    while task.wait(1) do
+                -- 3.2: Mover para Próxima Ilha (Se não houver inimigos vivos próximos)
+                local nearbyEnemy = false
+                for _, v in pairs(enemies) do
+                     if v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude < 1000 then
+                        nearbyEnemy = true
+                        break
+                     end
+                end
+
+                if not nearbyEnemy then
+                    -- Busca a ilha da raid mais próxima que não seja a atual
+                    local locs = workspace["_WorldOrigin"].Locations
+                    local nextIsland = nil
+                    local minDistance = 4000 -- Distância máxima entre ilhas
+                    
+                    for _, v in pairs(locs:GetChildren()) do
+                        if v.Name:find("Island") then
+                            local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                            -- Se a ilha está longe o suficiente para ser a próxima, mas perto o suficiente para ser da raid
+                            if dist > 200 and dist < minDistance then
+                                minDistance = dist
+                                nextIsland = v
+                            end
+                        end
+                    end
+
+                    if nextIsland then
+                        -- Usa seu TP
+                        if _tp then
+                            _tp(nextIsland.CFrame * CFrame.new(0, 70, 0))
+                        else
+                             plr.Character.HumanoidRootPart.CFrame = nextIsland.CFrame * CFrame.new(0, 70, 0)
+                        end
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-------------------------------------------------------------------------
+-- [4] LÓGICA DE COMPRA E INÍCIO (LOOP LENTO - STATE MACHINE)
+-------------------------------------------------------------------------
+task.spawn(function()
+    while true do
+        task.wait(1.5) -- Loop mais lento para não lagar o servidor/jogo
         pcall(function()
-            -- Variável de controle para não fazer tudo ao mesmo tempo
-            local InRaidStatus = IsInRaid()
-            local HasChip = GetBP("Special Microchip")
+            local raiding = IsInRaid()
+            local hasChip = GetBP("Special Microchip")
 
-            ----------------------------------------------------------------
-            -- [1] LÓGICA DE RAID (Prioridade Máxima: Se estiver em raid, foca nisso)
-            ----------------------------------------------------------------
-            if InRaidStatus then
-                if _G.AutoCompleteRaid then
-                    -- Lógica de Next Island (Detectar ilha)
-                    local function getNextIsland()
-                        local locs = workspace["_WorldOrigin"].Locations
-                        local closest, min = nil, 4500
-                        
-                        -- Verifica ilhas padrão de Raid
-                        for _, v in pairs(locs:GetChildren()) do
-                            if v.Name:find("Island") then
-                                local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                                if dist < min then
-                                    min = dist
-                                    closest = v
-                                end
-                            end
-                        end
-                        return closest
-                    end
+            -- STATE 1: ACABOU A RAID (Awaken)
+            if _G.Auto_Awakener and raiding then
+                replicated.Remotes.CommF_:InvokeServer("Awakener", "Check")
+                replicated.Remotes.CommF_:InvokeServer("Awakener", "Awaken")
+            end
 
-                    local nextIsland = getNextIsland()
-                    
-                    -- Matar Inimigos
-                    for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                        if mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then
-                            local mobDist = (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                            if mobDist <= 1500 then -- Só ataca se estiver na ilha atual
-                                Attack.Kill(mob, _G.AutoCompleteRaid)
-                            end
-                        end
+            -- STATE 2: NÃO ESTÁ EM RAID -> TENTAR COMPRAR OU INICIAR
+            if not raiding then
+                
+                -- Se já tem chip e Auto Start ligado -> VAI INICIAR
+                if hasChip and _G.Auto_StartRaid then
+                    if World2 then
+                        fireclickdetector(workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
+                    elseif World3 then
+                        fireclickdetector(workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
                     end
                     
-                    -- Se não tiver inimigos vivos, move para a próxima ilha
-                    local EnemiesAlive = false
-                    for _, v in pairs(workspace.Enemies:GetChildren()) do
-                        if v.Humanoid.Health > 0 and (v.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude < 1500 then
-                            EnemiesAlive = true
-                            break
-                        end
-                    end
-
-                    if not EnemiesAlive and nextIsland then
-                        -- Usa seu TP para mover
-                         _tp(nextIsland.CFrame * CFrame.new(0, 50, 0))
-                    end
-                end
-                
-                -- Auto Awaken no final
-                if _G.Auto_Awakener then
-                   replicated.Remotes.CommF_:InvokeServer("Awakener", "Check")
-                   replicated.Remotes.CommF_:InvokeServer("Awakener", "Awaken")
-                end
-
-            ----------------------------------------------------------------
-            -- [2] LÓGICA DE INICIAR RAID (Se NÃO está em raid e TEM chip)
-            ----------------------------------------------------------------
-            elseif _G.Auto_StartRaid and HasChip and not InRaidStatus then
-                
-                if World2 then  
-                    _tp(CFrame.new(-6438.73535, 250.645355, -4501.50684))
-                    fireclickdetector(workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
-                elseif World3 then  
-                    replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
+                    -- Teleporte de segurança caso esteja longe do botão
                     task.wait(0.5)
-                    _tp(CFrame.new(-5033.50879, 315.014252, -2947.77539))
-                    fireclickdetector(workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
-                end
-                task.wait(2) -- Espera um pouco para não spammar
-
-            ----------------------------------------------------------------
-            -- [3] LÓGICA DE COMPRAR CHIP (Se NÃO está em raid e NÃO tem chip)
-            ----------------------------------------------------------------
-            elseif _G.AutoBuyChip and not HasChip and not InRaidStatus then
-                
-                if _G.SelectChip then
-                    local trashFruits = {} 
-                    -- Coleta frutas baratas
-                    local fruits = replicated.Remotes.CommF_:InvokeServer("GetFruits")
-                    for _, data in pairs(fruits) do
-                        if data.Price <= 1000000 or data.Rarity == "Common" or data.Rarity == "Uncommon" then
-                            table.insert(trashFruits, data.Name)
+                    if not IsInRaid() then -- Se ainda não entrou, tenta teleportar
+                         if World2 then
+                            _tp(CFrame.new(-6438, 250, -4501))
+                        elseif World3 then
+                            _tp(CFrame.new(-5033, 315, -2947))
                         end
                     end
-                    
-                    -- Tenta comprar com fruta
-                    if #trashFruits > 0 then
-                        replicated.Remotes.CommF_:InvokeServer("LoadFruit", trashFruits[1])
+
+                -- Se NÃO tem chip e Auto Buy ligado -> VAI COMPRAR
+                elseif not hasChip and _G.AutoBuyChip then
+                    -- 1. Pega lista de frutas
+                    local fruits = replicated.Remotes.CommF_:InvokeServer("GetFruits")
+                    local fruitToUse = nil
+
+                    -- 2. Procura fruta lixo
+                    for _, data in pairs(fruits) do
+                        local price = data.Price
+                        local rarity = tostring(data.Rarity or ""):lower()
+                        
+                        if price <= 1150000 or rarity == "common" or rarity == "uncommon" or rarity == "rare" then
+                            fruitToUse = data.Name
+                            break -- Pega a primeira que achar e para
+                        end
                     end
-                    
-                    -- Compra o chip selecionado no Dropdown
-                    replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
-                    task.wait(1)
+
+                    -- 3. Equipa Fruta e Compra
+                    if fruitToUse then
+                        replicated.Remotes.CommF_:InvokeServer("LoadFruit", fruitToUse)
+                        task.wait(0.5)
+                        replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+                    else
+                        -- Se não tiver fruta, tenta comprar com dinheiro (Opcional, se quiser)
+                        replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+                    end
                 end
             end
         end)
     end
 end)
+
 
 
 
