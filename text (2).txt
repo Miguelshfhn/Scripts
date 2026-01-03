@@ -2989,121 +2989,141 @@ EspTab:AddToggle({
     end
 })
 
--- =========================
--- PLAYER ESP
--- =========================
+
+-- CONFIG GLOBAL ESP
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local CollectionService = game:GetService("CollectionService")
+
+local ESP_FONT = Enum.Font.Cartoon
+local ESP_COLOR = Color3.fromRGB(255,255,255)
+
+--------------------------------------------------
+-- PLAYER ESP (NOME + LEVEL)
+--------------------------------------------------
 function EspPly()
-    for _,e in pairs(game.Players:GetPlayers()) do
+    for _,plr in pairs(Players:GetPlayers()) do
         pcall(function()
-            if PlayerEsp and e.Character and e.Character:FindFirstChild("Head") then
-                if not e.Character.Head:FindFirstChild("NameEsp") then
-                    local bg = Instance.new("BillboardGui", e.Character.Head)
+            if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
+                if PlayerEsp then
+                    if not plr.Character.Head:FindFirstChild("NameEsp") then
+                        local bg = Instance.new("BillboardGui", plr.Character.Head)
+                        bg.Name = "NameEsp"
+                        bg.Size = UDim2.new(0, 220, 0, 40)
+                        bg.StudsOffset = Vector3.new(0, 1.2, 0)
+                        bg.AlwaysOnTop = true
+
+                        local txt = Instance.new("TextLabel", bg)
+                        txt.Size = UDim2.new(1,0,1,0)
+                        txt.BackgroundTransparency = 1
+                        txt.Font = ESP_FONT
+                        txt.TextColor3 = ESP_COLOR
+                        txt.TextStrokeTransparency = 0
+                        txt.TextScaled = true
+                    end
+                    plr.Character.Head.NameEsp.TextLabel.Text =
+                        plr.Name.." | Lv. "..plr.Data.Level.Value
+                else
+                    if plr.Character.Head:FindFirstChild("NameEsp") then
+                        plr.Character.Head.NameEsp:Destroy()
+                    end
+                end
+            end
+        end)
+    end
+end
+
+--------------------------------------------------
+-- FRUIT ESP
+--------------------------------------------------
+function DevEsp()
+    for _,v in pairs(workspace:GetChildren()) do
+        pcall(function()
+            if DevilFruitESP and v:FindFirstChild("Handle") and v.Name:find("Fruit") then
+                if not v.Handle:FindFirstChild("NameEsp") then
+                    local bg = Instance.new("BillboardGui", v.Handle)
                     bg.Name = "NameEsp"
-                    bg.Size = UDim2.new(0,200,0,30)
+                    bg.Size = UDim2.new(0,220,0,40)
                     bg.StudsOffset = Vector3.new(0,1,0)
                     bg.AlwaysOnTop = true
 
-                    local t = Instance.new("TextLabel", bg)
-                    t.Size = UDim2.new(1,0,1,0)
-                    t.BackgroundTransparency = 1
-                    t.Font = Enum.Font.Cartoon
-                    t.TextColor3 = Color3.new(1,1,1)
-                    t.TextStrokeTransparency = 0
+                    local txt = Instance.new("TextLabel", bg)
+                    txt.Size = UDim2.new(1,0,1,0)
+                    txt.BackgroundTransparency = 1
+                    txt.Font = ESP_FONT
+                    txt.TextColor3 = ESP_COLOR
+                    txt.TextStrokeTransparency = 0
+                    txt.TextScaled = true
                 end
-                e.Character.Head.NameEsp.TextLabel.Text =
-                    e.Name.." | Lv. "..e.Data.Level.Value
+                local dist = (LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3
+                v.Handle.NameEsp.TextLabel.Text = v.Name.." | "..math.floor(dist).." M"
             else
-                if e.Character and e.Character:FindFirstChild("Head") then
-                    local esp = e.Character.Head:FindFirstChild("NameEsp")
-                    if esp then esp:Destroy() end
+                if v:FindFirstChild("Handle") and v.Handle:FindFirstChild("NameEsp") then
+                    v.Handle.NameEsp:Destroy()
                 end
             end
         end)
     end
 end
 
--- =========================
--- FRUIT ESP
--- =========================
-function DevEsp()
-    for _,e in pairs(workspace:GetChildren()) do
-        pcall(function()
-            if DevilFruitESP and e.Name:find("Fruit") and e:FindFirstChild("Handle") then
-                if not e.Handle:FindFirstChild("NameEsp") then
-                    local bg = Instance.new("BillboardGui", e.Handle)
-                    bg.Name = "NameEsp"
-                    bg.Size = UDim2.new(0,200,0,30)
-                    bg.AlwaysOnTop = true
-
-                    local t = Instance.new("TextLabel", bg)
-                    t.Size = UDim2.new(1,0,1,0)
-                    t.BackgroundTransparency = 1
-                    t.Font = Enum.Font.Cartoon
-                    t.TextColor3 = Color3.new(1,1,1)
-                    t.TextStrokeTransparency = 0
-                end
-                local dist = (game.Players.LocalPlayer.Character.Head.Position - e.Handle.Position).Magnitude / 3
-                e.Handle.NameEsp.TextLabel.Text = e.Name.." | "..math.floor(dist).."m"
-            elseif e:FindFirstChild("Handle") then
-                local esp = e.Handle:FindFirstChild("NameEsp")
-                if esp then esp:Destroy() end
-            end
-        end)
-    end
-end
-
--- =========================
+--------------------------------------------------
 -- FLOWER ESP
--- =========================
-function flowerEsp()
-    for _,e in pairs(workspace:GetChildren()) do
+--------------------------------------------------
+function FlowerEsp()
+    for _,v in pairs(workspace:GetChildren()) do
         pcall(function()
-            if (e.Name == "Flower1" or e.Name == "Flower2") and FlowerESP then
-                if not e:FindFirstChild("NameEsp") then
-                    local bg = Instance.new("BillboardGui", e)
-                    bg.Name = "NameEsp"
-                    bg.Size = UDim2.new(0,200,0,30)
-                    bg.AlwaysOnTop = true
+            if (v.Name == "Flower1" or v.Name == "Flower2") then
+                if FlowerESP then
+                    if not v:FindFirstChild("NameEsp") then
+                        local bg = Instance.new("BillboardGui", v)
+                        bg.Name = "NameEsp"
+                        bg.Size = UDim2.new(0,220,0,40)
+                        bg.StudsOffset = Vector3.new(0,1,0)
+                        bg.AlwaysOnTop = true
 
-                    local t = Instance.new("TextLabel", bg)
-                    t.Size = UDim2.new(1,0,1,0)
-                    t.BackgroundTransparency = 1
-                    t.Font = Enum.Font.Cartoon
-                    t.TextColor3 = Color3.new(1,1,1)
-                    t.TextStrokeTransparency = 0
+                        local txt = Instance.new("TextLabel", bg)
+                        txt.Size = UDim2.new(1,0,1,0)
+                        txt.BackgroundTransparency = 1
+                        txt.Font = ESP_FONT
+                        txt.TextColor3 = ESP_COLOR
+                        txt.TextStrokeTransparency = 0
+                        txt.TextScaled = true
+                    end
+                    local dist = (LocalPlayer.Character.Head.Position - v.Position).Magnitude/3
+                    local name = (v.Name=="Flower1" and "Blue Flower") or "Red Flower"
+                    v.NameEsp.TextLabel.Text = name.." | "..math.floor(dist).." M"
+                else
+                    if v:FindFirstChild("NameEsp") then v.NameEsp:Destroy() end
                 end
-                local name = e.Name == "Flower1" and "Blue Flower" or "Red Flower"
-                e.NameEsp.TextLabel.Text = name
-            else
-                if e:FindFirstChild("NameEsp") then e.NameEsp:Destroy() end
             end
         end)
     end
 end
 
--- =========================
--- CHEST ESP
--- =========================
+--------------------------------------------------
+-- CHEST ESP (FONTE ISLAND + TEXTO MAIOR)
+--------------------------------------------------
 function ChestEsp()
-    local cs = game:GetService("CollectionService")
-    for _,e in pairs(cs:GetTagged("_ChestTagged")) do
+    for _,e in pairs(CollectionService:GetTagged("_ChestTagged")) do
         pcall(function()
             if ChestESP then
                 if not e:FindFirstChild("ChestEsp") then
-                    local a = Instance.new("Attachment", e)
-                    a.Name = "ChestEsp"
-                    a.Position = Vector3.new(0,3,0)
+                    local att = Instance.new("Attachment", e)
+                    att.Name = "ChestEsp"
+                    att.Position = Vector3.new(0,3.5,0)
 
-                    local bg = Instance.new("BillboardGui", a)
-                    bg.Size = UDim2.new(0,200,0,30)
+                    local bg = Instance.new("BillboardGui", att)
+                    bg.Size = UDim2.new(0,240,0,45)
                     bg.AlwaysOnTop = true
 
-                    local t = Instance.new("TextLabel", bg)
-                    t.Size = UDim2.new(1,0,1,0)
-                    t.BackgroundTransparency = 1
-                    t.Font = Enum.Font.Cartoon
-                    t.TextColor3 = Color3.new(1,1,1)
-                    t.TextStrokeTransparency = 0
+                    local txt = Instance.new("TextLabel", bg)
+                    txt.Size = UDim2.new(1,0,1,0)
+                    txt.BackgroundTransparency = 1
+                    txt.Font = ESP_FONT
+                    txt.TextColor3 = ESP_COLOR
+                    txt.TextStrokeTransparency = 0
+                    txt.TextScaled = true
+                    txt.Text = "Chest"
                 end
             else
                 if e:FindFirstChild("ChestEsp") then e.ChestEsp:Destroy() end
@@ -3112,57 +3132,50 @@ function ChestEsp()
     end
 end
 
--- =========================
--- BERRIES ESP
--- =========================
-function berriesEsp()
-    local cs = game:GetService("CollectionService")
-    if BerryEsp then
-        for _,e in pairs(cs:GetTagged("BerryBush")) do
-            local pos = e.Parent:GetPivot().Position
-            local name = "BerryEspPart_"..tostring(pos)
-            local part = workspace:FindFirstChild(name)
-
-            if not part then
-                part = Instance.new("Part", workspace)
-                part.Name = name
-                part.Anchored = true
-                part.CanCollide = false
-                part.Transparency = 1
-                part.CFrame = CFrame.new(pos)
-            end
-
-            if not part:FindFirstChild("NameEsp") then
-                local bg = Instance.new("BillboardGui", part)
-                bg.Name = "NameEsp"
-                bg.Size = UDim2.new(0,200,0,30)
-                bg.AlwaysOnTop = true
-
-                local t = Instance.new("TextLabel", bg)
-                t.Size = UDim2.new(1,0,1,0)
-                t.BackgroundTransparency = 1
-                t.Font = Enum.Font.Cartoon
-                t.TextColor3 = Color3.new(1,1,1)
-                t.TextStrokeTransparency = 0
-            end
-
-            local dist = (game.Players.LocalPlayer.Character.Head.Position - pos).Magnitude / 3
-            part.NameEsp.TextLabel.Text = "Berry | "..math.floor(dist).."m"
+--------------------------------------------------
+-- BERRY ESP
+--------------------------------------------------
+function BerriesEsp()
+    if not BerryEsp then
+        for _,v in pairs(workspace:GetChildren()) do
+            if v.Name:match("BerryEspPart") then v:Destroy() end
         end
-    else
-        for _,e in pairs(workspace:GetChildren()) do
-            if e.Name:match("BerryEspPart_") then e:Destroy() end
-        end
+        return
+    end
+
+    for _,bush in pairs(CollectionService:GetTagged("BerryBush")) do
+        local pos = bush.Parent:GetPivot().Position
+        local part = Instance.new("Part", workspace)
+        part.Name = "BerryEspPart"
+        part.Anchored = true
+        part.CanCollide = false
+        part.Transparency = 1
+        part.CFrame = CFrame.new(pos)
+
+        local bg = Instance.new("BillboardGui", part)
+        bg.Size = UDim2.new(0,220,0,40)
+        bg.AlwaysOnTop = true
+
+        local txt = Instance.new("TextLabel", bg)
+        txt.Size = UDim2.new(1,0,1,0)
+        txt.BackgroundTransparency = 1
+        txt.Font = ESP_FONT
+        txt.TextColor3 = ESP_COLOR
+        txt.TextStrokeTransparency = 0
+        txt.TextScaled = true
+
+        local dist = (LocalPlayer.Character.Head.Position - pos).Magnitude/3
+        txt.Text = "Berry | "..math.floor(dist).." M"
     end
 end
 
--- =========================
--- ISLAND ESP
--- =========================
+--------------------------------------------------
+-- ISLAND ESP (NÃO ALTERADO)
+--------------------------------------------------
 function IslandESP_Func()
     for _,island in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
-        pcall(function()
-            if island.Name ~= "Sea" and _G.IslandESP then
+        if island.Name ~= "Sea" then
+            if _G.IslandESP then
                 if not island:FindFirstChild("IslandESP") then
                     local bg = Instance.new("BillboardGui", island)
                     bg.Name = "IslandESP"
@@ -3170,37 +3183,21 @@ function IslandESP_Func()
                     bg.StudsOffset = Vector3.new(0,35,0)
                     bg.AlwaysOnTop = true
 
-                    local t = Instance.new("TextLabel", bg)
-                    t.Size = UDim2.new(1,0,1,0)
-                    t.BackgroundTransparency = 1
-                    t.Font = Enum.Font.Cartoon
-                    t.TextColor3 = Color3.new(1,1,1)
-                    t.TextStrokeTransparency = 0
-                    t.TextScaled = true
-                    t.Text = island.Name
+                    local txt = Instance.new("TextLabel", bg)
+                    txt.Size = UDim2.new(1,0,1,0)
+                    txt.BackgroundTransparency = 1
+                    txt.Font = Enum.Font.Cartoon
+                    txt.TextColor3 = ESP_COLOR
+                    txt.TextStrokeTransparency = 0
+                    txt.TextScaled = true
+                    txt.Text = island.Name
                 end
             else
                 if island:FindFirstChild("IslandESP") then island.IslandESP:Destroy() end
             end
-        end)
+        end
     end
 end
-
--- =========================
--- LOOP GERAL
--- =========================
-task.spawn(function()
-    while task.wait(0.5) do
-        pcall(function()
-            EspPly()
-            DevEsp()
-            flowerEsp()
-            ChestEsp()
-            berriesEsp()
-            IslandESP_Func()
-        end)
-    end
-end)
 
 
 
