@@ -2463,6 +2463,25 @@ spawn(function()
     end
 end)
 
+SubTab:AddToggle({
+  Name = "Stop if there is a God Chalice",
+  Default = false,
+  Callback = function(Value)
+    _G.StopWhenChalice = Value
+  end
+})
+spawn(function()
+    while wait(.2) do
+        if _G.StopWhenChalice and _G.FarmEliteHunt then
+            pcall(function()
+                if GetBP("God's Chalice") or GetBP("Sweet Chalice") or GetBP("Fist of Darkness") then
+                    _G.FarmEliteHunt = false
+                end
+            end)
+        end
+    end
+end)
+
 local FruitTab = Window:MakeTab({
     Title = "Fruit/Raids",
     Icon = "cherry"
@@ -2489,6 +2508,8 @@ spawn(function()
         end)
     end
 end)
+
+
 
 -- Toggle 2: Auto Store Fruit
 FruitTab:AddToggle({
