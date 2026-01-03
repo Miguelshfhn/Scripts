@@ -1,3 +1,78 @@
+local HttpService = game:GetService("HttpService")
+local ConfigFile = "MeuScriptConfig.json"
+
+-- TABELA QUE SALVA OS _G
+local function GetConfig()
+    return {
+        Level = _G.Level,
+        AutoFarmNear = _G.AutoFarmNear,
+        AutoBerry = _G.AutoBerry,
+        AutoFarmChest = _G.AutoFarmChest,
+        AutoFactory = _G.AutoFactory,
+        AutoRaidCastle = _G.AutoRaidCastle,
+        AutoFarm_Bone = _G.AutoFarm_Bone,
+        AcceptQuest = _G.AcceptQuest,
+        Auto_Random_Bone = _G.Auto_Random_Bone,
+        AutoMaterial = getgenv().AutoMaterial,
+        FarmEliteHunt = _G.FarmEliteHunt,
+        StopWhenChalice = _G.StopWhenChalice,
+        Random_Auto = _G.Random_Auto,
+        StoreF = _G.StoreF,
+        TwFruits = _G.TwFruits,
+        AutoBuyChip = _G.AutoBuyChip,
+        Auto_StartRaid = _G.Auto_StartRaid,
+        Raiding = _G.Raiding,
+        Auto_Awakener = _G.Auto_Awakener,
+        Teleport = _G.Teleport,
+        Auto_Sword = _G.Auto_Sword,
+        Auto_Gun = _G.Auto_Gun,
+        Auto_DevilFruit = _G.Auto_DevilFruit,
+        Auto_Defense = _G.Auto_Defense,
+        PlayerEsp = PlayerEsp,
+        DevilFruitESP = DevilFruitESP,
+        FlowerESP = FlowerESP,
+        ChestESP = ChestESP,
+        BerryEsp = BerryEsp,
+        IslandESP = _G.IslandESP,
+        Seriality = _G.Seriality,
+        RaceClickAutov3 = _G.RaceClickAutov3,
+        RaceClickAutov4 = _G.RaceClickAutov4
+    }
+end
+
+-- SALVAR
+local function SaveConfig()
+    if writefile then
+        writefile(ConfigFile, HttpService:JSONEncode(GetConfig()))
+    end
+end
+
+-- CARREGAR
+local function LoadConfig()
+    if readfile and isfile and isfile(ConfigFile) then
+        local data = HttpService:JSONDecode(readfile(ConfigFile))
+
+        for i, v in pairs(data) do
+            if i == "AutoMaterial" then
+                getgenv().AutoMaterial = v
+            elseif i == "PlayerEsp" then
+                PlayerEsp = v
+            elseif i == "DevilFruitESP" then
+                DevilFruitESP = v
+            elseif i == "FlowerESP" then
+                FlowerESP = v
+            elseif i == "ChestESP" then
+                ChestESP = v
+            elseif i == "BerryEsp" then
+                BerryEsp = v
+            else
+                _G[i] = v
+            end
+        end
+    end
+end
+
+LoadConfig()
 
 do
     ply = game.Players
@@ -1922,11 +1997,12 @@ Farming:AddSection("Farming")
 
 
 Farming:AddToggle({
-  Name = "Auto Farm Level",
-  Default = false,
-  Callback = function(Value)
-    _G.Level = Value
-  end
+    Name = "Auto Farm Level",
+    Default = _G.Level or false,
+    Callback = function(Value)
+        _G.Level = Value
+        SaveConfig()
+    end
 })
 spawn(function()
     while wait(Sec) do
@@ -2006,12 +2082,12 @@ end)
 
 Farming:AddToggle({
     Name = "Auto Farm Nearest",
-    Default = false,
+    Default = _G.AutoFarmNear or false,
     Callback = function(Value)
         _G.AutoFarmNear = Value
+        SaveConfig()
     end
 })
-
 -- Auto Farm Nearest spawn
 spawn(function()
     while wait() do
@@ -2036,9 +2112,10 @@ Farming:AddSection("Collect")
 
 Farming:AddToggle({
     Name = "Auto Collect Berry",
-    Default = false,
+    Default = _G.AutoBerry or false,
     Callback = function(Value)
         _G.AutoBerry = Value
+        SaveConfig()
     end
 })
 spawn(function()
@@ -2072,9 +2149,10 @@ end)
 
 Farming:AddToggle({
     Name = "Auto Collect Chest",
-    Default = false,
+    Default = _G.AutoFarmChest or false,
     Callback = function(Value)
         _G.AutoFarmChest = Value
+        SaveConfig()
     end
 })
 spawn(function()
@@ -2114,9 +2192,10 @@ Farming:AddSection("Raid")
 
 Farming:AddToggle({
     Name = "Auto Factory Raid",
-    Default = false,
+    Default = _G.AutoFactory or false,
     Callback = function(Value)
         _G.AutoFactory = Value
+        SaveConfig()
     end
 })
 
@@ -2146,12 +2225,12 @@ end)
 -- Toggle Auto Raid Castle
 Farming:AddToggle({
     Name = "Auto Raid Pirate",
-    Default = false,
+    Default = _G.AutoRaidCastle or false,
     Callback = function(Value)
         _G.AutoRaidCastle = Value
+        SaveConfig()
     end
 })
-
 -- Sistema Auto Raid Castle
 spawn(function()
     while task.wait(Sec) do
@@ -2221,25 +2300,28 @@ Farming:AddSection("Bone")
 
 Farming:AddToggle({
     Name = "Auto Farm Bone",
-    Default = false,
+    Default = _G.AutoFarm_Bone or false,
     Callback = function(Value)
         _G.AutoFarm_Bone = Value
+        SaveConfig()
     end
 })
 
 Farming:AddToggle({
     Name = "Accept Quest",
-    Default = false,
+    Default = _G.AcceptQuest or false,
     Callback = function(Value)
         _G.AcceptQuest = Value
+        SaveConfig()
     end
 })
 
 Farming:AddToggle({
     Name = "Auto Random Bone",
-    Default = false,
+    Default = _G.Auto_Random_Bone or false,
     Callback = function(Value)
         _G.Auto_Random_Bone = Value
+        SaveConfig()
     end
 })
 
@@ -2345,9 +2427,10 @@ Farming:AddDropdown({
 -- Auto Materials
 Farming:AddToggle({
     Name = "Start Farm",
-    Default = false,
+    Default = getgenv().AutoMaterial or false,
     Callback = function(Value)
         getgenv().AutoMaterial = Value
+        SaveConfig()
     end
 })
 
@@ -2429,11 +2512,12 @@ local SubTab = Window:MakeTab({
 SubTab:AddSection("Elite Section")
 
 SubTab:AddToggle({
-  Name = "Auto Elite Hunter",
-  Default = false,
-  Callback = function(Value)
-    _G.FarmEliteHunt = Value
-  end
+    Name = "Auto Elite Hunter",
+    Default = _G.FarmEliteHunt or false,
+    Callback = function(Value)
+        _G.FarmEliteHunt = Value
+        SaveConfig()
+    end
 })
 spawn(function()
     while wait(Sec) do
@@ -2464,11 +2548,12 @@ spawn(function()
 end)
 
 SubTab:AddToggle({
-  Name = "Stop if there is a God Chalice",
-  Default = false,
-  Callback = function(Value)
-    _G.StopWhenChalice = Value
-  end
+    Name = "Stop if there is a God Chalice",
+    Default = _G.StopWhenChalice or false,
+    Callback = function(Value)
+        _G.StopWhenChalice = Value
+        SaveConfig()
+    end
 })
 spawn(function()
     while wait(.2) do
@@ -2493,9 +2578,10 @@ FruitTab:AddSection("Fruit")
 FruitTab:AddToggle({
     Title = "Auto Random Fruit",
     Description = "Automatic random devil fruit",
-    Default = false,
+    Default = _G.Random_Auto or false,
     Callback = function(I)
         _G.Random_Auto = I
+        SaveConfig()
     end,
 })
 
@@ -2515,9 +2601,10 @@ end)
 FruitTab:AddToggle({
     Title = "Auto Store Fruit",
     Description = "Automatic store devil fruit",
-    Default = false,
+    Default = _G.StoreF or false,
     Callback = function(I)
         _G.StoreF = I
+        SaveConfig()
     end,
 })
 
@@ -2535,9 +2622,10 @@ end)
 FruitTab:AddToggle({
     Title = "Auto Collect Fruit",
     Description = "Automatic tween to get devil fruit",
-    Default = false,
+    Default = _G.TwFruits or false,
     Callback = function(I)
         _G.TwFruits = I
+        SaveConfig()
     end,
 })
 
@@ -2649,6 +2737,7 @@ FruitTab:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.AutoBuyChip = Value
+        SaveConfig()
         
         task.spawn(function()
             while _G.AutoBuyChip do
@@ -2681,9 +2770,9 @@ FruitTab:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.Auto_StartRaid = Value
+        SaveConfig()
     end,
 })
-
 -- Lógica Auto Start
 spawn(function()
     while true do
@@ -2715,6 +2804,7 @@ FruitTab:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.Raiding = Value
+        SaveConfig()
     end,
 })
 
@@ -2758,6 +2848,7 @@ FruitTab:AddToggle({
     Default = false,
     Callback = function(Value)
         G.Auto_Awakener = Value
+        SaveConfig()
     end,
 })
 
@@ -2830,6 +2921,7 @@ Travel:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.Teleport = Value
+        SaveConfig()
         
         if Value then
             -- Definindo variáveis do jogador local
@@ -2908,6 +3000,7 @@ Stats:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.Auto_Melee = Value
+        SaveConfig()
     end
 })
 
@@ -2923,10 +3016,11 @@ end)
 
 -- Auto Sword
 Stats:AddToggle({
-    Name = "Auto Swords",
+    Name = "Auto Sword",
     Default = false,
     Callback = function(Value)
         _G.Auto_Sword = Value
+        SaveConfig()
     end
 })
 
@@ -2946,6 +3040,7 @@ Stats:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.Auto_Gun = Value
+        SaveConfig()
     end
 })
 
@@ -2965,6 +3060,7 @@ Stats:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.Auto_DevilFruit = Value
+        SaveConfig()
     end
 })
 
@@ -2984,6 +3080,7 @@ Stats:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.Auto_Defense = Value
+        SaveConfig()
     end
 })
 
@@ -3027,12 +3124,12 @@ local ESP_COLOR = Color3.fromRGB(255,255,255)
 --------------------------------------------------
 -- TOGGLES
 --------------------------------------------------
-EspTab:AddToggle({ Title="Player ESP",  Default=false, Callback=function(v) PlayerEsp=v end })
-EspTab:AddToggle({ Title="Fruit ESP",   Default=false, Callback=function(v) DevilFruitESP=v end })
-EspTab:AddToggle({ Title="Flower ESP",  Default=false, Callback=function(v) FlowerESP=v end })
-EspTab:AddToggle({ Title="Chest ESP",   Default=false, Callback=function(v) ChestESP=v end })
-EspTab:AddToggle({ Title="Berries ESP", Default=false, Callback=function(v) BerryEsp=v end })
-EspTab:AddToggle({ Title="Island ESP",  Default=false, Callback=function(v) _G.IslandESP=v end })
+EspTab:AddToggle({ Title="Player ESP",  Default=false, Callback=function(v) PlayerEsp=v SaveConfig() end })
+EspTab:AddToggle({ Title="Fruit ESP",   Default=false, Callback=function(v) DevilFruitESP=v SaveConfig() end })
+EspTab:AddToggle({ Title="Flower ESP",  Default=false, Callback=function(v) FlowerESP=v SaveConfig() end })
+EspTab:AddToggle({ Title="Chest ESP",   Default=false, Callback=function(v) ChestESP=v SaveConfig() end })
+EspTab:AddToggle({ Title="Berries ESP", Default=false, Callback=function(v) BerryEsp=v SaveConfig() end })
+EspTab:AddToggle({ Title="Island ESP",  Default=false, Callback=function(v) _G.IslandESP=v SaveConfig() end })
 
 --------------------------------------------------
 -- PLAYER ESP
@@ -3381,6 +3478,7 @@ Setting:AddToggle({
     Default = true,
     Callback = function(Value)
         _G.Seriality = Value
+        SaveConfig()
     end
 })
 
@@ -3411,6 +3509,7 @@ Setting:AddToggle({
     Default = true,
     Callback = function(Value)
         Boud = Value
+        SaveConfig()
     end
 })
 spawn(function()
@@ -3436,6 +3535,7 @@ Setting:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.RaceClickAutov3 = Value
+        SaveConfig()
     end
 })
 spawn(function()
@@ -3456,6 +3556,7 @@ Setting:AddToggle({
     Default = false,
     Callback = function(Value)
         _G.RaceClickAutov4 = Value
+        SaveConfig()
     end
 })
 spawn(function()
