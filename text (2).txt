@@ -1801,9 +1801,28 @@ local MobileButton = Minimizer:CreateMobileMinimizer({
 
 MobileButton.Size = UDim2.new(0, 50, 0, 50)
 
+-- Cantos arredondados
 local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 6)
 corner.Parent = MobileButton
+
+-- Borda preta brilhante
+local stroke = Instance.new("UIStroke")
+stroke.Parent = MobileButton
+stroke.Color = Color3.fromRGB(0, 0, 0)
+stroke.Thickness = 2
+stroke.Transparency = 0
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+-- Efeito de brilho na borda
+local gradient = Instance.new("UIGradient")
+gradient.Parent = stroke
+gradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(35, 35, 35)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(45, 45, 45))
+})
+gradient.Rotation = 45
 
 local Info = Window:MakeTab({
   Title = "Discord",
