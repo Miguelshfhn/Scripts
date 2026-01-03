@@ -837,7 +837,7 @@ task.spawn(function()
 end)
 -- Tabela de configurações (Fácil de acessar pela UI)
 _G.Settings = {
-    TweenSpeed = 300, -- Altere este valor para mudar a velocidade
+    TweenSpeed = 350, -- Altere este valor para mudar a velocidade
     ShouldTween = true
 }
 
@@ -3225,33 +3225,18 @@ Setting:AddSlider({
 })
 
 local plr = game.Players.LocalPlayer
-local TweenService = game:GetService("TweenService")
 
 -- CONFIG
 local BRING_TIME = 3
 local RELEASE_TIME = 5
 local RANGE_PLAYER = 200
 local RANGE_PULL = 150
-local TWEEN_SPEED = 50
-
--- Tween suave
-local function TweenObject(Object, TargetCFrame, Speed)
-    Speed = Speed or TWEEN_SPEED
-    if not Object or not TargetCFrame then return end
-    local Distance = (TargetCFrame.Position - Object.Position).Magnitude
-    local Time = Distance / Speed
-    local tween = TweenService:Create(
-        Object,
-        TweenInfo.new(Time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out),
-        {CFrame = TargetCFrame}
-    )
-    tween:Play()
-end
 
 -- Pega posição média dos mobs da quest atual
 local function GetQuestMobPosition(MobName)
     local pos = Vector3.zero
     local count = 0
+
     for _, v in pairs(workspace.Enemies:GetChildren()) do
         if v.Name == MobName
         and v:FindFirstChild("HumanoidRootPart")
@@ -3261,44 +3246,45 @@ local function GetQuestMobPosition(MobName)
             count += 1
         end
     end
+
     if count == 0 then return nil end
     return pos / count
 end
 
--- Bring principal: só traz mobs da quest atual
+-- Bring principal (TP instantâneo)
 local function BringQuestMob()
-    -- Só puxa se algum farm ou Level estiver ativo
     if not (_G.Level or getgenv().AutoMaterial) then return end
 
     local char = plr.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
-    local playerHRP = char.HumanoidRootPart
+    if not char then return end
 
-    -- Pega o nome do mob da quest atual
+    local playerHRP = char:FindFirstChild("HumanoidRootPart")
+    if not playerHRP then return end
+
     local QuestGui = plr.PlayerGui.Main.Quest
     if not QuestGui.Visible then return end
-    local QuestMobName = QuestNeta()[1] -- Nome do inimigo da quest
 
-    local enemies = workspace.Enemies:GetChildren()
-    if #enemies == 0 then return end
+    local QuestMobName = QuestNeta()[1]
+    if not QuestMobName then return end
 
-    local totalpos = {}
-    totalpos[QuestMobName] = GetQuestMobPosition(QuestMobName)
+    local mobPos = GetQuestMobPosition(QuestMobName)
+    if not mobPos then return end
 
-    for _, v in pairs(enemies) do
+    for _, v in pairs(workspace.Enemies:GetChildren()) do
         local hum = v:FindFirstChild("Humanoid")
         local hrp = v:FindFirstChild("HumanoidRootPart")
+
         if hum and hrp and hum.Health > 0 and v.Name == QuestMobName then
             local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
-            if distPlayer <= RANGE_PLAYER then
-                local mobPos = totalpos[v.Name]
-                if mobPos then
-                    local dist = (hrp.Position - mobPos).Magnitude
-                    if dist > 6 and dist <= RANGE_PULL then
-                        TweenObject(hrp, CFrame.new(mobPos), TWEEN_SPEED)
-                        hrp.CanCollide = false
-                    end
-                end
+            local distMob = (hrp.Position - mobPos).Magnitude
+
+            if distPlayer <= RANGE_PLAYER and distMob <= RANGE_PULL and distMob > 5 then
+                hrp.CFrame = CFrame.new(
+                    mobPos.X,
+                    mobPos.Y,
+                    mobPos.Z
+                )
+                hrp.CanCollide = false
             end
         end
     end
@@ -3308,21 +3294,21 @@ local function BringQuestMob()
     end)
 end
 
--- LOOP de Bring (3s trazer / 5s soltar)
+-- LOOP de Bring
 task.spawn(function()
     while task.wait() do
         local t0 = tick()
         while tick() - t0 < BRING_TIME do
             BringQuestMob()
-            task.wait(0.2)
+            task.wait(0.1)
         end
+
         local t1 = tick()
         while tick() - t1 < RELEASE_TIME do
             task.wait()
         end
     end
 end)
-
 
 Setting:AddSection("Settings Farm")
 
