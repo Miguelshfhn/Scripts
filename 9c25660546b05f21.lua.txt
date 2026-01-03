@@ -1806,29 +1806,21 @@ local corner = Instance.new("UICorner")
 corner.CornerRadius = UDim.new(0, 6)
 corner.Parent = MobileButton
 
--- FUNÇÃO PARA CRIAR CONTORNO GROSSO (camadas)
-local function CreateStroke(thickness, color)
-    local stroke = Instance.new("UIStroke")
-    stroke.Parent = MobileButton
-    stroke.Color = color
-    stroke.Thickness = thickness
-    stroke.Transparency = 0
-    stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    return stroke
-end
+-- Contorno preto MAIS GROSSO
+local stroke = Instance.new("UIStroke")
+stroke.Parent = MobileButton
+stroke.Color = Color3.fromRGB(0, 0, 0)
+stroke.Thickness = 4 -- mais grosso
+stroke.Transparency = 0
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
--- Camadas de contorno (quanto mais, mais grosso)
-CreateStroke(10, Color3.fromRGB(0, 0, 0))
-CreateStroke(7, Color3.fromRGB(15, 15, 15))
-CreateStroke(4, Color3.fromRGB(30, 30, 30))
-
--- Brilho no contorno externo
+-- Brilho no contorno
 local gradient = Instance.new("UIGradient")
-gradient.Parent = MobileButton.UIStroke
+gradient.Parent = stroke
 gradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 80, 80)),
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(55, 55, 55)),
     ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 0, 0)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(100, 100, 100))
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(70, 70, 70))
 })
 gradient.Rotation = 45
 
