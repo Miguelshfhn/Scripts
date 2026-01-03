@@ -2916,6 +2916,292 @@ spawn(function()
     end
 end)
 
+-- =========================
+-- TAB ESP
+-- =========================
+local EspTab = Window:MakeTab({
+    Title = "ESP",
+    Icon = "eye"
+})
+
+EspTab:AddSection("Esp Section")
+
+
+-- =========================
+-- VARIÁVEIS
+-- =========================
+PlayerEsp = false
+DevilFruitESP = false
+FlowerESP = false
+ChestESP = false
+BerryEsp = false
+_G.IslandESP = false
+_G.ESPColor = Color3.fromRGB(255,255,255)
+
+-- =========================
+-- TOGGLES
+-- =========================
+EspTab:AddToggle({
+    Title = "Player ESP",
+    Default = false,
+    Callback = function(v)
+        PlayerEsp = v
+    end
+})
+
+EspTab:AddToggle({
+    Title = "Fruit ESP",
+    Default = false,
+    Callback = function(v)
+        DevilFruitESP = v
+    end
+})
+
+EspTab:AddToggle({
+    Title = "Flower ESP",
+    Default = false,
+    Callback = function(v)
+        FlowerESP = v
+    end
+})
+
+EspTab:AddToggle({
+    Title = "Chest ESP",
+    Default = false,
+    Callback = function(v)
+        ChestESP = v
+    end
+})
+
+EspTab:AddToggle({
+    Title = "Berries ESP",
+    Default = false,
+    Callback = function(v)
+        BerryEsp = v
+    end
+})
+
+EspTab:AddToggle({
+    Title = "Island ESP",
+    Default = false,
+    Callback = function(v)
+        _G.IslandESP = v
+    end
+})
+
+-- =========================
+-- PLAYER ESP
+-- =========================
+function EspPly()
+    for _,e in pairs(game.Players:GetPlayers()) do
+        pcall(function()
+            if PlayerEsp and e.Character and e.Character:FindFirstChild("Head") then
+                if not e.Character.Head:FindFirstChild("NameEsp") then
+                    local bg = Instance.new("BillboardGui", e.Character.Head)
+                    bg.Name = "NameEsp"
+                    bg.Size = UDim2.new(0,200,0,30)
+                    bg.StudsOffset = Vector3.new(0,1,0)
+                    bg.AlwaysOnTop = true
+
+                    local t = Instance.new("TextLabel", bg)
+                    t.Size = UDim2.new(1,0,1,0)
+                    t.BackgroundTransparency = 1
+                    t.Font = Enum.Font.Cartoon
+                    t.TextColor3 = Color3.new(1,1,1)
+                    t.TextStrokeTransparency = 0
+                end
+                e.Character.Head.NameEsp.TextLabel.Text =
+                    e.Name.." | Lv. "..e.Data.Level.Value
+            else
+                if e.Character and e.Character:FindFirstChild("Head") then
+                    local esp = e.Character.Head:FindFirstChild("NameEsp")
+                    if esp then esp:Destroy() end
+                end
+            end
+        end)
+    end
+end
+
+-- =========================
+-- FRUIT ESP
+-- =========================
+function DevEsp()
+    for _,e in pairs(workspace:GetChildren()) do
+        pcall(function()
+            if DevilFruitESP and e.Name:find("Fruit") and e:FindFirstChild("Handle") then
+                if not e.Handle:FindFirstChild("NameEsp") then
+                    local bg = Instance.new("BillboardGui", e.Handle)
+                    bg.Name = "NameEsp"
+                    bg.Size = UDim2.new(0,200,0,30)
+                    bg.AlwaysOnTop = true
+
+                    local t = Instance.new("TextLabel", bg)
+                    t.Size = UDim2.new(1,0,1,0)
+                    t.BackgroundTransparency = 1
+                    t.Font = Enum.Font.Cartoon
+                    t.TextColor3 = Color3.new(1,1,1)
+                    t.TextStrokeTransparency = 0
+                end
+                local dist = (game.Players.LocalPlayer.Character.Head.Position - e.Handle.Position).Magnitude / 3
+                e.Handle.NameEsp.TextLabel.Text = e.Name.." | "..math.floor(dist).."m"
+            elseif e:FindFirstChild("Handle") then
+                local esp = e.Handle:FindFirstChild("NameEsp")
+                if esp then esp:Destroy() end
+            end
+        end)
+    end
+end
+
+-- =========================
+-- FLOWER ESP
+-- =========================
+function flowerEsp()
+    for _,e in pairs(workspace:GetChildren()) do
+        pcall(function()
+            if (e.Name == "Flower1" or e.Name == "Flower2") and FlowerESP then
+                if not e:FindFirstChild("NameEsp") then
+                    local bg = Instance.new("BillboardGui", e)
+                    bg.Name = "NameEsp"
+                    bg.Size = UDim2.new(0,200,0,30)
+                    bg.AlwaysOnTop = true
+
+                    local t = Instance.new("TextLabel", bg)
+                    t.Size = UDim2.new(1,0,1,0)
+                    t.BackgroundTransparency = 1
+                    t.Font = Enum.Font.Cartoon
+                    t.TextColor3 = Color3.new(1,1,1)
+                    t.TextStrokeTransparency = 0
+                end
+                local name = e.Name == "Flower1" and "Blue Flower" or "Red Flower"
+                e.NameEsp.TextLabel.Text = name
+            else
+                if e:FindFirstChild("NameEsp") then e.NameEsp:Destroy() end
+            end
+        end)
+    end
+end
+
+-- =========================
+-- CHEST ESP
+-- =========================
+function ChestEsp()
+    local cs = game:GetService("CollectionService")
+    for _,e in pairs(cs:GetTagged("_ChestTagged")) do
+        pcall(function()
+            if ChestESP then
+                if not e:FindFirstChild("ChestEsp") then
+                    local a = Instance.new("Attachment", e)
+                    a.Name = "ChestEsp"
+                    a.Position = Vector3.new(0,3,0)
+
+                    local bg = Instance.new("BillboardGui", a)
+                    bg.Size = UDim2.new(0,200,0,30)
+                    bg.AlwaysOnTop = true
+
+                    local t = Instance.new("TextLabel", bg)
+                    t.Size = UDim2.new(1,0,1,0)
+                    t.BackgroundTransparency = 1
+                    t.Font = Enum.Font.Cartoon
+                    t.TextColor3 = Color3.new(1,1,1)
+                    t.TextStrokeTransparency = 0
+                end
+            else
+                if e:FindFirstChild("ChestEsp") then e.ChestEsp:Destroy() end
+            end
+        end)
+    end
+end
+
+-- =========================
+-- BERRIES ESP
+-- =========================
+function berriesEsp()
+    local cs = game:GetService("CollectionService")
+    if BerryEsp then
+        for _,e in pairs(cs:GetTagged("BerryBush")) do
+            local pos = e.Parent:GetPivot().Position
+            local name = "BerryEspPart_"..tostring(pos)
+            local part = workspace:FindFirstChild(name)
+
+            if not part then
+                part = Instance.new("Part", workspace)
+                part.Name = name
+                part.Anchored = true
+                part.CanCollide = false
+                part.Transparency = 1
+                part.CFrame = CFrame.new(pos)
+            end
+
+            if not part:FindFirstChild("NameEsp") then
+                local bg = Instance.new("BillboardGui", part)
+                bg.Name = "NameEsp"
+                bg.Size = UDim2.new(0,200,0,30)
+                bg.AlwaysOnTop = true
+
+                local t = Instance.new("TextLabel", bg)
+                t.Size = UDim2.new(1,0,1,0)
+                t.BackgroundTransparency = 1
+                t.Font = Enum.Font.Cartoon
+                t.TextColor3 = Color3.new(1,1,1)
+                t.TextStrokeTransparency = 0
+            end
+
+            local dist = (game.Players.LocalPlayer.Character.Head.Position - pos).Magnitude / 3
+            part.NameEsp.TextLabel.Text = "Berry | "..math.floor(dist).."m"
+        end
+    else
+        for _,e in pairs(workspace:GetChildren()) do
+            if e.Name:match("BerryEspPart_") then e:Destroy() end
+        end
+    end
+end
+
+-- =========================
+-- ISLAND ESP
+-- =========================
+function IslandESP_Func()
+    for _,island in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+        pcall(function()
+            if island.Name ~= "Sea" and _G.IslandESP then
+                if not island:FindFirstChild("IslandESP") then
+                    local bg = Instance.new("BillboardGui", island)
+                    bg.Name = "IslandESP"
+                    bg.Size = UDim2.new(0,150,0,35)
+                    bg.StudsOffset = Vector3.new(0,35,0)
+                    bg.AlwaysOnTop = true
+
+                    local t = Instance.new("TextLabel", bg)
+                    t.Size = UDim2.new(1,0,1,0)
+                    t.BackgroundTransparency = 1
+                    t.Font = Enum.Font.Cartoon
+                    t.TextColor3 = Color3.new(1,1,1)
+                    t.TextStrokeTransparency = 0
+                    t.TextScaled = true
+                    t.Text = island.Name
+                end
+            else
+                if island:FindFirstChild("IslandESP") then island.IslandESP:Destroy() end
+            end
+        end)
+    end
+end
+
+-- =========================
+-- LOOP GERAL
+-- =========================
+task.spawn(function()
+    while task.wait(0.5) do
+        pcall(function()
+            EspPly()
+            DevEsp()
+            flowerEsp()
+            ChestEsp()
+            berriesEsp()
+            IslandESP_Func()
+        end)
+    end
+end)
+
 
 
 
@@ -2953,47 +3239,34 @@ Setting:AddSlider({
     end
 })
 
--- SERVICES / PLAYER
-local Players = game:GetService("Players")
+local plr = game.Players.LocalPlayer
 local TweenService = game:GetService("TweenService")
-local plr = Players.LocalPlayer
-
--- FLAGS (não cria toggle, só usa)
-_G.AutoFarmNear = _G.AutoFarmNear or false
-_G.AutoFarm_Bone = _G.AutoFarm_Bone or false
-_G.Level = _G.Level or false
 
 -- CONFIG
-local BRING_TIME = 1.5
-local RELEASE_TIME = 3
-local RANGE_PLAYER = 250
-local RANGE_PULL = 200
-local TWEEN_SPEED = 35
+local BRING_TIME = 3
+local RELEASE_TIME = 5
+local RANGE_PLAYER = 200
+local RANGE_PULL = 150
+local TWEEN_SPEED = 50
 
---------------------------------------------------
--- TWEEN SUAVE
---------------------------------------------------
+-- Tween suave
 local function TweenObject(Object, TargetCFrame, Speed)
     Speed = Speed or TWEEN_SPEED
     if not Object or not TargetCFrame then return end
-
     local Distance = (TargetCFrame.Position - Object.Position).Magnitude
     local Time = Distance / Speed
-
-    TweenService:Create(
+    local tween = TweenService:Create(
         Object,
         TweenInfo.new(Time, Enum.EasingStyle.Linear, Enum.EasingDirection.Out),
         {CFrame = TargetCFrame}
-    ):Play()
+    )
+    tween:Play()
 end
 
---------------------------------------------------
--- POSIÇÃO MÉDIA DOS MOBS DA QUEST
---------------------------------------------------
+-- Pega posição média dos mobs da quest atual
 local function GetQuestMobPosition(MobName)
     local pos = Vector3.zero
     local count = 0
-
     for _, v in pairs(workspace.Enemies:GetChildren()) do
         if v.Name == MobName
         and v:FindFirstChild("HumanoidRootPart")
@@ -3003,46 +3276,43 @@ local function GetQuestMobPosition(MobName)
             count += 1
         end
     end
-
     if count == 0 then return nil end
     return pos / count
 end
 
---------------------------------------------------
--- BRING (SÓ MOB DA QUEST ATUAL)
---------------------------------------------------
+-- Bring principal: só traz mobs da quest atual
 local function BringQuestMob()
-    -- só ativa se algum farm estiver ligado
-    if not (_G.Level or _G.AutoFarmNear or _G.AutoFarm_Bone or getgenv().AutoMaterial) then
-        return
-    end
+    -- Só puxa se algum farm ou Level estiver ativo
+    if not (_G.Level or getgenv().AutoMaterial) then return end
 
     local char = plr.Character
-    if not char then return end
-    local playerHRP = char:FindFirstChild("HumanoidRootPart")
-    if not playerHRP then return end
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local playerHRP = char.HumanoidRootPart
 
+    -- Pega o nome do mob da quest atual
     local QuestGui = plr.PlayerGui.Main.Quest
     if not QuestGui.Visible then return end
+    local QuestMobName = QuestNeta()[1] -- Nome do inimigo da quest
 
-    local QuestMobName = QuestNeta()[1]
-    local mobPos = GetQuestMobPosition(QuestMobName)
-    if not mobPos then return end
+    local enemies = workspace.Enemies:GetChildren()
+    if #enemies == 0 then return end
 
-    for _, v in pairs(workspace.Enemies:GetChildren()) do
-        if v.Name == QuestMobName then
-            local hum = v:FindFirstChild("Humanoid")
-            local hrp = v:FindFirstChild("HumanoidRootPart")
+    local totalpos = {}
+    totalpos[QuestMobName] = GetQuestMobPosition(QuestMobName)
 
-            if hum and hrp and hum.Health > 0 then
-                local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
-                local distMob = (hrp.Position - mobPos).Magnitude
-
-                if distPlayer <= RANGE_PLAYER
-                and distMob <= RANGE_PULL
-                and distMob > 6 then
-                    TweenObject(hrp, CFrame.new(mobPos), TWEEN_SPEED)
-                    hrp.CanCollide = false
+    for _, v in pairs(enemies) do
+        local hum = v:FindFirstChild("Humanoid")
+        local hrp = v:FindFirstChild("HumanoidRootPart")
+        if hum and hrp and hum.Health > 0 and v.Name == QuestMobName then
+            local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
+            if distPlayer <= RANGE_PLAYER then
+                local mobPos = totalpos[v.Name]
+                if mobPos then
+                    local dist = (hrp.Position - mobPos).Magnitude
+                    if dist > 6 and dist <= RANGE_PULL then
+                        TweenObject(hrp, CFrame.new(mobPos), TWEEN_SPEED)
+                        hrp.CanCollide = false
+                    end
                 end
             end
         end
@@ -3053,9 +3323,7 @@ local function BringQuestMob()
     end)
 end
 
---------------------------------------------------
--- LOOP BRING (3s PUXA / 5s SOLTA)
---------------------------------------------------
+-- LOOP de Bring (3s trazer / 5s soltar)
 task.spawn(function()
     while task.wait() do
         local t0 = tick()
@@ -3063,13 +3331,13 @@ task.spawn(function()
             BringQuestMob()
             task.wait(0.2)
         end
-
         local t1 = tick()
         while tick() - t1 < RELEASE_TIME do
             task.wait()
         end
     end
 end)
+
 
 Setting:AddSection("Settings Farm")
 
