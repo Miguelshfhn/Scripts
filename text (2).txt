@@ -2428,6 +2428,40 @@ local SubTab = Window:MakeTab({
 
 SubTab:AddSection("Elite Section")
 
+SubTab:AddToggle({
+  Name = "Auto Elite Hunter",
+  Default = false,
+  Callback = function(Value)
+    _G.FarmEliteHunt = Value
+  end
+})
+spawn(function()
+    while wait(Sec) do
+        pcall(function()
+            if _G.FarmEliteHunt then
+                if plr.PlayerGui.Main.Quest.Visible == true then
+                    if string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "Diablo") or string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "Urban") or string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "Deandre") then
+                        for i, v in pairs(replicated:GetChildren()) do
+                            if string.find(v.Name, "Diablo") or string.find(v.Name, "Urban") or string.find(v.Name, "Deandre") then
+                                _tp(v.HumanoidRootPart.CFrame)
+                            end
+                        end
+                        for i, v in pairs(Enemies:GetChildren()) do
+                            if (string.find(v.Name, "Diablo") or string.find(v.Name, "Urban") or string.find(v.Name, "Deandre")) and Attack.Alive(v) then
+                                repeat
+                                    wait()
+                                    Attack.Kill(v, _G.FarmEliteHunt)
+                                until not _G.FarmEliteHunt or plr.PlayerGui.Main.Quest.Visible == false or not v.Parent or v.Humanoid.Health <= 0
+                            end
+                        end
+                    end
+                else
+                    replicated.Remotes.CommF_:InvokeServer("EliteHunter")
+                end
+            end
+        end)
+    end
+end)
 
 local FruitTab = Window:MakeTab({
     Title = "Fruit/Raids",
