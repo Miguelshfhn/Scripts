@@ -2924,6 +2924,8 @@ local EspTab = Window:MakeTab({
     Icon = "eye"
 })
 
+EspTab:AddSection("Esp Tab")
+
 --------------------------------------------------
 -- VARIÁVEIS
 --------------------------------------------------
