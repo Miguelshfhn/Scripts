@@ -2916,6 +2916,258 @@ spawn(function()
     end
 end)
 
+--------------------------------------------------
+-- TAB ESP
+--------------------------------------------------
+local EspTab = Window:MakeTab({
+    Title = "ESP",
+    Icon = "eye"
+})
+
+EspTab:AddSection("Esp Tab")
+
+--------------------------------------------------
+-- VARIÁVEIS
+--------------------------------------------------
+PlayerEsp     = false
+DevilFruitESP = false
+FlowerESP     = false
+ChestESP      = false
+BerryEsp      = false
+_G.IslandESP  = false
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local CollectionService = game:GetService("CollectionService")
+
+local ESP_FONT  = Enum.Font.Cartoon
+local ESP_COLOR = Color3.fromRGB(255,255,255)
+
+--------------------------------------------------
+-- TOGGLES
+--------------------------------------------------
+EspTab:AddToggle({ Title="Player ESP",  Default=false, Callback=function(v) PlayerEsp=v end })
+EspTab:AddToggle({ Title="Fruit ESP",   Default=false, Callback=function(v) DevilFruitESP=v end })
+EspTab:AddToggle({ Title="Flower ESP",  Default=false, Callback=function(v) FlowerESP=v end })
+EspTab:AddToggle({ Title="Chest ESP",   Default=false, Callback=function(v) ChestESP=v end })
+EspTab:AddToggle({ Title="Berries ESP", Default=false, Callback=function(v) BerryEsp=v end })
+EspTab:AddToggle({ Title="Island ESP",  Default=false, Callback=function(v) _G.IslandESP=v end })
+
+--------------------------------------------------
+-- PLAYER ESP
+--------------------------------------------------
+function EspPly()
+	for _,plr in pairs(Players:GetPlayers()) do
+		if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
+			if PlayerEsp then
+				if not plr.Character.Head:FindFirstChild("ESP") then
+					local gui = Instance.new("BillboardGui", plr.Character.Head)
+					gui.Name = "ESP"
+					gui.Size = UDim2.new(0,220,0,40)
+					gui.StudsOffset = Vector3.new(0,1.2,0)
+					gui.AlwaysOnTop = true
+
+					local txt = Instance.new("TextLabel", gui)
+					txt.Size = UDim2.new(1,0,1,0)
+					txt.BackgroundTransparency = 1
+					txt.Font = ESP_FONT
+					txt.TextColor3 = ESP_COLOR
+					txt.TextStrokeTransparency = 0
+					txt.TextScaled = true
+				end
+				plr.Character.Head.ESP.TextLabel.Text =
+					plr.Name.." | Lv. "..plr.Data.Level.Value
+			else
+				if plr.Character.Head:FindFirstChild("ESP") then
+					plr.Character.Head.ESP:Destroy()
+				end
+			end
+		end
+	end
+end
+
+--------------------------------------------------
+-- FRUIT ESP
+--------------------------------------------------
+function DevEsp()
+	for _,v in pairs(workspace:GetChildren()) do
+		if v.Name:find("Fruit") and v:FindFirstChild("Handle") then
+			if DevilFruitESP then
+				if not v.Handle:FindFirstChild("ESP") then
+					local gui = Instance.new("BillboardGui", v.Handle)
+					gui.Name = "ESP"
+					gui.Size = UDim2.new(0,220,0,40)
+					gui.StudsOffset = Vector3.new(0,1,0)
+					gui.AlwaysOnTop = true
+
+					local txt = Instance.new("TextLabel", gui)
+					txt.Size = UDim2.new(1,0,1,0)
+					txt.BackgroundTransparency = 1
+					txt.Font = ESP_FONT
+					txt.TextColor3 = ESP_COLOR
+					txt.TextStrokeTransparency = 0
+					txt.TextScaled = true
+				end
+
+				local dist = (LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3
+				v.Handle.ESP.TextLabel.Text = v.Name.." | "..math.floor(dist).." M"
+			else
+				if v.Handle:FindFirstChild("ESP") then
+					v.Handle.ESP:Destroy()
+				end
+			end
+		end
+	end
+end
+
+--------------------------------------------------
+-- FLOWER ESP
+--------------------------------------------------
+function flowerEsp()
+	for _,v in pairs(workspace:GetChildren()) do
+		if v.Name=="Flower1" or v.Name=="Flower2" then
+			if FlowerESP then
+				if not v:FindFirstChild("ESP") then
+					local gui = Instance.new("BillboardGui", v)
+					gui.Name = "ESP"
+					gui.Size = UDim2.new(0,220,0,40)
+					gui.StudsOffset = Vector3.new(0,1,0)
+					gui.AlwaysOnTop = true
+
+					local txt = Instance.new("TextLabel", gui)
+					txt.Size = UDim2.new(1,0,1,0)
+					txt.BackgroundTransparency = 1
+					txt.Font = ESP_FONT
+					txt.TextColor3 = ESP_COLOR
+					txt.TextStrokeTransparency = 0
+					txt.TextScaled = true
+				end
+
+				local name = v.Name=="Flower1" and "Blue Flower" or "Red Flower"
+				local dist = (LocalPlayer.Character.Head.Position - v.Position).Magnitude/3
+				v.ESP.TextLabel.Text = name.." | "..math.floor(dist).." M"
+			else
+				if v:FindFirstChild("ESP") then v.ESP:Destroy() end
+			end
+		end
+	end
+end
+
+--------------------------------------------------
+-- CHEST ESP (ESTILO ISLAND)
+--------------------------------------------------
+function ChestEsp()
+	for _,e in pairs(CollectionService:GetTagged("_ChestTagged")) do
+		if ChestESP then
+			if not e:FindFirstChild("ESP") then
+				local att = Instance.new("Attachment", e)
+				att.Name = "ESP"
+				att.Position = Vector3.new(0,3.5,0)
+
+				local gui = Instance.new("BillboardGui", att)
+				gui.Size = UDim2.new(0,260,0,50)
+				gui.AlwaysOnTop = true
+
+				local txt = Instance.new("TextLabel", gui)
+				txt.Size = UDim2.new(1,0,1,0)
+				txt.BackgroundTransparency = 1
+				txt.Font = ESP_FONT
+				txt.TextColor3 = ESP_COLOR
+				txt.TextStrokeTransparency = 0
+				txt.TextScaled = true
+			end
+
+			local dist = (LocalPlayer.Character.Head.Position - e:GetPivot().Position).Magnitude/3
+			e.ESP.BillboardGui.TextLabel.Text = "Chest | "..math.floor(dist).." M"
+		else
+			if e:FindFirstChild("ESP") then e.ESP:Destroy() end
+		end
+	end
+end
+
+--------------------------------------------------
+-- BERRIES ESP
+--------------------------------------------------
+function berriesEsp()
+	if not BerryEsp then
+		for _,v in pairs(workspace:GetChildren()) do
+			if v.Name=="BerryESPPart" then v:Destroy() end
+		end
+		return
+	end
+
+	for _,b in pairs(CollectionService:GetTagged("BerryBush")) do
+		local pos = b.Parent:GetPivot().Position
+		local p = Instance.new("Part", workspace)
+		p.Name="BerryESPPart"
+		p.Anchored=true
+		p.CanCollide=false
+		p.Transparency=1
+		p.CFrame=CFrame.new(pos)
+
+		local gui=Instance.new("BillboardGui",p)
+		gui.Size=UDim2.new(0,220,0,40)
+		gui.AlwaysOnTop=true
+
+		local txt=Instance.new("TextLabel",gui)
+		txt.Size=UDim2.new(1,0,1,0)
+		txt.BackgroundTransparency=1
+		txt.Font=ESP_FONT
+		txt.TextColor3=ESP_COLOR
+		txt.TextStrokeTransparency=0
+		txt.TextScaled=true
+
+		local dist=(LocalPlayer.Character.Head.Position-pos).Magnitude/3
+		txt.Text="Berry | "..math.floor(dist).." M"
+	end
+end
+
+--------------------------------------------------
+-- ISLAND ESP (ORIGINAL)
+--------------------------------------------------
+function IslandESP_Func()
+	for _,island in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+		if island.Name~="Sea" then
+			if _G.IslandESP then
+				if not island:FindFirstChild("IslandESP") then
+					local gui=Instance.new("BillboardGui",island)
+					gui.Name="IslandESP"
+					gui.Size=UDim2.new(0,150,0,35)
+					gui.StudsOffset=Vector3.new(0,35,0)
+					gui.AlwaysOnTop=true
+
+					local txt=Instance.new("TextLabel",gui)
+					txt.Size=UDim2.new(1,0,1,0)
+					txt.BackgroundTransparency=1
+					txt.Font=ESP_FONT
+					txt.TextColor3=ESP_COLOR
+					txt.TextStrokeTransparency=0
+					txt.TextScaled=true
+					txt.Text=island.Name
+				end
+			else
+				if island:FindFirstChild("IslandESP") then island.IslandESP:Destroy() end
+			end
+		end
+	end
+end
+
+--------------------------------------------------
+-- LOOP GERAL
+--------------------------------------------------
+task.spawn(function()
+	while task.wait(0.5) do
+		pcall(function()
+			EspPly()
+			DevEsp()
+			flowerEsp()
+			ChestEsp()
+			berriesEsp()
+			IslandESP_Func()
+		end)
+	end
+end)
+
 
 
 
