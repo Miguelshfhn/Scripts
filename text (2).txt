@@ -837,7 +837,7 @@ task.spawn(function()
 end)
 -- Tabela de configurações (Fácil de acessar pela UI)
 _G.Settings = {
-    TweenSpeed = 300, -- Altere este valor para mudar a velocidade
+    TweenSpeed = 350, -- Altere este valor para mudar a velocidade
     ShouldTween = true
 }
 
