@@ -2421,6 +2421,13 @@ spawn(function()
     end
 end)
 
+local SubTab = Window:MakeTab({
+    Title = "Sub Farming",
+    Icon = "sword"
+})
+
+SubTab:AddSection("Elite Section")
+
 
 local FruitTab = Window:MakeTab({
     Title = "Fruit/Raids",
