@@ -1814,7 +1814,7 @@ Info:AddDiscordInvite({
 	Title = "Zenith Server discord",
 	Description = "The official Zenith Hub community — powerful scripts, constant updates, and dedicated support all in one place.",
 	Banner = "rbxassetid://", -- You can put an RGB Color: Color3.fromRGB(0, 0, 0)
-	Logo = "rbxassetid://",
+	Logo = "rbxassetid://84262889977081",
 	Invite = "https://discord.gg/mV2ncyDhM9",
 	Members = Undefined, -- Optional
 	Online = Undefined, -- Optional
