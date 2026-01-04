@@ -2570,6 +2570,7 @@ end)
 SubTab:AddSection("Boss Farming")
 
 
+
 -- =====================
 -- DROPDOWN SELECT BOSS
 -- =====================
@@ -2654,7 +2655,7 @@ SubTab:AddToggle({
 })
 
 -- =====================
--- THREAD 1: SCAN FARM ALL
+-- THREAD 1: SCAN FARM ALL BOSSES
 -- =====================
 spawn(function()
     while task.wait() do
@@ -2714,29 +2715,55 @@ spawn(function()
 end)
 
 -- =====================
--- THREAD 2: ATTACK (USANDO SEU SISTEMA)
+-- THREAD 2: AUTO FARM BOSS SELECT (MESMO PADRÃO DO NEAREST)
 -- =====================
 spawn(function()
-    while task.wait() do
+    while wait() do
         pcall(function()
             if _G.AutoBoss and _G.FindBoss then
-                if QuestB then QuestB() end
+                local boss =
+                    workspace:FindFirstChild("Enemies")
+                    and workspace.Enemies:FindFirstChild(_G.FindBoss)
+                    or workspace:FindFirstChild(_G.FindBoss)
 
-                local specificBoss =
-                    WS:FindFirstChild("Enemies") and WS.Enemies:FindFirstChild(_G.FindBoss)
-                    or WS:FindFirstChild(_G.FindBoss)
+                if boss
+                and boss:FindFirstChild("Humanoid")
+                and boss:FindFirstChild("HumanoidRootPart")
+                and boss.Humanoid.Health > 0 then
 
-                if specificBoss
-                and specificBoss:FindFirstChild("Humanoid")
-                and specificBoss.Humanoid.Health > 0 then
-                    Attack.Kill(specificBoss, _G.AutoBoss)
+                    repeat
+                        wait()
+                        Attack.Kill(boss, _G.AutoBoss)
+                    until not _G.AutoBoss
+                        or not boss.Parent
+                        or boss.Humanoid.Health <= 0
                 end
+            end
+        end)
+    end
+end)
 
-            elseif _G.FarmAllBoss then
-                if _G.CurrentTargetBoss
-                and _G.CurrentTargetBoss:FindFirstChild("Humanoid")
-                and _G.CurrentTargetBoss.Humanoid.Health > 0 then
-                    Attack.Kill(_G.CurrentTargetBoss, _G.FarmAllBoss)
+-- =====================
+-- THREAD 3: FARM ALL BOSSES (MESMO PADRÃO)
+-- =====================
+spawn(function()
+    while wait() do
+        pcall(function()
+            if _G.FarmAllBoss and _G.CurrentTargetBoss then
+                local boss = _G.CurrentTargetBoss
+
+                if boss
+                and boss.Parent
+                and boss:FindFirstChild("Humanoid")
+                and boss:FindFirstChild("HumanoidRootPart")
+                and boss.Humanoid.Health > 0 then
+
+                    repeat
+                        wait()
+                        Attack.Kill(boss, _G.FarmAllBoss)
+                    until not _G.FarmAllBoss
+                        or not boss.Parent
+                        or boss.Humanoid.Health <= 0
                 end
             end
         end)
@@ -2757,7 +2784,6 @@ spawn(function()
         end
     end
 end)
-
 
 
 
