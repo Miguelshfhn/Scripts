@@ -2567,20 +2567,19 @@ spawn(function()
     end
 end)
 
-SubTab:AddSection("Elite Section")
+SubTab:AddSection("Boss Farming")
 
 local RS = game:GetService("ReplicatedStorage")
 local WS = game:GetService("Workspace")
 local plr = game:GetService("Players").LocalPlayer
 
-local BossList = {}
-
 local BossDropdown = SubTab:AddDropdown({
     Name = "Select Boss",
-    Options = BossList,
+    Options = Boss or {}, 
     Default = "Select Boss",
     Callback = function(Value)
         _G.FindBoss = Value
+        if QuestB then QuestB() end 
     end
 })
 
@@ -2717,7 +2716,7 @@ spawn(function()
                     if not hasQuest then NeedQuest = true end
                 end
 
-                if NeedQuest then
+                if NeedQuest and PosQBoss then
                     if (PosQBoss.Position - char.HumanoidRootPart.Position).Magnitude <= 5 then
                         RS.Remotes.CommF_:InvokeServer("StartQuest", Qname, Qdata)
                     else
@@ -2727,10 +2726,12 @@ spawn(function()
                 end
 
                 local specificBoss = nil
-                if WS:FindFirstChild("Enemies") and WS.Enemies:FindFirstChild(_G.FindBoss) then
-                    specificBoss = WS.Enemies:FindFirstChild(_G.FindBoss)
-                elseif WS:FindFirstChild(_G.FindBoss) then
-                    specificBoss = WS:FindFirstChild(_G.FindBoss)
+                local targetName = bMon or _G.FindBoss 
+                
+                if WS:FindFirstChild("Enemies") and WS.Enemies:FindFirstChild(targetName) then
+                    specificBoss = WS.Enemies:FindFirstChild(targetName)
+                elseif WS:FindFirstChild(targetName) then
+                    specificBoss = WS:FindFirstChild(targetName)
                 end
 
                 if specificBoss and specificBoss:FindFirstChild("Humanoid") and specificBoss.Humanoid.Health > 0 then 
@@ -2766,6 +2767,7 @@ spawn(function()
         end
     end
 end)
+
 
 
 
