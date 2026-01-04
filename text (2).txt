@@ -3605,80 +3605,106 @@ Setting:AddSlider({
 
 local plr = game.Players.LocalPlayer
 
--- CONFIG
+-- CONFIGURAÇÕES
 local BRING_TIME = 3
 local RELEASE_TIME = 5
-local RANGE_PLAYER = 200
-local RANGE_PULL = 150
+_G.BringRange = 200
+_G.SpeedB = 50
+_G.MobM = 20 -- Quantidade máxima de mobs a trazer
 
--- Pega posição média dos mobs da quest atual
-local function GetQuestMobPosition(MobName)
-    local pos = Vector3.zero
-    local count = 0
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local plr = Players.LocalPlayer
 
-    for _, v in pairs(workspace.Enemies:GetChildren()) do
-        if v.Name == MobName
-        and v:FindFirstChild("HumanoidRootPart")
-        and v:FindFirstChild("Humanoid")
-        and v.Humanoid.Health > 0 then
-            pos += v.HumanoidRootPart.Position
-            count += 1
-        end
-    end
+-- FUNÇÃO PRINCIPAL DE BRING (substitui BringQuestMob)
+BringEnemy = function()
+    local L_45_ = {}
+    if not _B then return end
+    if not PosMon then return end
 
-    if count == 0 then return nil end
-    return pos / count
-end
+    L_45_[4] = plr
+    L_45_[5] = L_45_[4].Character and L_45_[4].Character:FindFirstChild("HumanoidRootPart")
+    if not L_45_[5] then return end
 
--- Bring principal (TP instantâneo)
-local function BringQuestMob()
-    if not (_G.Level or getgenv().AutoMaterial) then return end
+    L_45_[9] = TweenService
+    L_45_[8] = _G["BringRange"]
+    L_45_[7] = _G["SpeedB"]
+    L_45_[6] = _G["MobM"]
+    L_45_[1] = 0
+    L_45_[2] = {}
 
-    local char = plr.Character
-    if not char then return end
+    for L_46_forvar0, L_47_forvar1 in pairs(workspace.Enemies:GetChildren()) do
+        local L_48_ = {}
+        L_48_[4], L_48_[1] = L_46_forvar0, L_47_forvar1
+        if L_45_[1] >= L_45_[6] then break end
 
-    local playerHRP = char:FindFirstChild("HumanoidRootPart")
-    if not playerHRP then return end
-
-    local QuestGui = plr.PlayerGui.Main.Quest
-    if not QuestGui.Visible then return end
-
-    local QuestMobName = QuestNeta()[1]
-    if not QuestMobName then return end
-
-    local mobPos = GetQuestMobPosition(QuestMobName)
-    if not mobPos then return end
-
-    for _, v in pairs(workspace.Enemies:GetChildren()) do
-        local hum = v:FindFirstChild("Humanoid")
-        local hrp = v:FindFirstChild("HumanoidRootPart")
-
-        if hum and hrp and hum.Health > 0 and v.Name == QuestMobName then
-            local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
-            local distMob = (hrp.Position - mobPos).Magnitude
-
-            if distPlayer <= RANGE_PLAYER and distMob <= RANGE_PULL and distMob > 5 then
-                hrp.CFrame = CFrame.new(
-                    mobPos.X,
-                    mobPos.Y,
-                    mobPos.Z
-                )
-                hrp.CanCollide = false
+        -- Checa se é boss
+        L_48_[6] = false
+        for _, bossName in ipairs(BossList or {}) do
+            if L_48_[1].Name == bossName then
+                L_48_[6] = true
+                break
             end
         end
-    end
+        if L_48_[6] then continue end
 
-    pcall(function()
-        sethiddenproperty(plr, "SimulationRadius", math.huge)
-    end)
+        L_48_[2] = L_48_[1]:FindFirstChild("Humanoid")
+        L_48_[3] = L_48_[1]:FindFirstChild("HumanoidRootPart")
+        if not (L_48_[2] and L_48_[3] and L_48_[2].Health > 0) then continue end
+
+        if (L_48_[3].Position - L_45_[5].Position).Magnitude <= L_45_[8] then
+            local L_52_ = {}
+            R_[1] += 1
+            L_52_[2] = Vector3.zero
+            L_52_[3] = 0
+
+            for _, mob in pairs(workspace.Enemies:GetChildren()) do
+                local hum = mob:FindFirstChild("Humanoid")
+                local hrp = mob:FindFirstChild("HumanoidRootPart")
+                if hum and hrp and hum.Health > 0 and mob.Name == L_48_[1].Name then
+                    D_[2] += hrp.Position
+                    D_[3] += 1
+                end
+            end
+
+            L_52_[1] = L_52_[3] > 0 and L_52_[2] / L_52_[3] or L_48_[3].Position
+            L_52_[4] = CFrame.new(L_52_[1])
+            L_52_[5] = (L_48_[3].Position - L_52_[4].Position).Magnitude
+
+            if L_52_[5] > 3 then
+                local tweenInfo = TweenInfo.new(L_52_[5] / L_45_[7], Enum.EasingStyle.Linear)
+                L_45_[9]:Create(L_48_[3], tweenInfo, {CFrame = L_52_[4]}):Play()
+            end
+
+            L_48_[3].CanCollide = false
+            L_48_[3].AssemblyLinearVelocity = Vector3.zero
+            L_48_[3].AssemblyAngularVelocity = Vector3.zero
+
+            if L_48_[2]:FindFirstChild("Animator") then
+                L_48_[2].Animator:Destroy()
+            end
+
+            if not L_48_[3]:FindFirstChild("BodyVelocity") then
+                local bv = Instance.new("BodyVelocity")
+                bv.Name = "BodyVelocity"
+                bv.MaxForce = Vector3.new(1e9,1e9,1e9)
+                bv.Velocity = Vector3.zero
+                bv.Parent = L_48_[3]
+            end
+
+            pcall(function()
+                sethiddenproperty(L_45_[4], "SimulationRadius", math.huge)
+            end)
+        end
+    end
 end
 
--- LOOP de Bring
+-- LOOP DE BRING AUTOMÁTICO
 task.spawn(function()
     while task.wait() do
         local t0 = tick()
         while tick() - t0 < BRING_TIME do
-            BringQuestMob()
+            BringEnemy()
             task.wait(0.1)
         end
 
