@@ -362,96 +362,112 @@ Attack.Kill = function(model, Succes)
         local hrp = model:FindFirstChild("HumanoidRootPart")
         if not hrp then return end
 
-        _tp(hrp.CFrame * CFrame.new(0, _G.DistanceAboveMob, 0))
+        TP(hrp.CFrame * CFrame.new(0, _G.DistanceAboveMob, 0))
     end
 end
+
 Attack.Kill2 = function(model, Succes)
     if model and Succes then
         if not model:GetAttribute("Locked") then
             model:SetAttribute("Locked", model.HumanoidRootPart.CFrame)
         end
+
         PosMon = model:GetAttribute("Locked").Position
         BringEnemy()
         EquipWeapon(_G.SelectWeapon)
+
         local Equipped = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
-        local ToolTip = Equipped.ToolTip
+        local ToolTip = Equipped and Equipped.ToolTip
+
         if ToolTip == "Blox Fruit" then
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(0, math.rad(90), 0))
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(0, math.rad(90), 0))
         else
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 8) * CFrame.Angles(0, math.rad(180), 0))
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 8) * CFrame.Angles(0, math.rad(180), 0))
         end
+
         if RandomCFrame then
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(25, 30, 0))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(- 25, 30, 0))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(- 25, 30, 0))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(25, 30, 0))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(-25, 30, 0))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(-25, 30, 0))
         end
     end
 end
+
 Attack.KillSea = function(model, Succes)
     if model and Succes then
         if not model:GetAttribute("Locked") then
             model:SetAttribute("Locked", model.HumanoidRootPart.CFrame)
         end
+
         PosMon = model:GetAttribute("Locked").Position
         BringEnemy()
         EquipWeapon(_G.SelectWeapon)
+
         local Equipped = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
-        local ToolTip = Equipped.ToolTip
+        local ToolTip = Equipped and Equipped.ToolTip
+
         if ToolTip == "Blox Fruit" then
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(0, math.rad(90), 0))
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0) * CFrame.Angles(0, math.rad(90), 0))
         else
             notween(model.HumanoidRootPart.CFrame * CFrame.new(0, 50, 8))
-            wait(.85)
+            task.wait(0.85)
             notween(model.HumanoidRootPart.CFrame * CFrame.new(0, 400, 0))
-            wait(1)
+            task.wait(1)
         end
     end
 end
+
 Attack.Sword = function(model, Succes)
     if model and Succes then
         if not model:GetAttribute("Locked") then
             model:SetAttribute("Locked", model.HumanoidRootPart.CFrame)
         end
+
         PosMon = model:GetAttribute("Locked").Position
         BringEnemy()
         weaponSc("Sword")
-        _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+
+        TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+
         if RandomCFrame then
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(25, 30, 0))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(- 25, 30, 0))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
-            wait(0.1)
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(- 25, 30, 0))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(25, 30, 0))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(-25, 30, 0))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 25))
+            task.wait(0.1)
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(-25, 30, 0))
         end
     end
 end
+
 Attack.Mas = function(model, Succes)
     if model and Succes then
         if not model:GetAttribute("Locked") then
             model:SetAttribute("Locked", model.HumanoidRootPart.CFrame)
         end
+
         PosMon = model:GetAttribute("Locked").Position
         BringEnemy()
+
         if model.Humanoid.Health <= HealthM then
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0))
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 20, 0))
             Useskills("Blox Fruit", "Z")
             Useskills("Blox Fruit", "X")
             Useskills("Blox Fruit", "C")
         else
             weaponSc("Melee")
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
         end
     end
 end
@@ -460,15 +476,17 @@ Attack.Masgun = function(model, Succes)
         if not model:GetAttribute("Locked") then
             model:SetAttribute("Locked", model.HumanoidRootPart.CFrame)
         end
+
         PosMon = model:GetAttribute("Locked").Position
         BringEnemy()
+
         if model.Humanoid.Health <= HealthM then
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 35, 8))
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 35, 8))
             Useskills("Gun", "Z")
             Useskills("Gun", "X")
         else
             weaponSc("Melee")
-            _tp(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
+            TP(model.HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))
         end
     end
 end
@@ -848,137 +866,156 @@ Hop = function()
         end
     end)
 end
-local block = Instance.new("Part", workspace)
-block.Size = Vector3.new(1, 1, 1)
+-- SERVICES
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+-- PLAYER
+local LocalPlayer = Players.LocalPlayer
+
+-- CONFIG
+_G.Settings = {
+    Speed = 350,
+    ShouldTween = true
+}
+
+getgenv().OnFarm = false
+
+-- ===============================
+-- BLOCO INVISÍVEL (CONTROLE)
+-- ===============================
+local block = Instance.new("Part")
+block.Size = Vector3.new(1,1,1)
 block.Name = "Rip_Indra"
 block.Anchored = true
 block.CanCollide = false
 block.CanTouch = false
 block.Transparency = 1
-local blockfind = workspace:FindFirstChild(block.Name)
-if blockfind and blockfind ~= block then
-    blockfind:Destroy()
-end
-task.spawn(function()
-    while task.wait() do
-        if block and block.Parent == workspace then
-            if shouldTween then
-                getgenv().OnFarm = true
-            else
-                getgenv().OnFarm = false
-            end
-        else
-            getgenv().OnFarm = false
-        end
-    end
-end)
-task.spawn(function()
-    local a = game.Players.LocalPlayer;
-    repeat
-        task.wait()
-    until a.Character and a.Character.PrimaryPart;
-    block.CFrame = a.Character.PrimaryPart.CFrame;
-    while task.wait() do
-        pcall(function()
-            if getgenv().OnFarm then
-                if block and block.Parent == workspace then
-                    local b = a.Character and a.Character.PrimaryPart;
-                    if b and (b.Position - block.Position).Magnitude <= 200 then
-                        b.CFrame = block.CFrame
-                    else
-                        block.CFrame = b.CFrame
-                    end
-                end;
-                local c = a.Character;
-                if c then
-                    for d, e in pairs(c:GetChildren()) do
-                        if e:IsA("BasePart") then
-                            e.CanCollide = false
-                        end
-                    end
-                end
-            else
-                local c = a.Character;
-                if c then
-                    for d, e in pairs(c:GetChildren()) do
-                        if e:IsA("BasePart") then
-                            e.CanCollide = true
-                        end
-                    end
-                end
-            end
-        end)
-    end
-end)
--- Tabela de configurações (Fácil de acessar pela UI)
-_G.Settings = {
-    TweenSpeed = 350, -- Altere este valor para mudar a velocidade
-    ShouldTween = true
-}
+block.Parent = workspace
 
-_tp = function(target)
-    local character = plr.Character
-    if not character or not character:FindFirstChild("HumanoidRootPart") then
+-- Remove duplicados
+for _, v in pairs(workspace:GetChildren()) do
+    if v:IsA("Part") and v.Name == block.Name and v ~= block then
+        v:Destroy()
+    end
+end
+
+-- Atualiza OnFarm
+task.spawn(function()
+    while task.wait() do
+        getgenv().OnFarm = _G.Settings.ShouldTween and block.Parent == workspace
+    end
+end)
+
+-- ===============================
+-- FUNÇÃO DE TP NOVA (HRP)
+-- ===============================
+local function TP(TargetCFrame)
+    local Char = LocalPlayer.Character
+    if not Char or not Char:FindFirstChild("HumanoidRootPart") then return end
+
+    local HRP = Char.HumanoidRootPart
+    local Distance = (TargetCFrame.Position - HRP.Position).Magnitude
+    local Speed = _G.Settings.Speed
+
+    if Distance <= 50 then
+        HRP.CFrame = TargetCFrame
         return
     end
-    
-    local rootPart = character.HumanoidRootPart
-    local targetPosition = target.Position
-    local distance = (targetPosition - rootPart.Position).Magnitude
-    
-    -- Usamos _G.Settings.TweenSpeed para definir a duração
-    -- Cálculo: Tempo = Distância / Velocidade
-    local duration = distance / _G.Settings.TweenSpeed
-    
-    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear)
-    local tween = game:GetService("TweenService"):Create(block, tweenInfo, {
-        CFrame = target
-    })
 
-    if plr.Character.Humanoid.Sit == true then
-        block.CFrame = CFrame.new(block.Position.X, target.Y, block.Position.Z)
-    end
-
+    local Time = Distance / Speed
+    local tweenInfo = TweenInfo.new(Time, Enum.EasingStyle.Linear)
+    local tween = TweenService:Create(HRP, tweenInfo, {CFrame = TargetCFrame})
     tween:Play()
 
-    task.spawn(function()
-        while tween.PlaybackState == Enum.PlaybackState.Playing do
-            -- Verifica se a variável global de controle ainda permite o tween
-            if not _G.Settings.ShouldTween then
-                tween:Cancel()
-                break
-            end
-            task.wait(0.1)
+    local reached = false
+    local conn
+    conn = RunService.RenderStepped:Connect(function()
+        if not _G.Settings.ShouldTween then
+            tween:Cancel()
+            conn:Disconnect()
+            return
+        end
+
+        if (HRP.Position - TargetCFrame.Position).Magnitude <= 20 then
+            tween:Cancel()
+            HRP.CFrame = TargetCFrame
+            conn:Disconnect()
+            reached = true
         end
     end)
+
+    repeat task.wait() until reached or not _G.Settings.ShouldTween
 end
 
-TeleportToTarget = function(targetCFrame)
-    -- Agora ambas as condições usam a velocidade dinâmica
-    _tp(targetCFrame)
+-- Alias
+TeleportToTarget = function(cf)
+    TP(cf)
 end
 
-notween = function(p)
-    plr.Character.HumanoidRootPart.CFrame = p
+-- TP instantâneo
+notween = function(cf)
+    local char = LocalPlayer.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        char.HumanoidRootPart.CFrame = cf
+    end
 end
 
+-- ===============================
+-- NOCLIP + BODYVELOCITY FIXO
+-- ===============================
+RunService.Stepped:Connect(function()
+    local char = LocalPlayer.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+
+    local hrp = char.HumanoidRootPart
+
+    if not hrp:FindFirstChild("BodyClip") then
+        local bv = Instance.new("BodyVelocity")
+        bv.Name = "BodyClip"
+        bv.Parent = hrp
+        bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+        bv.Velocity = Vector3.zero
+    else
+        hrp.BodyClip.Velocity = Vector3.zero
+    end
+
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("BasePart") then
+            v.CanCollide = false
+        end
+    end
+end)
+
+-- ===============================
+-- BTP (RESET + TP FORÇADO)
+-- ===============================
 function BTP(p)
-    local player = game.Players.LocalPlayer
-    local humanoidRootPart = player.Character.HumanoidRootPart
-    local humanoid = player.Character.Humanoid
-    local playerGui = player.PlayerGui.Main
-    local targetPosition = p.Position
-    local lastPosition = humanoidRootPart.Position
+    local player = LocalPlayer
+    local char = player.Character
+    if not char then return end
+
+    local hrp = char:WaitForChild("HumanoidRootPart")
+    local humanoid = char:WaitForChild("Humanoid")
+    local gui = player.PlayerGui:FindFirstChild("Main")
+
+    local lastPos = hrp.Position
+
     repeat
         humanoid.Health = 0
-        humanoidRootPart.CFrame = p
-        playerGui.Quest.Visible = false
-        if (humanoidRootPart.Position - lastPosition).Magnitude > 1 then
-            lastPosition = humanoidRootPart.Position
-            humanoidRootPart.CFrame = p
+        hrp.CFrame = p
+        if gui and gui:FindFirstChild("Quest") then
+            gui.Quest.Visible = false
         end
+
+        if (hrp.Position - lastPos).Magnitude > 1 then
+            lastPos = hrp.Position
+            hrp.CFrame = p
+        end
+
         task.wait(0.5)
-    until (p.Position - humanoidRootPart.Position).Magnitude <= 2000
+    until (p.Position - hrp.Position).Magnitude <= 2000
 end
 spawn(function()
     while task.wait() do
@@ -1623,80 +1660,102 @@ elseif a == 1625 or a <= 1649 then
             PosQ = CFrame.new(-16759.589, 71.283, 1595.339)
             PosM = CFrame.new(-16759.589, 71.283, 1595.339)
 
-        --[[ INICIO DO BLOCO DA SUBMERGED ISLAND E NOVAS QUESTS ]]--
-        elseif a >= 2600 and a <= 2624 then
-            PosQ = CFrame.new(10778.875, -2087.724, 9265.183, 0.934, -9.331e-08, -0.355, 9.176e-08, 1, -2.121e-08, 0.355, -1.280e-08, 0.934)
-            if (_G.Level or getgenv().AutoFarm) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                _tp(CFrame.new(-16269.704, 25.228, 1373.659))
-                task.wait(2)
-                local args = {"TravelToSubmergedIsland"}
-                game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
-                return
-            end
-            Mon = "Reef Bandit"; Qdata = 1; Qname = "SubmergedQuest1"; NameMon = "Reef Bandit"
-            PosM = CFrame.new(11019.131, -2146.068, 9342.391)
+--[[ INICIO DO BLOCO DA SUBMERGED ISLAND E NOVAS QUESTS ]]--
+elseif a >= 2600 and a <= 2624 then
+    PosQ = CFrame.new(10778.875, -2087.724, 9265.183, 0.934, -9.331e-08, -0.355, 9.176e-08, 1, -2.121e-08, 0.355, -1.280e-08, 0.934)
 
-        elseif a >= 2625 and a <= 2649 then
-            PosQ = CFrame.new(10778.875, -2087.724, 9265.183, 0.934, -9.331e-08, -0.355, 9.176e-08, 1, -2.121e-08, 0.355, -1.280e-08, 0.934)
-            if (_G.Level or getgenv().AutoFarm) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                _tp(CFrame.new(-16269.704, 25.228, 1373.659))
-                task.wait(2)
-                local args = {"TravelToSubmergedIsland"}
-                game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
-                return
-            end
-            Mon = "Coral Pirate"; Qdata = 2; Qname = "SubmergedQuest1"; NameMon = "Coral Pirate"
-            PosM = CFrame.new(10808.600, -2030.361, 9364.233)
-
-        elseif a >= 2650 and a <= 2674 then
-            PosQ = CFrame.new(10880.685, -2086.200, 10032.624, -0.321, 9.876e-08, -0.946, 7.132e-08, 1, 8.009e-08, 0.946, -4.180e-08, -0.321)
-            if (_G.Level or getgenv().AutoFarm) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                _tp(CFrame.new(-16269.704, 25.228, 1373.659))
-                task.wait(2)
-                local args = {"TravelToSubmergedIsland"}
-                game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
-                return
-            end
-            Mon = "Sea Chanter"; Qdata = 1; Qname = "SubmergedQuest2"; NameMon = "Sea Chanter"
-            PosM = CFrame.new(10671.271, -2057.591, 10047.258)
-
-        elseif a >= 2675 and a <= 2699 then
-            PosQ = CFrame.new(10880.685, -2086.200, 10032.624, -0.321, 9.876e-08, -0.946, 7.132e-08, 1, 8.009e-08, 0.946, -4.180e-08, -0.321)
-            if (_G.Level or getgenv().AutoFarm) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                _tp(CFrame.new(-16269.704, 25.228, 1373.659))
-                task.wait(2)
-                local args = {"TravelToSubmergedIsland"}
-                game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
-                return
-            end
-            Mon = "Ocean Prophet"; Qdata = 2; Qname = "SubmergedQuest2"; NameMon = "Ocean Prophet"
-            PosM = CFrame.new(11008.519, -2007.728, 10223.079)
-
-        elseif a >= 2700 and a <= 2724 then
-            PosQ = CFrame.new(9640.087, -1992.445, 9613.652, -0.957, 4.119e-08, 0.289, 1.577e-08, 1, -9.029e-08, -0.289, -8.188e-08, -0.957)
-            if (_G.Level or getgenv().AutoFarm) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                _tp(CFrame.new(-16269.704, 25.228, 1373.659))
-                task.wait(2)
-                local args = {"TravelToSubmergedIsland"}
-                game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
-                return
-            end
-            Mon = "High Disciple"; Qdata = 1; Qname = "SubmergedQuest3"; NameMon = "High Disciple"
-            PosM = CFrame.new(9750.416, -1966.938, 9753.360)
-
-        elseif a >= 2725 then
-            PosQ = CFrame.new(9640.087, -1992.445, 9613.652, -0.957, 4.119e-08, 0.289, 1.577e-08, 1, -9.029e-08, -0.289, -8.188e-08, -0.957)
-            if (_G.Level or getgenv().AutoFarm) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
-                _tp(CFrame.new(-16269.704, 25.228, 1373.659))
-                task.wait(2)
-                local args = {"TravelToSubmergedIsland"}
-                game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
-                return
-            end
-            Mon = "Grand Devotee"; Qdata = 2; Qname = "SubmergedQuest3"; NameMon = "Grand Devotee"
-            PosM = CFrame.new(9611.705, -1993.471, 9882.688)
-        end
+    if (_G.Level or getgenv().AutoFarm)
+    and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+        TP(CFrame.new(-16269.704, 25.228, 1373.659))
+        task.wait(2)
+        local args = {"TravelToSubmergedIsland"}
+        game:GetService("ReplicatedStorage").Modules.Net
+            :FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+        return
     end
+
+    Mon = "Reef Bandit"; Qdata = 1; Qname = "SubmergedQuest1"; NameMon = "Reef Bandit"
+    PosM = CFrame.new(11019.131, -2146.068, 9342.391)
+
+elseif a >= 2625 and a <= 2649 then
+    PosQ = CFrame.new(10778.875, -2087.724, 9265.183, 0.934, -9.331e-08, -0.355, 9.176e-08, 1, -2.121e-08, 0.355, -1.280e-08, 0.934)
+
+    if (_G.Level or getgenv().AutoFarm)
+    and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+        TP(CFrame.new(-16269.704, 25.228, 1373.659))
+        task.wait(2)
+        local args = {"TravelToSubmergedIsland"}
+        game:GetService("ReplicatedStorage").Modules.Net
+            :FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+        return
+    end
+
+    Mon = "Coral Pirate"; Qdata = 2; Qname = "SubmergedQuest1"; NameMon = "Coral Pirate"
+    PosM = CFrame.new(10808.600, -2030.361, 9364.233)
+
+elseif a >= 2650 and a <= 2674 then
+    PosQ = CFrame.new(10880.685, -2086.200, 10032.624, -0.321, 9.876e-08, -0.946, 7.132e-08, 1, 8.009e-08, 0.946, -4.180e-08, -0.321)
+
+    if (_G.Level or getgenv().AutoFarm)
+    and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+        TP(CFrame.new(-16269.704, 25.228, 1373.659))
+        task.wait(2)
+        local args = {"TravelToSubmergedIsland"}
+        game:GetService("ReplicatedStorage").Modules.Net
+            :FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+        return
+    end
+
+    Mon = "Sea Chanter"; Qdata = 1; Qname = "SubmergedQuest2"; NameMon = "Sea Chanter"
+    PosM = CFrame.new(10671.271, -2057.591, 10047.258)
+
+elseif a >= 2675 and a <= 2699 then
+    PosQ = CFrame.new(10880.685, -2086.200, 10032.624, -0.321, 9.876e-08, -0.946, 7.132e-08, 1, 8.009e-08, 0.946, -4.180e-08, -0.321)
+
+    if (_G.Level or getgenv().AutoFarm)
+    and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+        TP(CFrame.new(-16269.704, 25.228, 1373.659))
+        task.wait(2)
+        local args = {"TravelToSubmergedIsland"}
+        game:GetService("ReplicatedStorage").Modules.Net
+            :FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+        return
+    end
+
+    Mon = "Ocean Prophet"; Qdata = 2; Qname = "SubmergedQuest2"; NameMon = "Ocean Prophet"
+    PosM = CFrame.new(11008.519, -2007.728, 10223.079)
+
+elseif a >= 2700 and a <= 2724 then
+    PosQ = CFrame.new(9640.087, -1992.445, 9613.652, -0.957, 4.119e-08, 0.289, 1.577e-08, 1, -9.029e-08, -0.289, -8.188e-08, -0.957)
+
+    if (_G.Level or getgenv().AutoFarm)
+    and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+        TP(CFrame.new(-16269.704, 25.228, 1373.659))
+        task.wait(2)
+        local args = {"TravelToSubmergedIsland"}
+        game:GetService("ReplicatedStorage").Modules.Net
+            :FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+        return
+    end
+
+    Mon = "High Disciple"; Qdata = 1; Qname = "SubmergedQuest3"; NameMon = "High Disciple"
+    PosM = CFrame.new(9750.416, -1966.938, 9753.360)
+
+elseif a >= 2725 then
+    PosQ = CFrame.new(9640.087, -1992.445, 9613.652, -0.957, 4.119e-08, 0.289, 1.577e-08, 1, -9.029e-08, -0.289, -8.188e-08, -0.957)
+
+    if (_G.Level or getgenv().AutoFarm)
+    and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+        TP(CFrame.new(-16269.704, 25.228, 1373.659))
+        task.wait(2)
+        local args = {"TravelToSubmergedIsland"}
+        game:GetService("ReplicatedStorage").Modules.Net
+            :FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+        return
+    end
+
+    Mon = "Grand Devotee"; Qdata = 2; Qname = "SubmergedQuest3"; NameMon = "Grand Devotee"
+    PosM = CFrame.new(9611.705, -1993.471, 9882.688)
 end
 
 
@@ -2004,48 +2063,58 @@ Farming:AddToggle({
         SaveConfig()
     end
 })
-spawn(function()
-    while wait(Sec) do
+
+task.spawn(function()
+    while task.wait(Sec) do
         if _G.Level then
             pcall(function()
-                -- [CORREÇÃO 1] Definir o Root e Character dentro do loop para funcionar após a morte
+                -- Atualiza character após morte
                 local Character = plr.Character or plr.CharacterAdded:Wait()
                 local Root = Character:FindFirstChild("HumanoidRootPart")
                 local Humanoid = Character:FindFirstChild("Humanoid")
 
-                -- Só executa se o personagem estiver vivo e carregado  
-                if Root and Humanoid and Humanoid.Health > 0 then  
-                    
-                    local QuestGui = plr.PlayerGui.Main.Quest  
-                    
-                    -- Lógica: Se a Quest NÃO estiver visível (Precisa pegar)  
-                    if QuestGui.Visible == false then  
-                        _tp(QuestNeta()[6])  
-                        
-                        -- Verifica a distância para o NPC  
-                        if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then  
-                            -- [CORREÇÃO 2] Espera 1.3 segundos antes de pegar a quest  
-                            wait(1.1)   
-                            replicated.Remotes.CommF_:InvokeServer("StartQuest", QuestNeta()[3], QuestNeta()[2])  
-                        end  
+                -- Só executa se estiver vivo
+                if Root and Humanoid and Humanoid.Health > 0 then
+                    local QuestGui = plr.PlayerGui.Main.Quest
 
-                    -- Lógica: Se a Quest ESTIVER visível (Verificar se é a certa ou Farmar)  
-                    elseif QuestGui.Visible == true then  
-                        local QuestTitle = QuestGui.Container.QuestTitle.Title.Text  
-                        
-                        -- Se a quest atual não for a correta, abandona  
-                        if not string.find(QuestTitle, QuestNeta()[5]) then  
-                            replicated.Remotes.CommF_:InvokeServer("AbandonQuest")  
-                        else  
-                            -- Se for a quest certa, começa a matar  
-                            if workspace.Enemies:FindFirstChild(QuestNeta()[1]) then  
-                                -- Lógica para encontrar o Mob Mais Próximo
+                    -- =========================
+                    -- PEGAR QUEST
+                    -- =========================
+                    if QuestGui.Visible == false then
+                        TP(QuestNeta()[6])
+
+                        if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then
+                            task.wait(1.1)
+                            replicated.Remotes.CommF_:InvokeServer(
+                                "StartQuest",
+                                QuestNeta()[3],
+                                QuestNeta()[2]
+                            )
+                        end
+
+                    -- =========================
+                    -- QUEST ATIVA
+                    -- =========================
+                    elseif QuestGui.Visible == true then
+                        local QuestTitle = QuestGui.Container.QuestTitle.Title.Text
+
+                        -- Quest errada
+                        if not string.find(QuestTitle, QuestNeta()[5]) then
+                            replicated.Remotes.CommF_:InvokeServer("AbandonQuest")
+
+                        -- Quest correta
+                        else
+                            if workspace.Enemies:FindFirstChild(QuestNeta()[1]) then
+                                -- Encontra o mob mais próximo
                                 local TargetMob = nil
                                 local MaxDistance = math.huge
 
-                                for i, v in pairs(workspace.Enemies:GetChildren()) do
-                                    if v.Name == QuestNeta()[1] and Attack.Alive(v) then
-                                        local Distance = (Root.Position - v.HumanoidRootPart.Position).Magnitude
+                                for _, v in pairs(workspace.Enemies:GetChildren()) do
+                                    if v.Name == QuestNeta()[1]
+                                    and Attack.Alive(v)
+                                    and v:FindFirstChild("HumanoidRootPart") then
+                                        local Distance =
+                                            (Root.Position - v.HumanoidRootPart.Position).Magnitude
                                         if Distance < MaxDistance then
                                             MaxDistance = Distance
                                             TargetMob = v
@@ -2053,29 +2122,36 @@ spawn(function()
                                     end
                                 end
 
-                                -- Ataca o Mob mais próximo encontrado
+                                -- Ataca o mob
                                 if TargetMob then
                                     repeat
-                                        wait()
-                                        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                                        task.wait()
+                                        if plr.Character
+                                        and plr.Character:FindFirstChild("HumanoidRootPart") then
                                             Attack.Kill(TargetMob, _G.Level)
                                         else
                                             break
                                         end
-                                    until not _G.Level or not Attack.Alive(TargetMob) or QuestGui.Visible == false
+                                    until not _G.Level
+                                        or not Attack.Alive(TargetMob)
+                                        or QuestGui.Visible == false
                                 end
-                            else  
-                                -- Se o inimigo não existir, vai para o spawn dele  
-                                _tp(QuestNeta()[4])  
-                                if replicated:FindFirstChild(QuestNeta()[1]) then  
-                                    _tp(replicated:FindFirstChild(QuestNeta()[1]).HumanoidRootPart.CFrame * CFrame.new(0, 30, 0))  
-                                end  
-                            end  
-                        end  
-                    end  
-                end  
-            end)  
-        end  
+                            else
+                                -- Vai para o spawn do mob
+                                TP(QuestNeta()[4])
+
+                                if replicated:FindFirstChild(QuestNeta()[1]) then
+                                    TP(
+                                        replicated:FindFirstChild(QuestNeta()[1])
+                                            .HumanoidRootPart.CFrame * CFrame.new(0, 30, 0)
+                                    )
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+        end
     end
 end)
 
@@ -2088,19 +2164,24 @@ Farming:AddToggle({
         SaveConfig()
     end
 })
--- Auto Farm Nearest spawn
-spawn(function()
-    while wait() do
+
+-- Auto Farm Nearest
+task.spawn(function()
+    while task.wait() do
         pcall(function()
             if _G.AutoFarmNear then
-                for i, v in pairs(workspace.Enemies:GetChildren()) do
-                    if v:FindFirstChild("Humanoid") or v:FindFirstChild("HumanoidRootPart") then
-                        if v.Humanoid.Health > 0 then
-                            repeat
-                                wait()
-                                Attack.Kill(v, _G.AutoFarmNear)
-                            until not _G.AutoFarmNear or not v.Parent or v.Humanoid.Health <= 0
-                        end
+                for _, v in pairs(workspace.Enemies:GetChildren()) do
+                    if v
+                    and v:FindFirstChild("Humanoid")
+                    and v:FindFirstChild("HumanoidRootPart")
+                    and v.Humanoid.Health > 0 then
+
+                        repeat
+                            task.wait()
+                            Attack.Kill(v, _G.AutoFarmNear)
+                        until not _G.AutoFarmNear
+                            or not v.Parent
+                            or v.Humanoid.Health <= 0
                     end
                 end
             end
@@ -2118,70 +2199,37 @@ Farming:AddToggle({
         SaveConfig()
     end
 })
-spawn(function()
-    while wait(Sec) do
+
+task.spawn(function()
+    while task.wait(Sec) do
         if _G.AutoBerry then
-            local CollectionService = game:GetService("CollectionService")
-            local Players = game:GetService("Players")
-            local Player = Players.LocalPlayer
-            local BerryBush = CollectionService:GetTagged("BerryBush")
-            local Distance, Nearest = math.huge
-            for i = 1, # BerryBush do
-                local Bush = BerryBush[i]
-                for AttributeName, BerryName in pairs(Bush:GetAttributes()) do
-                    if not BerryArray or table.find(BerryArray, BerryName) then
-                        _tp(Bush.Parent:GetPivot())
-                        for i = 1, # BerryBush do
-                            local Bush = BerryBush[i]
-                            for AttributeName, BerryName in pairs(Bush:GetChildren()) do
-                                if not BerryArray or table.find(BerryArray, BerryName) then
-                                    _tp(BerryName.WorldPivot)
-                                    fireproximityprompt(BerryName.ProximityPrompt, math.huge)
+            pcall(function()
+                local CollectionService = game:GetService("CollectionService")
+                local BerryBush = CollectionService:GetTagged("BerryBush")
+
+                for i = 1, #BerryBush do
+                    local Bush = BerryBush[i]
+                    if Bush and Bush.Parent then
+                        for _, BerryName in pairs(Bush:GetAttributes()) do
+                            if not BerryArray or table.find(BerryArray, BerryName) then
+                                TP(Bush.Parent:GetPivot())
+
+                                for j = 1, #BerryBush do
+                                    local Bush2 = BerryBush[j]
+                                    if Bush2 and Bush2.Parent then
+                                        for _, Berry in pairs(Bush2:GetChildren()) do
+                                            if not BerryArray or table.find(BerryArray, Berry.Name) then
+                                                TP(Berry.WorldPivot)
+                                                if Berry:FindFirstChild("ProximityPrompt") then
+                                                    fireproximityprompt(Berry.ProximityPrompt, math.huge)
+                                                end
+                                            end
+                                        end
+                                    end
                                 end
                             end
                         end
                     end
-                end
-            end
-        end
-    end
-end)
-
-Farming:AddToggle({
-    Name = "Auto Collect Chest",
-    Default = _G.AutoFarmChest or false,
-    Callback = function(Value)
-        _G.AutoFarmChest = Value
-        SaveConfig()
-    end
-})
-spawn(function()
-    while task.wait(0.1) do -- checa a cada 0.1s
-        if _G.AutoFarmChest then
-            pcall(function()
-                local CollectionService = game:GetService("CollectionService")
-                local Players = game:GetService("Players")
-                local Player = Players.LocalPlayer
-                local Character = Player.Character or Player.CharacterAdded:Wait()
-                if not Character then return end
-
-                local Position = Character:GetPivot().Position
-                local Chests = CollectionService:GetTagged("_ChestTagged")
-                local Distance, Nearest = math.huge, nil
-
-                for i = 1, #Chests do
-                    local Chest = Chests[i]
-                    local Magnitude = (Chest:GetPivot().Position - Position).Magnitude
-                    if not SelectedIsland or Chest:IsDescendantOf(SelectedIsland) then
-                        if not Chest:GetAttribute("IsDisabled") and Magnitude < Distance then
-                            Distance = Magnitude
-                            Nearest = Chest
-                        end
-                    end
-                end
-
-                if Nearest then
-                    _tp(Nearest:GetPivot()) -- teleporta imediatamente
                 end
             end)
         end
@@ -2199,30 +2247,29 @@ Farming:AddToggle({
     end
 })
 
-spawn(function()
-    while wait(Sec) do
+task.spawn(function()
+    while task.wait(Sec) do
         pcall(function()
             if _G.AutoFactory then
-                
-                -- só faz algo se a Factory estiver ativa
+                -- Só executa se a Factory estiver ativa
                 if IsFactoryActive() then
                     local v = GetConnectionEnemies("Core")
 
-                    if v then
+                    if v and v.PrimaryPart and v:FindFirstChild("Humanoid") then
                         repeat
                             task.wait()
                             EquipWeapon(_G.SelectWeapon)
-                            _tp(v.PrimaryPart.CFrame * CFrame.new(0, 0, -5))
-                        until v.Humanoid.Health <= 0 or not _G.AutoFactory
+                            TP(v.PrimaryPart.CFrame * CFrame.new(0, 0, -5))
+                        until not _G.AutoFactory
+                            or not v.Parent
+                            or v.Humanoid.Health <= 0
                     end
                 end
-
             end
         end)
     end
 end)
 
--- Toggle Auto Raid Castle
 Farming:AddToggle({
     Name = "Auto Raid Pirate",
     Default = _G.AutoRaidCastle or false,
@@ -2231,12 +2278,11 @@ Farming:AddToggle({
         SaveConfig()
     end
 })
--- Sistema Auto Raid Castle
-spawn(function()
+
+task.spawn(function()
     while task.wait(Sec) do
         if _G.AutoRaidCastle then
             pcall(function()
-
                 local TargetCFrame = CFrame.new(
                     -5496.17432, 313.768921, -2841.53027,
                     0.924894512, 7.37058015e-09, 0.380223751,
@@ -2247,6 +2293,10 @@ spawn(function()
                 local CheckCFrame = CFrame.new(
                     -5539.3115234375, 313.80053710938, -2972.3723144531
                 )
+
+                local Character = plr.Character or plr.CharacterAdded:Wait()
+                local Root = Character:FindFirstChild("HumanoidRootPart")
+                if not Root then return end
 
                 -- Se estiver perto do Castle
                 if (CheckCFrame.Position - Root.Position).Magnitude <= 500 then
@@ -2262,14 +2312,14 @@ spawn(function()
                                     task.wait()
                                     G.Kill(e, _G.AutoRaidCastle)
                                 until not _G.AutoRaidCastle
-                                or not e.Parent
-                                or e.Humanoid.Health <= 0
-                                or not workspace.Enemies:FindFirstChild(e.Name)
+                                    or not e.Parent
+                                    or e.Humanoid.Health <= 0
+                                    or not workspace.Enemies:FindFirstChild(e.Name)
                             end
                         end
                     end
 
-                -- Se NÃO estiver perto, verifica inimigos e teleporta
+                -- Se NÃO estiver perto do Castle
                 else
                     local EnemyList = {
                         "Galley Pirate","Galley Captain","Raider","Mercenary",
@@ -2283,26 +2333,25 @@ spawn(function()
                         if not _G.AutoRaidCastle then break end
 
                         if table.find(EnemyList, n.Name) then
-                            _tp(TargetCFrame)
+                            TP(TargetCFrame)
                             break
                         end
                     end
                 end
-
             end)
         end
     end
 end)
 
-
 Farming:AddSection("Bone")
 
 
+-- TOGGLES
 Farming:AddToggle({
     Name = "Auto Farm Bone",
     Default = _G.AutoFarm_Bone or false,
-    Callback = function(Value)
-        _G.AutoFarm_Bone = Value
+    Callback = function(v)
+        _G.AutoFarm_Bone = v
         SaveConfig()
     end
 })
@@ -2310,8 +2359,8 @@ Farming:AddToggle({
 Farming:AddToggle({
     Name = "Accept Quest",
     Default = _G.AcceptQuest or false,
-    Callback = function(Value)
-        _G.AcceptQuest = Value
+    Callback = function(v)
+        _G.AcceptQuest = v
         SaveConfig()
     end
 })
@@ -2319,188 +2368,214 @@ Farming:AddToggle({
 Farming:AddToggle({
     Name = "Auto Random Bone",
     Default = _G.Auto_Random_Bone or false,
-    Callback = function(Value)
-        _G.Auto_Random_Bone = Value
+    Callback = function(v)
+        _G.Auto_Random_Bone = v
         SaveConfig()
     end
 })
 
--- Loop de Random Bone
-spawn(function()
+-- RANDOM BONE LOOP
+task.spawn(function()
     while task.wait(1) do
         if _G.Auto_Random_Bone then
-            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("Bones", "Buy", 1, 1)
+            pcall(function()
+                game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer(
+                    "Bones","Buy",1,1
+                )
+            end)
         end
     end
 end)
 
-local portalDebounce = false -- Variável para controlar o uso do portal
+-- CONFIG
+local MOBS = {
+    "Reborn Skeleton",
+    "Living Zombie",
+    "Demonic Soul",
+    "Posessed Mummy"
+}
 
--- Loop de Farm e Quest
-spawn(function()
+local QuestPos = CFrame.new(-9516.99, 172.01, 6078.46)
+local FarmSpot = CFrame.new(-9495.68, 453.58, 5977.34)
+local PortalPos = Vector3.new(-5097.93, 316.44, -3142.66)
+
+local portalDebounce = false
+local Players = game:GetService("Players")
+local Replicated = game:GetService("ReplicatedStorage")
+
+-- FUNÇÃO: MOB MAIS PRÓXIMO
+local function GetClosestMob(hrp)
+    local closest, dist = nil, math.huge
+    for _, mob in pairs(workspace.Enemies:GetChildren()) do
+        if table.find(MOBS, mob.Name)
+        and mob:FindFirstChild("Humanoid")
+        and mob.Humanoid.Health > 0
+        and mob.PrimaryPart then
+            local d = (mob.PrimaryPart.Position - hrp.Position).Magnitude
+            if d < dist then
+                dist = d
+                closest = mob
+            end
+        end
+    end
+    return closest
+end
+
+-- FARM + QUEST LOOP
+task.spawn(function()
     while task.wait() do
-        if _G.AutoFarm_Bone then
-            pcall(function()
-                local plr = game.Players.LocalPlayer
-                local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-                if not hrp then return end
+        if not _G.AutoFarm_Bone then continue end
 
-                local QuestUI = plr.PlayerGui.Main.Quest          
-                local MOBS = {"Reborn Skeleton", "Living Zombie", "Demonic Soul", "Posessed Mummy"}    
-                local PosQ = CFrame.new(-9516.99316, 172.017181, 6078.46533)
-                local replicated = game:GetService("ReplicatedStorage")
+        pcall(function()
+            local plr = Players.LocalPlayer
+            local char = plr.Character
+            local hrp = char and char:FindFirstChild("HumanoidRootPart")
+            if not hrp then return end
 
-                -- Verificação de distância extrema
-                local distParaQuest = (PosQ.Position - hrp.Position).Magnitude
-                
-                if distParaQuest > 2000 then
-                    if not portalDebounce then
-                        portalDebounce = true -- Ativa a trava para não repetir
-                        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
-                        task.wait(1.5) -- Espera o tempo solicitado
-                    end
-                else
-                    -- Se já estiver perto (menos de 2000), reseta a trava para o futuro
-                    portalDebounce = false
+            local QuestUI = plr.PlayerGui.Main.Quest
+            local distQuest = (QuestPos.Position - hrp.Position).Magnitude
+
+            -- PORTAL LONGE
+            if distQuest > 2000 then
+                if not portalDebounce then
+                    portalDebounce = true
+                    Replicated.Remotes.CommF_:InvokeServer(
+                        "requestEntrance", PortalPos
+                    )
+                    task.wait(1.5)
                 end
+                return
+            else
+                portalDebounce = false
+            end
 
-                -- Lógica de Quest  
-                if _G.AcceptQuest and not QuestUI.Visible then          
-                    local distToNPC = (PosQ.Position - hrp.Position).Magnitude    
-                    if distToNPC > 5 then    
-                        _tp(PosQ) -- Aqui ele continua indo normal com seu teleporte suave
-                    else    
-                        task.wait(0.5)  
-                        replicated.Remotes.CommF_:InvokeServer("StartQuest", "HauntedQuest2", 1)  
-                        task.wait(1)   
-                    end    
-                else    
-                    -- Procura o mob mais próximo da lista  
-                    local function GetClosestMob()          
-                        local closest, shortest = nil, math.huge          
-                        for _, mob in pairs(workspace.Enemies:GetChildren()) do          
-                            local isTarget = false  
-                            for _, name in pairs(MOBS) do  
-                                if mob.Name == name then isTarget = true break end  
-                            end  
-                              
-                            if isTarget and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then          
-                                local dist = (mob.PrimaryPart.Position - hrp.Position).Magnitude          
-                                if dist < shortest then     
-                                    shortest = dist     
-                                    closest = mob     
-                                end          
-                            end          
-                        end          
-                        return closest          
-                    end          
+            -- QUEST
+            if _G.AcceptQuest and not QuestUI.Visible then
+                if distQuest > 6 then
+                    TP(QuestPos)
+                else
+                    task.wait(0.5)
+                    Replicated.Remotes.CommF_:InvokeServer(
+                        "StartQuest","HauntedQuest2",1
+                    )
+                    task.wait(1)
+                end
+                return
+            end
 
-                    local targetMob = GetClosestMob()          
-                    if targetMob then          
-                        -- Trava no mob até ele morrer
-                        repeat  
-                            task.wait()  
-                            Attack.Kill(targetMob, _G.AutoFarm_Bone)  
-                        until not _G.AutoFarm_Bone or not targetMob.Parent or targetMob.Humanoid.Health <= 0  
-                    else          
-                        -- Se não houver mobs vivos, vai para o spot de spawn  
-                        _tp(CFrame.new(-9495.68, 453.58, 5977.34))          
-                    end          
-                end    
-            end)      
-        end      
+            -- FARM
+            local mob = GetClosestMob(hrp)
+            if mob then
+                repeat
+                    task.wait()
+                    Attack.Kill(mob, _G.AutoFarm_Bone)
+                until not _G.AutoFarm_Bone
+                or not mob.Parent
+                or mob.Humanoid.Health <= 0
+            else
+                TP(FarmSpot)
+            end
+        end)
     end
 end)
-
 
 Farming:AddSection("Material")
 
+-- DROPDOWN MATERIAL
 Farming:AddDropdown({
-  Name = "Select Material",
-  Options = MaterialList,
-  Default = "Ectoplasm",
-  Callback = function(Value)
-    getgenv().SelectMaterial = Value
-  end
+    Name = "Select Material",
+    Options = MaterialList,
+    Default = "Ectoplasm",
+    Callback = function(v)
+        getgenv().SelectMaterial = v
+    end
 })
 
--- Auto Materials
+-- TOGGLE FARM
 Farming:AddToggle({
     Name = "Start Farm",
     Default = getgenv().AutoMaterial or false,
-    Callback = function(Value)
-        getgenv().AutoMaterial = Value
+    Callback = function(v)
+        getgenv().AutoMaterial = v
         SaveConfig()
     end
 })
 
-spawn(function()
-    local plr = game.Players.LocalPlayer
+-- SERVICES
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local plr = Players.LocalPlayer
 
-    local function processEnemy(v, EnemyName)
-        if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
-            if v.Name == EnemyName then
+-- FUNÇÃO: INIMIGO MAIS PRÓXIMO
+local function GetClosestEnemy(list)
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    local closest, dist = nil, math.huge
+
+    for _, e in pairs(workspace.Enemies:GetChildren()) do
+        if e:FindFirstChild("Humanoid")
+        and e:FindFirstChild("HumanoidRootPart")
+        and e.Humanoid.Health > 0 then
+            for _, name in ipairs(list) do
+                if string.find(e.Name, name) then
+                    local d = (hrp.Position - e.HumanoidRootPart.Position).Magnitude
+                    if d < dist then
+                        dist = d
+                        closest = e
+                    end
+                end
+            end
+        end
+    end
+
+    return closest
+end
+
+-- FUNÇÃO: TP PARA SPAWN CASO NÃO TENHA MOB
+local function HandleSpawns()
+    local char = plr.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    for _, spawn in pairs(Workspace._WorldOrigin.EnemySpawns:GetChildren()) do
+        for _, name in ipairs(MMon) do
+            if string.find(spawn.Name, name) then
+                if (hrp.Position - spawn.Position).Magnitude > 10 then
+                    TP(spawn.CFrame * Pos)
+                end
+                return
+            end
+        end
+    end
+end
+
+-- LOOP PRINCIPAL
+task.spawn(function()
+    while task.wait() do
+        if not getgenv().AutoMaterial then continue end
+
+        pcall(function()
+            -- Atualiza material selecionado
+            if getgenv().SelectMaterial then
+                MaterialMon(getgenv().SelectMaterial)
+                TP(MPos)
+            end
+
+            -- Procura inimigo
+            local enemy = GetClosestEnemy(MMon)
+            if enemy then
                 repeat
-                    wait()
-                    Attack.Kill(v, getgenv().AutoMaterial)
-                until not getgenv().AutoMaterial or not v.Parent or v.Humanoid.Health <= 0
+                    task.wait()
+                    Attack.Kill(enemy, getgenv().AutoMaterial)
+                until not getgenv().AutoMaterial
+                or not enemy.Parent
+                or enemy.Humanoid.Health <= 0
+            else
+                HandleSpawns()
             end
-        end
-    end
-
-    local function getClosestEnemy(EnemyList)
-        local closestEnemy = nil
-        local shortestDistance = math.huge
-        local char = plr.Character
-        if not char or not char:FindFirstChild("HumanoidRootPart") then return nil end
-        local rootPos = char.HumanoidRootPart.Position
-
-        for _, v in pairs(workspace.Enemies:GetChildren()) do
-            for _, EnemyName in ipairs(EnemyList) do
-                if v:FindFirstChild("HumanoidRootPart") and string.find(v.Name, EnemyName) then
-                    local distance = (rootPos - v.HumanoidRootPart.Position).Magnitude
-                    if distance < shortestDistance then
-                        shortestDistance = distance
-                        closestEnemy = v
-                    end
-                end
-            end
-        end
-
-        return closestEnemy
-    end
-
-    local function handleEnemySpawns()
-        for _, v in pairs(game:GetService("Workspace")["_WorldOrigin"].EnemySpawns:GetChildren()) do
-            for _, EnemyName in ipairs(MMon) do
-                if string.find(v.Name, EnemyName) then
-                    local char = plr.Character
-                    if char and char:FindFirstChild("HumanoidRootPart") then
-                        if (char.HumanoidRootPart.Position - v.Position).Magnitude >= 10 then
-                            _tp(v.CFrame * Pos)
-                        end
-                    end
-                end
-            end
-        end
-    end
-
-    while wait() do
-        if getgenv().AutoMaterial then
-            pcall(function()
-                if getgenv().SelectMaterial then
-                    MaterialMon(getgenv().SelectMaterial)
-                    _tp(MPos)
-                end
-
-                local closest = getClosestEnemy(MMon)
-                if closest then
-                    processEnemy(closest, closest.Name)
-                end
-
-                handleEnemySpawns()
-            end)
-        end
+        end)
     end
 end)
 
@@ -2511,276 +2586,103 @@ local SubTab = Window:MakeTab({
 
 SubTab:AddSection("Elite Section")
 
+-- TOGGLE AUTO ELITE
 SubTab:AddToggle({
     Name = "Auto Elite Hunter",
     Default = _G.FarmEliteHunt or false,
-    Callback = function(Value)
-        _G.FarmEliteHunt = Value
+    Callback = function(v)
+        _G.FarmEliteHunt = v
         SaveConfig()
     end
 })
-spawn(function()
-    while wait(Sec) do
+
+-- CONFIG
+local EliteNames = { "Diablo", "Urban", "Deandre" }
+
+-- FUNÇÃO: CHECA SE É QUEST DE ELITE
+local function IsEliteQuest()
+    local quest = plr.PlayerGui.Main.Quest
+    if not quest.Visible then return false end
+
+    local title = quest.Container.QuestTitle.Title.Text
+    for _, name in ipairs(EliteNames) do
+        if string.find(title, name) then
+            return name
+        end
+    end
+end
+
+-- FUNÇÃO: TP PARA SPAWN DO ELITE
+local function TeleportToEliteSpawn(eliteName)
+    for _, v in pairs(replicated:GetChildren()) do
+        if v:FindFirstChild("HumanoidRootPart") and string.find(v.Name, eliteName) then
+            TP(v.HumanoidRootPart.CFrame)
+            return true
+        end
+    end
+end
+
+-- FUNÇÃO: PEGA ELITE VIVO
+local function GetEliteEnemy(eliteName)
+    for _, v in pairs(Enemies:GetChildren()) do
+        if string.find(v.Name, eliteName) and Attack.Alive(v) then
+            return v
+        end
+    end
+end
+
+-- LOOP PRINCIPAL
+task.spawn(function()
+    while task.wait(Sec) do
+        if not _G.FarmEliteHunt then continue end
+
         pcall(function()
-            if _G.FarmEliteHunt then
-                if plr.PlayerGui.Main.Quest.Visible == true then
-                    if string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "Diablo") or string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "Urban") or string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "Deandre") then
-                        for i, v in pairs(replicated:GetChildren()) do
-                            if string.find(v.Name, "Diablo") or string.find(v.Name, "Urban") or string.find(v.Name, "Deandre") then
-                                _tp(v.HumanoidRootPart.CFrame)
-                            end
-                        end
-                        for i, v in pairs(Enemies:GetChildren()) do
-                            if (string.find(v.Name, "Diablo") or string.find(v.Name, "Urban") or string.find(v.Name, "Deandre")) and Attack.Alive(v) then
-                                repeat
-                                    wait()
-                                    Attack.Kill(v, _G.FarmEliteHunt)
-                                until not _G.FarmEliteHunt or plr.PlayerGui.Main.Quest.Visible == false or not v.Parent or v.Humanoid.Health <= 0
-                            end
-                        end
-                    end
-                else
-                    replicated.Remotes.CommF_:InvokeServer("EliteHunter")
-                end
+            local eliteName = IsEliteQuest()
+
+            -- NÃO TEM QUEST → PEGA
+            if not eliteName then
+                replicated.Remotes.CommF_:InvokeServer("EliteHunter")
+                return
+            end
+
+            -- TP PARA O SPAWN
+            TeleportToEliteSpawn(eliteName)
+
+            -- PROCURA ELITE
+            local elite = GetEliteEnemy(eliteName)
+            if elite then
+                repeat
+                    task.wait()
+                    Attack.Kill(elite, _G.FarmEliteHunt)
+                until not _G.FarmEliteHunt
+                or not elite.Parent
+                or elite.Humanoid.Health <= 0
+                or not plr.PlayerGui.Main.Quest.Visible
             end
         end)
     end
 end)
 
+-- TOGGLE STOP COM CHALICE
 SubTab:AddToggle({
     Name = "Stop if there is a God Chalice",
     Default = _G.StopWhenChalice or false,
-    Callback = function(Value)
-        _G.StopWhenChalice = Value
+    Callback = function(v)
+        _G.StopWhenChalice = v
         SaveConfig()
     end
 })
-spawn(function()
-    while wait(.2) do
+
+task.spawn(function()
+    while task.wait(0.2) do
         if _G.StopWhenChalice and _G.FarmEliteHunt then
             pcall(function()
-                if GetBP("God's Chalice") or GetBP("Sweet Chalice") or GetBP("Fist of Darkness") then
+                if GetBP("God's Chalice")
+                or GetBP("Sweet Chalice")
+                or GetBP("Fist of Darkness") then
                     _G.FarmEliteHunt = false
                 end
             end)
-        end
-    end
-end)
-
-SubTab:AddSection("Boss Farming")
-
-
-
--- =====================
--- DROPDOWN SELECT BOSS
--- =====================
-local BossDropdown = SubTab:AddDropdown({
-    Name = "Select Boss",
-    Options = Boss,
-    Default = Boss[1],
-    Callback = function(Value)
-        _G.FindBoss = Value
-        SaveConfig()
-    end
-})
-
--- =====================
--- REFRESH BOSS LIST
--- =====================
-SubTab:AddButton({
-    Name = "Refresh Boss List",
-    Debounce = 0.5,
-    Callback = function()
-        local LiveBosses = {}
-        local FoundAny = false
-
-        for _, obj in pairs(WS:GetDescendants()) do
-            if obj:IsA("Model") and obj:GetAttribute("IsBoss") == true then
-                if not table.find(LiveBosses, obj.Name) then
-                    table.insert(LiveBosses, obj.Name)
-                    FoundAny = true
-                end
-            end
-        end
-
-        for _, obj in pairs(RS:GetDescendants()) do
-            if obj:IsA("Model") and obj:GetAttribute("IsBoss") == true then
-                if not table.find(LiveBosses, obj.Name) then
-                    table.insert(LiveBosses, obj.Name)
-                    FoundAny = true
-                end
-            end
-        end
-
-        if FoundAny then
-            table.sort(LiveBosses)
-            BossDropdown:Refresh(LiveBosses, true)
-        else
-            BossDropdown:Refresh({"Nenhum Boss Encontrado"}, true)
-        end
-    end
-})
-
--- =====================
--- TOGGLES
--- =====================
-SubTab:AddToggle({
-    Name = "Auto Farm Boss Select",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoBoss = Value
-        if Value then _G.FarmAllBoss = false end
-        SaveConfig()
-    end
-})
-
-SubTab:AddToggle({
-    Name = "Accept Quest Boss",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoAcceptQuest = Value
-        SaveConfig()
-    end
-})
-
-SubTab:AddToggle({
-    Name = "Farm All Bosses",
-    Default = false,
-    Callback = function(Value)
-        _G.FarmAllBoss = Value
-        if Value then _G.AutoBoss = false end
-        _G.CurrentTargetBoss = nil
-        SaveConfig()
-    end
-})
-
--- =====================
--- THREAD 1: SCAN FARM ALL BOSSES
--- =====================
-spawn(function()
-    while task.wait() do
-        if not _G.FarmAllBoss then
-            task.wait(0.5)
-            continue
-        end
-
-        if _G.CurrentTargetBoss
-        and _G.CurrentTargetBoss.Parent
-        and _G.CurrentTargetBoss:FindFirstChild("Humanoid")
-        and _G.CurrentTargetBoss.Humanoid.Health > 0 then
-            task.wait(0.2)
-            continue
-        end
-
-        local char = plr.Character
-        local myHrp = char and char:FindFirstChild("HumanoidRootPart")
-        if not myHrp then task.wait(0.5) continue end
-
-        local potentialBosses = {}
-        local foundInWorkspace = false
-
-        local function FastScan(container, isRS)
-            for _, v in pairs(container:GetDescendants()) do
-                if v:IsA("Model") and v:GetAttribute("IsBoss") == true then
-                    if v.Name ~= "Cursed Skeleton Boss" then
-                        local h = v:FindFirstChild("Humanoid")
-                        local hrp = v:FindFirstChild("HumanoidRootPart") or v:FindFirstChild("Torso")
-                        if h and h.Health > 0 and hrp then
-                            local dist = (myHrp.Position - hrp.Position).Magnitude
-                            table.insert(potentialBosses, {
-                                Model = v,
-                                Distance = isRS and (dist + 10000) or dist
-                            })
-                            if not isRS then foundInWorkspace = true end
-                        end
-                    end
-                end
-            end
-        end
-
-        FastScan(WS, false)
-        if not foundInWorkspace then
-            FastScan(RS, true)
-        end
-
-        if #potentialBosses > 0 then
-            table.sort(potentialBosses, function(a, b)
-                return a.Distance < b.Distance
-            end)
-            _G.CurrentTargetBoss = potentialBosses[1].Model
-        else
-            _G.CurrentTargetBoss = nil
-        end
-    end
-end)
-
--- =====================
--- THREAD 2: AUTO FARM BOSS SELECT (MESMO PADRÃO DO NEAREST)
--- =====================
-spawn(function()
-    while wait() do
-        pcall(function()
-            if _G.AutoBoss and _G.FindBoss then
-                local boss =
-                    workspace:FindFirstChild("Enemies")
-                    and workspace.Enemies:FindFirstChild(_G.FindBoss)
-                    or workspace:FindFirstChild(_G.FindBoss)
-
-                if boss
-                and boss:FindFirstChild("Humanoid")
-                and boss:FindFirstChild("HumanoidRootPart")
-                and boss.Humanoid.Health > 0 then
-
-                    repeat
-                        wait()
-                        Attack.Kill(boss, _G.AutoBoss)
-                    until not _G.AutoBoss
-                        or not boss.Parent
-                        or boss.Humanoid.Health <= 0
-                end
-            end
-        end)
-    end
-end)
-
--- =====================
--- THREAD 3: FARM ALL BOSSES (MESMO PADRÃO)
--- =====================
-spawn(function()
-    while wait() do
-        pcall(function()
-            if _G.FarmAllBoss and _G.CurrentTargetBoss then
-                local boss = _G.CurrentTargetBoss
-
-                if boss
-                and boss.Parent
-                and boss:FindFirstChild("Humanoid")
-                and boss:FindFirstChild("HumanoidRootPart")
-                and boss.Humanoid.Health > 0 then
-
-                    repeat
-                        wait()
-                        Attack.Kill(boss, _G.FarmAllBoss)
-                    until not _G.FarmAllBoss
-                        or not boss.Parent
-                        or boss.Humanoid.Health <= 0
-                end
-            end
-        end)
-    end
-end)
-
--- =====================
--- AUTO SELECT WEAPON
--- =====================
-spawn(function()
-    while task.wait(0.5) do
-        if plr.Backpack and _G.ChooseWP then
-            for _, e in pairs(plr.Backpack:GetChildren()) do
-                if e.ToolTip == _G.ChooseWP then
-                    _G.SelectWeapon = e.Name
-                end
-            end
         end
     end
 end)
@@ -2794,42 +2696,61 @@ local FruitTab = Window:MakeTab({
 
 FruitTab:AddSection("Fruit")
 
--- Toggle 1: Auto Random Fruit
+-- ═════════════════════════════════════
+-- 🍎 AUTO FRUIT SYSTEM
+-- ═════════════════════════════════════
+
+-- AUTO RANDOM FRUIT
 FruitTab:AddToggle({
     Title = "Auto Random Fruit",
     Description = "Automatic random devil fruit",
     Default = _G.Random_Auto or false,
-    Callback = function(I)
-        _G.Random_Auto = I
+    Callback = function(v)
+        _G.Random_Auto = v
         SaveConfig()
-    end,
+    end
 })
 
-spawn(function()
-    while wait(Sec) do
-        pcall(function()
-            if _G.Random_Auto then
-                replicated.Remotes.CommF_:InvokeServer("Cousin", "Buy")
-            end
-        end)
-    end
-end)
-
-
-
--- Toggle 2: Auto Store Fruit
+-- AUTO STORE FRUIT
 FruitTab:AddToggle({
     Title = "Auto Store Fruit",
     Description = "Automatic store devil fruit",
     Default = _G.StoreF or false,
-    Callback = function(I)
-        _G.StoreF = I
+    Callback = function(v)
+        _G.StoreF = v
         SaveConfig()
-    end,
+    end
 })
 
-spawn(function()
-    while wait(Sec) do
+-- AUTO COLLECT FRUIT
+FruitTab:AddToggle({
+    Title = "Auto Collect Fruit",
+    Description = "Automatic collect devil fruit",
+    Default = _G.TwFruits or false,
+    Callback = function(v)
+        _G.TwFruits = v
+        SaveConfig()
+    end
+})
+
+-- SERVICES
+local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- LOOP: RANDOM FRUIT
+task.spawn(function()
+    while task.wait(Sec) do
+        if _G.Random_Auto then
+            pcall(function()
+                ReplicatedStorage.Remotes.CommF_:InvokeServer("Cousin", "Buy")
+            end)
+        end
+    end
+end)
+
+-- LOOP: STORE FRUIT
+task.spawn(function()
+    while task.wait(Sec) do
         if _G.StoreF then
             pcall(function()
                 UpdStFruit()
@@ -2838,24 +2759,16 @@ spawn(function()
     end
 end)
 
--- Toggle 3: Auto Tween to Fruit
-FruitTab:AddToggle({
-    Title = "Auto Collect Fruit",
-    Description = "Automatic tween to get devil fruit",
-    Default = _G.TwFruits or false,
-    Callback = function(I)
-        _G.TwFruits = I
-        SaveConfig()
-    end,
-})
-
-spawn(function()
-    while wait(Sec) do
+-- LOOP: COLLECT FRUIT
+task.spawn(function()
+    while task.wait(Sec) do
         if _G.TwFruits then
             pcall(function()
-                for i, e in pairs(workspace:GetChildren()) do
-                    if string.find(e.Name, "Fruit") and e:FindFirstChild("Handle") then
-                        _tp(e.Handle.CFrame)
+                for _, fruit in pairs(Workspace:GetChildren()) do
+                    if fruit:FindFirstChild("Handle")
+                    and string.find(fruit.Name, "Fruit") then
+                        TP(fruit.Handle.CFrame)
+                        break -- evita TP infinito no mesmo loop
                     end
                 end
             end)
@@ -2877,7 +2790,6 @@ function IsIslandRaid(cu)
     local locs = game:GetService("Workspace")["_WorldOrigin"].Locations
     if locs:FindFirstChild("Island " .. cu) then
         local min = 4500
-        -- Encontrar a ilha mais próxima com esse ID
         for _, v in ipairs(locs:GetChildren()) do
             if v.Name == "Island " .. cu then
                 local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
@@ -2886,7 +2798,6 @@ function IsIslandRaid(cu)
                 end
             end
         end
-        -- Retornar a ilha correta
         for _, v in ipairs(locs:GetChildren()) do
             if v.Name == "Island " .. cu then
                 local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
@@ -2915,7 +2826,7 @@ end
 -- UI COMPONENTS (FruitTab)
 -- ==============================
 
--- 1. Select Chip Dropdown
+-- Select Chip Dropdown
 FruitTab:AddDropdown({
     Title = "Select Chip",
     Description = "Choose the chip for the raid",
@@ -2926,9 +2837,9 @@ FruitTab:AddDropdown({
     end,
 })
 
--- Lógica de Auto Seleção de Chip baseada nas frutas do inventário
+-- Auto Select Chip
 spawn(function()
-    while task.wait(1) do -- Ajustado para task.wait para melhor performance
+    while task.wait(1) do
         if _G.AutoSelectDungeon then
             pcall(function()
                 if GetBP("Flame-Flame") then _G.SelectChip = "Flame"
@@ -2943,14 +2854,14 @@ spawn(function()
                 elseif GetBP("Dough-Dough") then _G.SelectChip = "Dough"
                 elseif GetBP("Sand-Sand") then _G.SelectChip = "Sand"
                 elseif GetBP("Bird-Bird: Phoenix") then _G.SelectChip = "Bird: Phoenix"
-                else _G.SelectChip = "Flame" -- Fallback
+                else _G.SelectChip = "Flame"
                 end
             end)
         end
     end
 end)
 
--- 2. Auto Buy Chip Toggle
+-- Auto Buy Chip
 FruitTab:AddToggle({
     Title = "Buy Chip With Fruit",
     Description = "Use your lowest fruit in your bag",
@@ -2958,18 +2869,17 @@ FruitTab:AddToggle({
     Callback = function(Value)
         _G.AutoBuyChip = Value
         SaveConfig()
-        
+
         task.spawn(function()
             while _G.AutoBuyChip do
                 if not GetBP("Special Microchip") then
-                    local I = {} -- Lista de frutas válidas
+                    local I = {}
                     for _, data in next, replicated.Remotes.CommF_:InvokeServer("GetFruits") do
                         local rarity = tostring(data.Rarity or ""):lower()
                         if data.Price <= 1150000 or rarity == "common" or rarity == "uncommon" or rarity == "rare" then
                             table.insert(I, data.Name)
                         end
                     end
-                    -- Compra
                     for _, fruitName in pairs(I) do
                         if not GetBP("Special Microchip") then
                             replicated.Remotes.CommF_:InvokeServer("LoadFruit", fruitName)
@@ -2983,7 +2893,7 @@ FruitTab:AddToggle({
     end,
 })
 
--- 3. Auto Start Raid Toggle
+-- Auto Start Raid
 FruitTab:AddToggle({
     Title = "Auto Start Raid",
     Description = "Starts raid automatically",
@@ -2993,21 +2903,21 @@ FruitTab:AddToggle({
         SaveConfig()
     end,
 })
--- Lógica Auto Start
+
 spawn(function()
     while true do
-        task.wait(5) -- Loop de verificação
+        task.wait(5)
         if _G.Auto_StartRaid then
             pcall(function()
-                if plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible == false then
+                if not plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible then
                     if GetBP("Special Microchip") then
                         if World2 then
-                            _tp(CFrame.new(-6438.73535, 250.645355, -4501.50684))
+                            TP(CFrame.new(-6438.73535, 250.645355, -4501.50684))
                             fireclickdetector(workspace.Map.CircleIsland.RaidSummon2.Button.Main.ClickDetector)
                         elseif World3 then
                             replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602))
                             task.wait(0.5)
-                            _tp(CFrame.new(-5033.50879, 315.014252, -2947.77539))
+                            TP(CFrame.new(-5033.50879, 315.014252, -2947.77539))
                             fireclickdetector(workspace.Map["Boat Castle"].RaidSummon2.Button.Main.ClickDetector)
                         end
                     end
@@ -3017,7 +2927,7 @@ spawn(function()
     end
 end)
 
--- 4. Auto Complete Raid Toggle (Com integração Attack.Kill)
+-- Auto Complete Raid
 FruitTab:AddToggle({
     Title = "Auto Complete Raid",
     Description = "Kills enemies and moves islands",
@@ -3031,27 +2941,16 @@ FruitTab:AddToggle({
 spawn(function()
     while task.wait() do
         pcall(function()
-            if _G.Raiding then
-                -- Verifica se a Raid está ativa (Timer visível)
-                if plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible == true then
-                    
-                    -- Lógica de mover para a ilha
-                    local nextIsland = getNextIsland()
-                    if nextIsland then
-                        -- Teleporta para a ilha (ponto seguro acima dela)
-                        _tp(nextIsland.CFrame * CFrame.new(0, 50, 0))
+            if _G.Raiding and plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible then
+                local nextIsland = getNextIsland()
+                if nextIsland then
+                    TP(nextIsland.CFrame * CFrame.new(0, 50, 0))
 
-                        -- Lógica de Kill Integrada (Usa Attack.Kill)
-                        for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                            if mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") then
-                                if mob.Humanoid.Health > 0 then
-                                    -- Verifica distância para não focar em mobs longe demais (glitch)
-                                    local dist = (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                                    if dist <= 1500 then -- Distância aumentada para cobrir a ilha da Raid
-                                        -- Chama a sua função Attack.Kill
-                                        Attack.Kill(mob, _G.Raiding)
-                                    end
-                                end
+                    for _, mob in pairs(workspace.Enemies:GetChildren()) do
+                        if mob:FindFirstChild("Humanoid") and mob:FindFirstChild("HumanoidRootPart") and mob.Humanoid.Health > 0 then
+                            local dist = (mob.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).Magnitude
+                            if dist <= 1500 then
+                                Attack.Kill(mob, _G.Raiding)
                             end
                         end
                     end
@@ -3061,7 +2960,7 @@ spawn(function()
     end
 end)
 
--- 5. Auto Awakening Toggle
+-- Auto Awakening
 FruitTab:AddToggle({
     Title = "Auto Awakening",
     Description = "Awakens fruit automatically at the end",
@@ -3074,12 +2973,12 @@ FruitTab:AddToggle({
 
 spawn(function()
     while task.wait(1) do
-        pcall(function()
-            if G.Auto_Awakener then
+        if G.Auto_Awakener then
+            pcall(function()
                 replicated.Remotes.CommF:InvokeServer("Awakener", "Check")
                 replicated.Remotes.CommF:InvokeServer("Awakener", "Awaken")
-            end
-        end)
+            end)
+        end
     end
 end)
 
@@ -3135,57 +3034,49 @@ Travel:AddDropdown({
     end,
 })
 
--- Toggle de Teleporte com sua lógica específica
+-- Toggle de Teleporte
 Travel:AddToggle({
     Name = "Teleport to Island",
     Default = false,
     Callback = function(Value)
         _G.Teleport = Value
         SaveConfig()
-        
+
         if Value then
-            -- Definindo variáveis do jogador local
             local plr = game.Players.LocalPlayer
             local Character = plr.Character or plr.CharacterAdded:Wait()
             local Root = Character:WaitForChild("HumanoidRootPart")
-            
-            -- Procurar a ilha selecionada
+
             local targetIsland = workspace._WorldOrigin.Locations:FindFirstChild(_G.Island)
-            
+
             if targetIsland then
-                spawn(function()
-                    -- 1. Subida Instantânea (700 studs acima de onde você está agora)
-                    Root.CFrame = Root.CFrame * CFrame.new(0, 700, 0)
-                    wait(0.1) -- Pequena pausa para o motor físico processar
-                    
-                    -- 2. Viagem (Mantendo a altura de 700 studs acima do destino)
+                task.spawn(function()
+
+                    -- 1️⃣ Subida instantânea (700 studs acima)
+                    TP(Root.CFrame * CFrame.new(0, 700, 0))
+                    task.wait(0.1)
+
+                    -- 2️⃣ Viagem mantendo altura
                     local destination = targetIsland.CFrame * CFrame.new(0, 700, 0)
-                    
-                    -- Repete o movimento até chegar perto do destino (eixo X e Z)
                     repeat
-                        wait()
-                        -- Certifique-se que a função _tp existe no seu script
-                        if _tp then
-                            _tp(destination)
-                        else
-                            -- Fallback caso _tp não esteja definido:
-                            Root.CFrame = destination
-                        end
-                    until not _G.Teleport or (Root.Position - destination.p).Magnitude < 10
-                    
-                    -- 3. Descida Instantânea (Teleporta para a superfície da ilha)
+                        task.wait()
+                        TP(destination)
+                    until not _G.Teleport or (Root.Position - destination.Position).Magnitude < 20
+
+                    -- 3️⃣ Descida para a ilha
                     if _G.Teleport then
-                        Root.CFrame = targetIsland.CFrame * CFrame.new(0, 5, 0) -- 5 studs para não bugar no chão
+                        TP(targetIsland.CFrame * CFrame.new(0, 5, 0))
                     end
-                    
-                    -- 4. Desligar Automático
+
+                    -- 4️⃣ Desligar automático
                     _G.Teleport = false
-                    -- Se sua biblioteca suportar SetValue para desligar o botão visualmente:
-                    -- self:Set(false) 
+                    SaveConfig()
+
                 end)
             else
-                print("Selecione uma ilha primeiro!")
+                warn("Selecione uma ilha primeiro!")
                 _G.Teleport = false
+                SaveConfig()
             end
         end
     end,
@@ -3580,14 +3471,15 @@ local Setting = Window:MakeTab({
 })
 
 Setting:AddSection("Player Settings")
+
 Setting:AddSlider({
     Name = "Tween Speed",
-    Min = 50,          -- Velocidade mínima (mais devagar)
-    Max = 1000,        -- Velocidade máxima (mais rápido)
-    Default = 360,      -- Valor padrão inicial
-    Rounding = 1,      -- Mantém números inteiros
+    Min = 50,
+    Max = 1000,
+    Default = 360,
+    Rounding = 1,
     Callback = function(Value)
-        -- Atualiza a velocidade global usada na função _tp
+        _G.Settings = _G.Settings or {}
         _G.Settings.TweenSpeed = Value
     end
 })
@@ -3605,106 +3497,80 @@ Setting:AddSlider({
 
 local plr = game.Players.LocalPlayer
 
--- CONFIGURAÇÕES
+-- CONFIG
 local BRING_TIME = 3
 local RELEASE_TIME = 5
-_G.BringRange = 200
-_G.SpeedB = 50
-_G.MobM = 20 -- Quantidade máxima de mobs a trazer
+local RANGE_PLAYER = 200
+local RANGE_PULL = 150
 
-local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
-local plr = Players.LocalPlayer
+-- Pega posição média dos mobs da quest atual
+local function GetQuestMobPosition(MobName)
+    local pos = Vector3.zero
+    local count = 0
 
--- FUNÇÃO PRINCIPAL DE BRING (substitui BringQuestMob)
-BringEnemy = function()
-    local L_45_ = {}
-    if not _B then return end
-    if not PosMon then return end
-
-    L_45_[4] = plr
-    L_45_[5] = L_45_[4].Character and L_45_[4].Character:FindFirstChild("HumanoidRootPart")
-    if not L_45_[5] then return end
-
-    L_45_[9] = TweenService
-    L_45_[8] = _G["BringRange"]
-    L_45_[7] = _G["SpeedB"]
-    L_45_[6] = _G["MobM"]
-    L_45_[1] = 0
-    L_45_[2] = {}
-
-    for L_46_forvar0, L_47_forvar1 in pairs(workspace.Enemies:GetChildren()) do
-        local L_48_ = {}
-        L_48_[4], L_48_[1] = L_46_forvar0, L_47_forvar1
-        if L_45_[1] >= L_45_[6] then break end
-
-        -- Checa se é boss
-        L_48_[6] = false
-        for _, bossName in ipairs(BossList or {}) do
-            if L_48_[1].Name == bossName then
-                L_48_[6] = true
-                break
-            end
-        end
-        if L_48_[6] then continue end
-
-        L_48_[2] = L_48_[1]:FindFirstChild("Humanoid")
-        L_48_[3] = L_48_[1]:FindFirstChild("HumanoidRootPart")
-        if not (L_48_[2] and L_48_[3] and L_48_[2].Health > 0) then continue end
-
-        if (L_48_[3].Position - L_45_[5].Position).Magnitude <= L_45_[8] then
-            local L_52_ = {}
-            R_[1] += 1
-            L_52_[2] = Vector3.zero
-            L_52_[3] = 0
-
-            for _, mob in pairs(workspace.Enemies:GetChildren()) do
-                local hum = mob:FindFirstChild("Humanoid")
-                local hrp = mob:FindFirstChild("HumanoidRootPart")
-                if hum and hrp and hum.Health > 0 and mob.Name == L_48_[1].Name then
-                    D_[2] += hrp.Position
-                    D_[3] += 1
-                end
-            end
-
-            L_52_[1] = L_52_[3] > 0 and L_52_[2] / L_52_[3] or L_48_[3].Position
-            L_52_[4] = CFrame.new(L_52_[1])
-            L_52_[5] = (L_48_[3].Position - L_52_[4].Position).Magnitude
-
-            if L_52_[5] > 3 then
-                local tweenInfo = TweenInfo.new(L_52_[5] / L_45_[7], Enum.EasingStyle.Linear)
-                L_45_[9]:Create(L_48_[3], tweenInfo, {CFrame = L_52_[4]}):Play()
-            end
-
-            L_48_[3].CanCollide = false
-            L_48_[3].AssemblyLinearVelocity = Vector3.zero
-            L_48_[3].AssemblyAngularVelocity = Vector3.zero
-
-            if L_48_[2]:FindFirstChild("Animator") then
-                L_48_[2].Animator:Destroy()
-            end
-
-            if not L_48_[3]:FindFirstChild("BodyVelocity") then
-                local bv = Instance.new("BodyVelocity")
-                bv.Name = "BodyVelocity"
-                bv.MaxForce = Vector3.new(1e9,1e9,1e9)
-                bv.Velocity = Vector3.zero
-                bv.Parent = L_48_[3]
-            end
-
-            pcall(function()
-                sethiddenproperty(L_45_[4], "SimulationRadius", math.huge)
-            end)
+    for _, v in pairs(workspace.Enemies:GetChildren()) do
+        if v.Name == MobName
+        and v:FindFirstChild("HumanoidRootPart")
+        and v:FindFirstChild("Humanoid")
+        and v.Humanoid.Health > 0 then
+            pos += v.HumanoidRootPart.Position
+            count += 1
         end
     end
+
+    if count == 0 then return nil end
+    return pos / count
 end
 
--- LOOP DE BRING AUTOMÁTICO
+-- Bring principal (TP instantâneo)
+local function BringQuestMob()
+    if not (_G.Level or getgenv().AutoMaterial) then return end
+
+    local char = plr.Character
+    if not char then return end
+
+    local playerHRP = char:FindFirstChild("HumanoidRootPart")
+    if not playerHRP then return end
+
+    local QuestGui = plr.PlayerGui.Main.Quest
+    if not QuestGui.Visible then return end
+
+    local QuestMobName = QuestNeta()[1]
+    if not QuestMobName then return end
+
+    local mobPos = GetQuestMobPosition(QuestMobName)
+    if not mobPos then return end
+
+    for _, v in pairs(workspace.Enemies:GetChildren()) do
+        local hum = v:FindFirstChild("Humanoid")
+        local hrp = v:FindFirstChild("HumanoidRootPart")
+
+        if hum and hrp and hum.Health > 0 and v.Name == QuestMobName then
+            local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
+            local distMob = (hrp.Position - mobPos).Magnitude
+
+            if distPlayer <= RANGE_PLAYER and distMob <= RANGE_PULL and distMob > 5 then
+                hrp.CFrame = CFrame.new(
+                    mobPos.X,
+                    mobPos.Y,
+                    mobPos.Z
+                )
+                hrp.CanCollide = false
+            end
+        end
+    end
+
+    pcall(function()
+        sethiddenproperty(plr, "SimulationRadius", math.huge)
+    end)
+end
+
+-- LOOP de Bring
 task.spawn(function()
     while task.wait() do
         local t0 = tick()
         while tick() - t0 < BRING_TIME do
-            BringEnemy()
+            BringQuestMob()
             task.wait(0.1)
         end
 
