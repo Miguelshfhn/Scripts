@@ -1,5 +1,3 @@
--- This file was deobfuscated using Scene Deobfuscator discord.gg/deobfuscate :D
-
 hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Death), function()
     -- empty block
 end)
@@ -3664,7 +3662,8 @@ function CheckItemBPCRBPCR(v463)
         end
     end
 end
-local v466 = loadstring(game:HttpGet("https://raw.githubusercontent.com/AnhDangNhoEm/UiRedz/refs/heads/main/RedzUiV.txt"))():MakeWindow({
+local v466 = local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau"))()
+:MakeWindow({
     Title = "Tu\225\186\165n Anh IOS",
     SubTitle = "by real_tuananhios",
     SaveFolder = "Redz | redz lib v5.lua"
