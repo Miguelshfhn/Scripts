@@ -1782,7 +1782,7 @@ QuestNeta = function()
     }
 end
 
-local Library = loadstring(game:HttpGet("https://pastefy.app/cgRXe9Xh/raw"))()
+local v466 = loadstring(game:HttpGet("https://pastefy.app/cgRXe9Xh/raw"))()
 
 local Window = Library:MakeWindow({
   Title = "Zenith Hub [Beta]",
