@@ -835,33 +835,24 @@ task.spawn(function()
         end)
     end
 end)
--- Tabela de configurações
+-- Tabela de configurações (Fácil de acessar pela UI)
 _G.Settings = {
-    TweenSpeed = 350, -- Velocidade do Tween
+    TweenSpeed = 350, -- Altere este valor para mudar a velocidade
     ShouldTween = true
 }
 
--- Função de Tween (_tp)
 _tp = function(target)
-    local plr = game.Players.LocalPlayer
     local character = plr.Character
     if not character or not character:FindFirstChild("HumanoidRootPart") then
         return
     end
     
-    -- Se o objeto 'block' não existir no script principal, usamos o HumanoidRootPart direto
-    -- Mas mantendo a lógica do seu script original que usa o 'block' para bypass:
-    if not block then 
-        block = Instance.new("Part", workspace)
-        block.Name = "TweenBlock"
-        block.Anchored = true
-        block.CanCollide = false
-        block.Transparency = 1
-        block.CFrame = character.HumanoidRootPart.CFrame
-    end
-
+    local rootPart = character.HumanoidRootPart
     local targetPosition = target.Position
-    local distance = (targetPosition - block.Position).Magnitude
+    local distance = (targetPosition - rootPart.Position).Magnitude
+    
+    -- Usamos _G.Settings.TweenSpeed para definir a duração
+    -- Cálculo: Tempo = Distância / Velocidade
     local duration = distance / _G.Settings.TweenSpeed
     
     local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear)
@@ -869,64 +860,43 @@ _tp = function(target)
         CFrame = target
     })
 
-    if character.Humanoid.Sit == true then
-        character.Humanoid.Sit = false
+    if plr.Character.Humanoid.Sit == true then
+        block.CFrame = CFrame.new(block.Position.X, target.Y, block.Position.Z)
     end
 
     tween:Play()
 
-    -- Loop para cancelar se necessário
     task.spawn(function()
         while tween.PlaybackState == Enum.PlaybackState.Playing do
+            -- Verifica se a variável global de controle ainda permite o tween
             if not _G.Settings.ShouldTween then
                 tween:Cancel()
                 break
             end
-            
-            -- Sincroniza o personagem com o bloco
-            if character and character:FindFirstChild("HumanoidRootPart") then
-                character.HumanoidRootPart.CFrame = block.CFrame
-            end
-            
-            task.wait()
+            task.wait(0.1)
         end
     end)
 end
 
--- Função TeleportToTarget
 TeleportToTarget = function(targetCFrame)
+    -- Agora ambas as condições usam a velocidade dinâmica
     _tp(targetCFrame)
 end
 
--- Função notween (Teleporte instantâneo/básico)
 notween = function(p)
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p
+    plr.Character.HumanoidRootPart.CFrame = p
 end
 
--- Função TelePPlayer (CFrame direto)
-function TelePPlayer(v404)
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v404
-end
 
--- Função requestEntrance (Para entrar em portais/raids)
-function requestEntrance(v402)
-    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
-    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
-    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
-    task.wait(0.5)
-end
-
--- Função CheckNearestTeleporter (Verifica qual portal está mais perto para usar requestEntrance)
 function CheckNearestTeleporter(v393)
     local l_Position_1 = v393.Position
     local l_huge_0 = math.huge
     local v396 = nil
     local l_PlaceId_1 = game.PlaceId
     local v398 = {}
-    
-    if l_PlaceId_1 ~= 85211729168715 then -- Sea 1 Hub
-        if l_PlaceId_1 ~= 79091703265657 then -- Sea 2
-            if l_PlaceId_1 == 100117331123089 then -- Sea 3
+    if l_PlaceId_1 ~= 85211729168715 then
+        if l_PlaceId_1 ~= 79091703265657 then
+            if l_PlaceId_1 == 100117331123089 then
                 v398 = {
                     ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
                     ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
@@ -938,7 +908,7 @@ function CheckNearestTeleporter(v393)
                     ["Temple of Time"] = Vector3.new(28286, 14897, 103)
                 }
             end
-        else -- Lista do Sea 2
+        else
             v398 = {
                 ["Swan Mansion"] = Vector3.new(-390, 332, 673),
                 ["Swan Room"] = Vector3.new(2285, 15, 905),
@@ -946,7 +916,7 @@ function CheckNearestTeleporter(v393)
                 ["Zombie Island"] = Vector3.new(-6509, 83, -133)
             }
         end
-    else -- Lista do Sea 1
+    else
         v398 = {
             Sky3 = Vector3.new(-7894, 5547, -380),
             Sky3Exit = Vector3.new(-4607, 874, -1667),
@@ -956,7 +926,6 @@ function CheckNearestTeleporter(v393)
             UnderwaterExit = Vector3.new(4050, -1, -1814)
         }
     end
-    
     for _, v400 in pairs(v398) do
         local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
         if l_Magnitude_1 < l_huge_0 then
@@ -964,13 +933,22 @@ function CheckNearestTeleporter(v393)
             v396 = v400
         end
     end
-    
     if l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
         return v396
     else
-        return nil
+        return 
     end
 end
+function requestEntrance(v402)
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
+    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
+    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
+    task.wait(0.5)
+end
+function TelePPlayer(v404)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v404
+end
+
 
 function BTP(p)
     local player = game.Players.LocalPlayer
