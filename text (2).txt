@@ -835,129 +835,141 @@ task.spawn(function()
         end)
     end
 end)
--- ======================================================
--- CONFIGURAÇÕES E VARIÁVEIS
--- ======================================================
+-- Tabela de configurações
 _G.Settings = {
-    TweenSpeed = 350,
+    TweenSpeed = 350, -- Velocidade do Tween
     ShouldTween = true
 }
 
--- ======================================================
--- FUNÇÕES DE SUPORTE (TELEPORTES/PORTAIS)
--- ======================================================
-
-function CheckNearestTeleporter(v393)
-    local l_Position_1 = (typeof(v393) == "CFrame" and v393.Position or v393)
-    local l_huge_0 = math.huge
-    local v396 = nil
-    local l_PlaceId_1 = game.PlaceId
-    local v398 = {}
-
-    -- Definição de portais por Sea (ID do Jogo)
-    if l_PlaceId_1 == 2753915549 or l_PlaceId_1 == 85211729168715 then -- SEA 1
-        v398 = {
-            ["Sky3"] = Vector3.new(-7894, 5547, -380),
-            ["Underwater City"] = Vector3.new(61165, 0, 1897),
-            ["Pirate Village"] = Vector3.new(-1242, 4, 3901)
-        }
-    elseif l_PlaceId_1 == 4442272183 or l_PlaceId_1 == 79091703265657 then -- SEA 2
-        v398 = {
-            ["Swan Mansion"] = Vector3.new(-390, 332, 673),
-            ["Cursed Ship"] = Vector3.new(923, 126, 32852),
-            ["Zombie Island"] = Vector3.new(-6509, 83, -133)
-        }
-    elseif l_PlaceId_1 == 15442829830 or l_PlaceId_1 == 100117331123089 then -- SEA 3 (Adicionei o ID correto)
-        v398 = {
-            ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
-            ["Hydra Island"] = Vector3.new(5657, 1013, -335),
-            ["Mansion"] = Vector3.new(-12462, 375, -7552),
-            ["Castle"] = Vector3.new(-5036, 315, -3179)
-        }
-    end
-
-    for name, pos in pairs(v398) do
-        local distToPortal = (pos - l_Position_1).Magnitude
-        if distToPortal < l_huge_0 then
-            l_huge_0 = distToPortal
-            v396 = name
-        end
-    end
-
-    -- Se o portal nos deixar mais perto do destino do que estamos agora, retorna o nome do portal
-    local currentDist = (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
-    if v396 and l_huge_0 < currentDist - 500 then -- 500 studs de vantagem mínima
-        return v396
-    end
-    return nil
-end
-
-function requestEntrance(name)
-    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", name)
-    task.wait(0.1)
-end
-
--- ======================================================
--- FUNÇÃO PRINCIPAL DE MOVIMENTAÇÃO (_TP)
--- ======================================================
-
+-- Função de Tween (_tp)
 _tp = function(target)
-    local character = game.Players.LocalPlayer.Character
-    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
-    
-    local rootPart = character.HumanoidRootPart
-    
-    -- 1. Tentar Atalho por Portal primeiro
-    local portal = CheckNearestTeleporter(target)
-    if portal then
-        requestEntrance(portal)
-    end
-
-    -- 2. Executar o Tween até o destino final
-    local targetPosition = (typeof(target) == "CFrame" and target.Position or target)
-    local distance = (targetPosition - rootPart.Position).Magnitude
-    
-    -- Se já estiver muito perto, apenas teleporta
-    if distance < 10 then
-        rootPart.CFrame = (typeof(target) == "CFrame" and target or CFrame.new(target))
+    local plr = game.Players.LocalPlayer
+    local character = plr.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then
         return
     end
-
-    local duration = distance / _G.Settings.TweenSpeed
-    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear)
     
-    -- Nota: 'block' deve ser o RootPart ou o objeto que você está movendo (ajustado para rootPart)
-    local tween = game:GetService("TweenService"):Create(rootPart, tweenInfo, {
-        CFrame = (typeof(target) == "CFrame" and target or CFrame.new(target))
+    -- Se o objeto 'block' não existir no script principal, usamos o HumanoidRootPart direto
+    -- Mas mantendo a lógica do seu script original que usa o 'block' para bypass:
+    if not block then 
+        block = Instance.new("Part", workspace)
+        block.Name = "TweenBlock"
+        block.Anchored = true
+        block.CanCollide = false
+        block.Transparency = 1
+        block.CFrame = character.HumanoidRootPart.CFrame
+    end
+
+    local targetPosition = target.Position
+    local distance = (targetPosition - block.Position).Magnitude
+    local duration = distance / _G.Settings.TweenSpeed
+    
+    local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear)
+    local tween = game:GetService("TweenService"):Create(block, tweenInfo, {
+        CFrame = target
     })
 
-    -- Desativa colisões para não prender em paredes durante o voo
-    for _, v in pairs(character:GetDescendants()) do
-        if v:IsA("BasePart") then v.CanCollide = false end
+    if character.Humanoid.Sit == true then
+        character.Humanoid.Sit = false
     end
 
     tween:Play()
 
-    -- Controle de interrupção
+    -- Loop para cancelar se necessário
     task.spawn(function()
         while tween.PlaybackState == Enum.PlaybackState.Playing do
             if not _G.Settings.ShouldTween then
                 tween:Cancel()
                 break
             end
-            task.wait(0.1)
+            
+            -- Sincroniza o personagem com o bloco
+            if character and character:FindFirstChild("HumanoidRootPart") then
+                character.HumanoidRootPart.CFrame = block.CFrame
+            end
+            
+            task.wait()
         end
     end)
-    
-    tween.Completed:Wait()
 end
 
+-- Função TeleportToTarget
 TeleportToTarget = function(targetCFrame)
     _tp(targetCFrame)
 end
 
+-- Função notween (Teleporte instantâneo/básico)
 notween = function(p)
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p
+end
+
+-- Função TelePPlayer (CFrame direto)
+function TelePPlayer(v404)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v404
+end
+
+-- Função requestEntrance (Para entrar em portais/raids)
+function requestEntrance(v402)
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
+    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
+    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
+    task.wait(0.5)
+end
+
+-- Função CheckNearestTeleporter (Verifica qual portal está mais perto para usar requestEntrance)
+function CheckNearestTeleporter(v393)
+    local l_Position_1 = v393.Position
+    local l_huge_0 = math.huge
+    local v396 = nil
+    local l_PlaceId_1 = game.PlaceId
+    local v398 = {}
+    
+    if l_PlaceId_1 ~= 85211729168715 then -- Sea 1 Hub
+        if l_PlaceId_1 ~= 79091703265657 then -- Sea 2
+            if l_PlaceId_1 == 100117331123089 then -- Sea 3
+                v398 = {
+                    ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
+                    ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
+                    Mansion = Vector3.new(-12462, 375, -7552),
+                    Castle = Vector3.new(-5036, 315, -3179),
+                    ["Dimensional Shift"] = Vector3.new(-2097.3447265625, 4776.24462890625, -15013.4990234375),
+                    ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
+                    ["Beautiful Room"] = Vector3.new(5314.58203, 22.5364361, -125.942276, 1, 2.14762768E-8, -1.99111154E-13, -2.14762768E-8, 1, -3.0510602E-8, 1.98455903E-13, 3.0510602E-8, 1),
+                    ["Temple of Time"] = Vector3.new(28286, 14897, 103)
+                }
+            end
+        else -- Lista do Sea 2
+            v398 = {
+                ["Swan Mansion"] = Vector3.new(-390, 332, 673),
+                ["Swan Room"] = Vector3.new(2285, 15, 905),
+                ["Cursed Ship"] = Vector3.new(923, 126, 32852),
+                ["Zombie Island"] = Vector3.new(-6509, 83, -133)
+            }
+        end
+    else -- Lista do Sea 1
+        v398 = {
+            Sky3 = Vector3.new(-7894, 5547, -380),
+            Sky3Exit = Vector3.new(-4607, 874, -1667),
+            UnderWater = Vector3.new(61163, 11, 1819),
+            ["Underwater City"] = Vector3.new(61165.19140625, 0.18704631924629211, 1897.379150390625),
+            ["Pirate Village"] = Vector3.new(-1242.4625244140625, 4.787059783935547, 3901.282958984375),
+            UnderwaterExit = Vector3.new(4050, -1, -1814)
+        }
+    end
+    
+    for _, v400 in pairs(v398) do
+        local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
+        if l_Magnitude_1 < l_huge_0 then
+            l_huge_0 = l_Magnitude_1
+            v396 = v400
+        end
+    end
+    
+    if l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
+        return v396
+    else
+        return nil
+    end
 end
 
 function BTP(p)
