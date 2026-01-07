@@ -835,40 +835,112 @@ task.spawn(function()
         end)
     end
 end)
--- Tabela de configurações (Fácil de acessar pela UI)
+-- ======================================================
+-- CONFIGURAÇÕES E VARIÁVEIS
+-- ======================================================
 _G.Settings = {
-    TweenSpeed = 350, -- Altere este valor para mudar a velocidade
+    TweenSpeed = 350,
     ShouldTween = true
 }
 
-_tp = function(target)
-    local character = plr.Character
-    if not character or not character:FindFirstChild("HumanoidRootPart") then
-        return
+-- ======================================================
+-- FUNÇÕES DE SUPORTE (TELEPORTES/PORTAIS)
+-- ======================================================
+
+function CheckNearestTeleporter(v393)
+    local l_Position_1 = (typeof(v393) == "CFrame" and v393.Position or v393)
+    local l_huge_0 = math.huge
+    local v396 = nil
+    local l_PlaceId_1 = game.PlaceId
+    local v398 = {}
+
+    -- Definição de portais por Sea (ID do Jogo)
+    if l_PlaceId_1 == 2753915549 or l_PlaceId_1 == 85211729168715 then -- SEA 1
+        v398 = {
+            ["Sky3"] = Vector3.new(-7894, 5547, -380),
+            ["Underwater City"] = Vector3.new(61165, 0, 1897),
+            ["Pirate Village"] = Vector3.new(-1242, 4, 3901)
+        }
+    elseif l_PlaceId_1 == 4442272183 or l_PlaceId_1 == 79091703265657 then -- SEA 2
+        v398 = {
+            ["Swan Mansion"] = Vector3.new(-390, 332, 673),
+            ["Cursed Ship"] = Vector3.new(923, 126, 32852),
+            ["Zombie Island"] = Vector3.new(-6509, 83, -133)
+        }
+    elseif l_PlaceId_1 == 15442829830 or l_PlaceId_1 == 100117331123089 then -- SEA 3 (Adicionei o ID correto)
+        v398 = {
+            ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
+            ["Hydra Island"] = Vector3.new(5657, 1013, -335),
+            ["Mansion"] = Vector3.new(-12462, 375, -7552),
+            ["Castle"] = Vector3.new(-5036, 315, -3179)
+        }
     end
+
+    for name, pos in pairs(v398) do
+        local distToPortal = (pos - l_Position_1).Magnitude
+        if distToPortal < l_huge_0 then
+            l_huge_0 = distToPortal
+            v396 = name
+        end
+    end
+
+    -- Se o portal nos deixar mais perto do destino do que estamos agora, retorna o nome do portal
+    local currentDist = (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude
+    if v396 and l_huge_0 < currentDist - 500 then -- 500 studs de vantagem mínima
+        return v396
+    end
+    return nil
+end
+
+function requestEntrance(name)
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", name)
+    task.wait(0.1)
+end
+
+-- ======================================================
+-- FUNÇÃO PRINCIPAL DE MOVIMENTAÇÃO (_TP)
+-- ======================================================
+
+_tp = function(target)
+    local character = game.Players.LocalPlayer.Character
+    if not character or not character:FindFirstChild("HumanoidRootPart") then return end
     
     local rootPart = character.HumanoidRootPart
-    local targetPosition = target.Position
+    
+    -- 1. Tentar Atalho por Portal primeiro
+    local portal = CheckNearestTeleporter(target)
+    if portal then
+        requestEntrance(portal)
+    end
+
+    -- 2. Executar o Tween até o destino final
+    local targetPosition = (typeof(target) == "CFrame" and target.Position or target)
     local distance = (targetPosition - rootPart.Position).Magnitude
     
-    -- Usamos _G.Settings.TweenSpeed para definir a duração
-    -- Cálculo: Tempo = Distância / Velocidade
+    -- Se já estiver muito perto, apenas teleporta
+    if distance < 10 then
+        rootPart.CFrame = (typeof(target) == "CFrame" and target or CFrame.new(target))
+        return
+    end
+
     local duration = distance / _G.Settings.TweenSpeed
-    
     local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear)
-    local tween = game:GetService("TweenService"):Create(block, tweenInfo, {
-        CFrame = target
+    
+    -- Nota: 'block' deve ser o RootPart ou o objeto que você está movendo (ajustado para rootPart)
+    local tween = game:GetService("TweenService"):Create(rootPart, tweenInfo, {
+        CFrame = (typeof(target) == "CFrame" and target or CFrame.new(target))
     })
 
-    if plr.Character.Humanoid.Sit == true then
-        block.CFrame = CFrame.new(block.Position.X, target.Y, block.Position.Z)
+    -- Desativa colisões para não prender em paredes durante o voo
+    for _, v in pairs(character:GetDescendants()) do
+        if v:IsA("BasePart") then v.CanCollide = false end
     end
 
     tween:Play()
 
+    -- Controle de interrupção
     task.spawn(function()
         while tween.PlaybackState == Enum.PlaybackState.Playing do
-            -- Verifica se a variável global de controle ainda permite o tween
             if not _G.Settings.ShouldTween then
                 tween:Cancel()
                 break
@@ -876,15 +948,16 @@ _tp = function(target)
             task.wait(0.1)
         end
     end)
+    
+    tween.Completed:Wait()
 end
 
 TeleportToTarget = function(targetCFrame)
-    -- Agora ambas as condições usam a velocidade dinâmica
     _tp(targetCFrame)
 end
 
 notween = function(p)
-    plr.Character.HumanoidRootPart.CFrame = p
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = p
 end
 
 function BTP(p)
