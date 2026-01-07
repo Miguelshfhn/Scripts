@@ -2000,24 +2000,24 @@ BringEnemy = function()
 		}
 	end
 
-	local Fluent = loadstring(game:HttpGet("https://files.catbox.moe/pj2qb9.lua", true))()
+	local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/Miguelshfhn/Scripts/refs/heads/main/pj2qb9.lua", true))()
 
 local Window = Fluent:CreateWindow({
-    Title = "Night Slayer",
-    SubTitle = "By Araújo7xp  & MauroZzx | Blox Fruits",
+    Title = "Scarlet Hub",
+    SubTitle = "discord/gg",
 
     -- ADICIONADOS DA OUTRA WINDOW:
     TitleIcon = "",
-    Image = "rbxassetid://9513555247",
+    Image = "",
     Search = false,
-    Icon = "rbxassetid://9513555247",
+    Icon = "",
     TabWidth = 170, -- você já tinha, deixei igual
-    Theme = "Viow Mars",
+    Theme = "Scarlet",
     Acrylic = false,
     Size = UDim2.fromOffset(425, 365),
     MinimizeKey = Enum.KeyCode.End,
 
-    UserInfo = true,
+    UserInfo = false,
     UserInfoTop = false,
     UserInfoTitle = game.Players.LocalPlayer.DisplayName,
     UserInfoSubtitle = "Player",
@@ -2029,16 +2029,17 @@ screenGui.Parent = game.CoreGui
 
 -- Criação do botão flutuante
 local toggleButton = Instance.new("ImageButton")
-toggleButton.Size = UDim2.new(0, 50, 0, 50)
+toggleButton.Size = UDim2.new(0, 35, 0, 35) -- menor tamanho
 toggleButton.Position = UDim2.new(0.15, 0, 0.15, 0)
 toggleButton.Image = "rbxassetid://4911164158" -- sua imagem
 toggleButton.ScaleType = Enum.ScaleType.Fit
-toggleButton.BackgroundColor3 = Color3.fromRGB(0, 102, 255) -- cor de fundo (caso a imagem tenha transparência)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0) -- fundo preto
+toggleButton.BackgroundTransparency = 0.2 -- deixa o fundo fosco
 toggleButton.Parent = screenGui
 
 -- 🔵 Deixa o botão totalmente redondo
 local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(1, 0) -- 1 = totalmente redondo
+corner.CornerRadius = UDim.new(1, 0) -- totalmente redondo
 corner.Parent = toggleButton
 
 -- Lógica de arrastar
@@ -2046,12 +2047,12 @@ local isFluentVisible = true
 local dragging, dragInput, dragStart, startPos
 
 local function update(input)
-    local AndepZai = input.Position - dragStart
+    local delta = input.Position - dragStart
     toggleButton.Position = UDim2.new(
         startPos.X.Scale,
-        startPos.X.Offset + AndepZai.X,
+        startPos.X.Offset + delta.X,
         startPos.Y.Scale,
-        startPos.Y.Offset + AndepZai.Y
+        startPos.Y.Offset + delta.Y
     )
 end
 
@@ -2080,14 +2081,14 @@ game:GetService("UserInputService").InputChanged:Connect(function(input)
     end
 end)
 
-	toggleButton.MouseButton1Click:Connect(function()
-		isFluentVisible = not isFluentVisible
-		if isFluentVisible then
-			Window:Minimize(false)
-		else
-			Window:Minimize(true)
-		end
-	end)
+toggleButton.MouseButton1Click:Connect(function()
+    isFluentVisible = not isFluentVisible
+    if isFluentVisible then
+        Window:Minimize(false)
+    else
+        Window:Minimize(true)
+    end
+end)
 	local Tabs = {
     Discord = Window:AddTab({
         Title = "Home",
