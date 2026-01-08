@@ -2000,28 +2000,16 @@ BringEnemy = function()
 		}
 	end
 
-	local Fluent = loadstring(game:HttpGet("https://raw.githubusercontent.com/Miguelshfhn/Scripts/refs/heads/main/pj2qb9.lua", true))()
+	local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 
 local Window = Fluent:CreateWindow({
     Title = "Scarlet Hub",
-    SubTitle = "discord/gg",
-
-    -- ADICIONADOS DA OUTRA WINDOW:
-    TitleIcon = "",
-    Image = "",
-    Search = false,
-    Icon = "",
-    TabWidth = 170, -- você já tinha, deixei igual
-    Theme = "Scarlet",
-    Acrylic = false,
-    Size = UDim2.fromOffset(425, 365),
-    MinimizeKey = Enum.KeyCode.End,
-
-    UserInfo = false,
-    UserInfoTop = false,
-    UserInfoTitle = game.Players.LocalPlayer.DisplayName,
-    UserInfoSubtitle = "Player",
-    UserInfoSubtitleColor = Color3.fromRGB(71, 123, 255)
+    SubTitle = "Blox Fruits",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(525, 390),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
 })
 	local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "ControlGUI"
