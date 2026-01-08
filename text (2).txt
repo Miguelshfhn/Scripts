@@ -2785,7 +2785,71 @@ Travel:AddButton({
     end
 })
 
--- Tabelas de Coordenadas (Mesmas do passo anterior)
+-- Funções de Suporte (Exatamente as que você passou)
+function CheckNearestTeleporter(v393)
+    local l_Position_1 = v393.Position
+    local l_huge_0 = math.huge
+    local v396 = nil
+    local l_PlaceId_1 = game.PlaceId
+    local v398 = {}
+    if l_PlaceId_1 ~= 85211729168715 then
+        if l_PlaceId_1 ~= 79091703265657 then
+            if l_PlaceId_1 == 100117331123089 then
+                v398 = {
+                    ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
+                    ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
+                    Mansion = Vector3.new(-12462, 375, -7552),
+                    Castle = Vector3.new(-5036, 315, -3179),
+                    ["Dimensional Shift"] = Vector3.new(-2097.3447265625, 4776.24462890625, -15013.4990234375),
+                    ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
+                    ["Beautiful Room"] = Vector3.new(5314.58203, 22.5364361, -125.942276, 1, 2.14762768E-8, -1.99111154E-13, -2.14762768E-8, 1, -3.0510602E-8, 1.98455903E-13, 3.0510602E-8, 1),
+                    ["Temple of Time"] = Vector3.new(28286, 14897, 103)
+                }
+            end
+        else
+            v398 = {
+                ["Swan Mansion"] = Vector3.new(-390, 332, 673),
+                ["Swan Room"] = Vector3.new(2285, 15, 905),
+                ["Cursed Ship"] = Vector3.new(923, 126, 32852),
+                ["Zombie Island"] = Vector3.new(-6509, 83, -133)
+            }
+        end
+    else
+        v398 = {
+            Sky3 = Vector3.new(-7894, 5547, -380),
+            Sky3Exit = Vector3.new(-4607, 874, -1667),
+            UnderWater = Vector3.new(61163, 11, 1819),
+            ["Underwater City"] = Vector3.new(61165.19140625, 0.18704631924629211, 1897.379150390625),
+            ["Pirate Village"] = Vector3.new(-1242.4625244140625, 4.787059783935547, 3901.282958984375),
+            UnderwaterExit = Vector3.new(4050, -1, -1814)
+        }
+    end
+    for _, v400 in pairs(v398) do
+        local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
+        if l_Magnitude_1 < l_huge_0 then
+            l_huge_0 = l_Magnitude_1
+            v396 = v400
+        end
+    end
+    if l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
+        return v396
+    else
+        return 
+    end
+end
+
+function requestEntrance(v402)
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
+    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
+    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
+    task.wait(0.5)
+end
+
+function TelePPlayer(v404)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v404
+end
+
+-- Tabela de Coordenadas das Ilhas
 local IslandCoords = {}
 local CurrentOptions = {}
 
@@ -2806,65 +2870,29 @@ elseif World3 then
     }
 end
 
---- FUNÇÕES QUE VOCÊ ENVIOU ---
-function CheckNearestTeleporter(v393)
-    local l_Position_1 = v393.Position
-    local l_huge_0 = math.huge
-    local v396 = nil
-    local l_PlaceId_1 = game.PlaceId
-    local v398 = {}
-    if l_PlaceId_1 == 27539155 or l_PlaceId_1 == 4442245440 or l_PlaceId_1 == 7449423535 then -- IDs padrões Blox Fruits
-        if World3 then
-            v398 = {
-                ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
-                ["Hydra Island"] = Vector3.new(5657.88, 1013.07, -335.49),
-                Mansion = Vector3.new(-12462, 375, -7552),
-                Castle = Vector3.new(-5036, 315, -3179)
-            }
-        elseif World2 then
-            v398 = {
-                ["Swan Mansion"] = Vector3.new(-390, 332, 673),
-                ["Cursed Ship"] = Vector3.new(923, 126, 32852)
-            }
-        elseif World1 then
-            v398 = {
-                Sky3 = Vector3.new(-7894, 5547, -380),
-                UnderWater = Vector3.new(61163, 11, 1819)
-            }
-        end
-    end
-    for _, v400 in pairs(v398) do
-        local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
-        if l_Magnitude_1 < l_huge_0 then
-            l_huge_0 = l_Magnitude_1
-            v396 = v400
-        end
-    end
-    if v396 and l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
-        return v396
-    end
-    return nil
-end
+-- UI
+Travel:AddSection("Island")
 
-function requestEntrance(v402)
-    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
-    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
-    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
-    task.wait(0.5)
-end
+Travel:AddDropdown({
+    Name = "Select Island",
+    Options = CurrentOptions,
+    Default = false,
+    Callback = function(I)
+        _G.SelectIsland = I
+    end,
+})
 
---- UI ---
-Teleport:Dropdown("Select Island", CurrentOptions, {CurrentOptions[1]}, function(value)
-    _G.SelectIsland = value
-end)
+Travel:AddToggle({
+    Name = "Teleport to Island",
+    Default = false,
+    Callback = function(Value)
+        _G.TeleportIsland = Value
+    end,
+})
 
-Teleport:Toggle("Auto Tween To Island", false, function(value)
-    _G.TeleportIsland = value
-end)
-
---- SISTEMA DE EXECUÇÃO (IGUAL AO SEU ELITE HUNTER) ---
+-- Loop de Execução (Spawn)
 spawn(function()
-    while wait() do 
+    while wait() do
         pcall(function()
             if _G.TeleportIsland then
                 local targetCFrame = IslandCoords[_G.SelectIsland]
@@ -2873,14 +2901,13 @@ spawn(function()
                     local distance = (pRoot.Position - targetCFrame.Position).Magnitude
                     
                     if distance > 15 then
-                        -- Verifica se tem um teleporter/portal mais perto do destino
+                        -- Lógica de Teleporter Próximo
                         local nearestTP = CheckNearestTeleporter(targetCFrame)
                         
                         if nearestTP then
-                            -- Se o portal estiver longe de mim, mas perto do destino, usa o portal
                             requestEntrance(nearestTP)
                         else
-                            -- Se não tiver portal, usa seu Tween padrão
+                            -- Movimento principal
                             if _tp then
                                 _tp(targetCFrame)
                             else
@@ -2888,9 +2915,8 @@ spawn(function()
                             end
                         end
                     else
-                        -- Chegou no destino
+                        -- Chegou no destino, desliga
                         _G.TeleportIsland = false
-                        if StopTween then StopTween() end
                     end
                 end
             end
