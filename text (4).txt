@@ -1,3 +1,8 @@
+local Lighting = game:GetService("Lighting")
+
+Lighting.Ambient = Color3.new(0.695, 0.695, 0.695)
+Lighting.ColorShift_Bottom = Color3.new(0.695, 0.695, 0.695)
+Lighting.ColorShift_Top = Color3.new(0.695, 0.695, 0.695)
 
 
 	do
@@ -1797,49 +1802,70 @@ BringEnemy = function()
 				PosQ = CFrame.new(-16759.5898, 71.2837, 1595.3399)
 				PosM = CFrame.new(-16759.5898, 71.2837, 1595.3399)
 
-	-- SUBMARINE AREA (đúng mốc 2600 / 2625 / 2650 / 2675)
-			elseif a >= 2600 and a <= 2624 then
-				Mon = "Reef Bandit"
-				Qdata = 1;
-				Qname = "SubmergedQuest1";
-				NameMon = "Reef Bandit"
-				PosQ = CFrame.new(10882.264, -2086.322, 10034.226) -- NPC Submerged
-				PosM = CFrame.new(10736.6191, -2087.8439, 9338.4882)
-			elseif a >= 2625 and a <= 2649 then
-				Mon = "Coral Pirate"
-				Qdata = 2;
-				Qname = "SubmergedQuest1";
-				NameMon = "Coral Pirate"
-				PosQ = CFrame.new(10882.264, -2086.322, 10034.226)
-				PosM = CFrame.new(10965.1025, -2158.8842, 9177.2597)
-			elseif a >= 2650 and a <= 2674 then
-				Mon = "Sea Chanter"
-				Qdata = 1;
-				Qname = "SubmergedQuest2";
-				NameMon = "Sea Chanter"
-				PosQ = CFrame.new(10882.264, -2086.322, 10034.226)
-				PosM = CFrame.new(10621.0342, -2087.8440, 10102.0332)
-			elseif a >= 2675 and a <= 2699 then
-				Mon = "Ocean Prophet"
-				Qdata = 2;
-				Qname = "SubmergedQuest2";
-				NameMon = "Ocean Prophet"
-				PosQ = CFrame.new(10882.264, -2086.322, 10034.226)
-				PosM = CFrame.new(11056.1445, -2001.6717, 10117.4493)
-			elseif a >= 2700 and a <= 2724 then
-				Mon = "High Disciple"
-				Qdata = 1;
-				Qname = "SubmergedQuest3";
-				NameMon = "High Disciple"
-				PosQ = CFrame.new(9636.52441, -1992.19507, 9609.52832)
-				PosM = CFrame.new(9828.087890625, -1940.908935546875, 9693.0634765625)
-			elseif a >= 2725 and a <= 2800 then
-				Mon = "Grand Devotee"
-				Qdata = 2;
-				Qname = "SubmergedQuest3";
-				NameMon = "Grand Devotee"
-				PosQ = CFrame.new(9636.52441, -1992.19507, 9609.52832)
-				PosM = CFrame.new(9557.5849609375, -1928.0404052734375, 9859.1826171875)
+if (getgenv().AutoFarm or _G.Level) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+	_tp(CFrame.new(-16269.7041, 25.2288494, 1373.65955, 0.997390985, 1.47309942e-09, -0.0721890926, -4.00651912e-09, 0.99999994, -2.51183763e-09, 0.0721890852, 5.75363091e-10, 0.997390926))
+	task.wait(2)
+	local args = {"TravelToSubmergedIsland"}
+	game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+	return
+end
+
+Mon = "Reef Bandit"
+Qdata = 1
+Qname = "SubmergedQuest1"
+NameMon = "Reef Bandit"
+PosM = CFrame.new(11019.1318, -2146.06812, 9342.3916, -0.719955266, -1.74275385e-08, 0.69402045, 5.76556367e-08, 1, 8.49211546e-08, -0.69402045, 1.01153624e-07, -0.719955266)
+
+elseif I >= 2625 and I <= 2649 then
+	PosQ = CFrame.new(10778.875, -2087.72437, 9265.18359, 0.934615612, -9.33109447e-08, -0.355659455, 9.17655143e-08, 1, -2.12154276e-08, 0.355659455, -1.28090019e-08, 0.934615612)
+
+	if (getgenv().AutoFarm or _G.Level) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+		_tp(CFrame.new(-16269.7041, 25.2288494, 1373.65955, 0.997390985, 1.47309942e-09, -0.0721890926, -4.00651912e-09, 0.99999994, -2.51183763e-09, 0.0721890852, 5.75363091e-10, 0.997390926))
+		task.wait(2)
+		local args = {"TravelToSubmergedIsland"}
+		game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+		return
+	end
+
+	Mon = "Coral Pirate"
+	Qdata = 2
+	Qname = "SubmergedQuest1"
+	NameMon = "Coral Pirate"
+	PosM = CFrame.new(10808.6006, -2030.36145, 9364.2334, -0.775185347, -0.0359364748, 0.6307109, 0.0615428537, 0.989336014, 0.132010356, -0.628728986, 0.141148239, -0.764707148)
+
+elseif I >= 2650 and I <= 2674 then
+	PosQ = CFrame.new(10880.6855, -2086.20044, 10032.624, -0.321384728, 9.87648434e-08, -0.946948707, 7.13271007e-08, 1, 8.00902953e-08, 0.946948707, -4.18033075e-08, -0.321384728)
+
+	if (getgenv().AutoFarm or _G.Level) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+		_tp(CFrame.new(-16269.7041, 25.2288494, 1373.65955, 0.997390985, 1.47309942e-09, -0.0721890926, -4.00651912e-09, 0.99999994, -2.51183763e-09, 0.0721890852, 5.75363091e-10, 0.997390926))
+		task.wait(2)
+		local args = {"TravelToSubmergedIsland"}
+		game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+		return
+	end
+
+	Mon = "Sea Chanter"
+	Qdata = 1
+	Qname = "SubmergedQuest2"
+	NameMon = "Sea Chanter"
+	PosM = CFrame.new(10671.2715, -2057.59155, 10047.2588, -0.846484065, -3.11045447e-08, 0.532414079, -5.55383117e-08, 1, -2.98785316e-08, -0.532414079, -5.48610757e-08, -0.846484065)
+
+elseif I >= 2675 and I <= 2699 then
+	PosQ = CFrame.new(10880.6855, -2086.20044, 10032.624, -0.321384728, 9.87648434e-08, -0.946948707, 7.13271007e-08, 1, 8.00902953e-08, 0.946948707, -4.18033075e-08, -0.321384728)
+
+	if (getgenv().AutoFarm or _G.Level) and (PosQ.Position - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude > 10000 then
+		_tp(CFrame.new(-16269.7041, 25.2288494, 1373.65955, 0.997390985, 1.47309942e-09, -0.0721890926, -4.00651912e-09, 0.99999994, -2.51183763e-09, 0.0721890852, 5.75363091e-10, 0.997390926))
+		task.wait(2)
+		local args = {"TravelToSubmergedIsland"}
+		game:GetService("ReplicatedStorage").Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak"):InvokeServer(unpack(args))
+		return
+	end
+
+	Mon = "Ocean Prophet"
+	Qdata = 2
+	Qname = "SubmergedQuest2"
+	NameMon = "Ocean Prophet"
+	PosM = CFrame.new(11008.5195, -2007.72839, 10223.0791, -0.688615739, 2.33523378e-09, -0.725126445, 2.99292546e-09, 1, 3.78221315e-10, 0.725126445, -1.90980032e-09, -0.688615739)
 			end
 		end
 	end
@@ -2461,176 +2487,7 @@ function StartFishingLoop()
 	end)
 end
 
----------------------------------------------------------------------
--- SECTION HALLOWEEN
----------------------------------------------------------------------
 
-local SectionHalloween = Tabs.MiscFarm:AddSection("Halloween Event")
-
-local HalloweenToggle = Tabs.MiscFarm:AddToggle("HalloweenToggle", {
-	Title = "Auto Trick or Treat",
-	Default = false
-})
-
-local knockDelay = 2
-local doorDelay = 5
-local trickDelay = 1
-
-local DoorBySea = {
-World1 = {
-CFrame.new(-1016.05951,11.1554155,1540.78235),
-CFrame.new(-1089.28284,10.6633625,1604.43518),
-CFrame.new(-1090.78882,10.5735903,1694.84729),
-CFrame.new(-665.780701,9.71188927,1701.52112),
-CFrame.new(-571.03418,9.71188927,1553.104),
-CFrame.new(-615.743652,9.68747139,1479.30908),
-CFrame.new(722.841309,7.79379559,1444.29028)
-}
-}
-
-DoorPositions = DoorBySea.World1
-
-local function FindNearestPrompt(position)
-local nearest, dist = nil, 10
-for _, v in pairs(workspace:GetDescendants()) do
-if v:IsA("ProximityPrompt") then
-local parent = v.Parent
-local root = parent:FindFirstChild("HumanoidRootPart") or parent:FindFirstChild("Head") or parent:FindFirstChild("Torso") or parent
-if root then
-local d = (root.Position - position).Magnitude
-if d < dist then
-dist = d
-nearest = v
-end
-end
-end
-end
-return nearest
-end
-
-HalloweenToggle:OnChanged(function(value)
-	_G.HalloweenToggle = value
-end)
-
-spawn(function()
-	while task.wait(0.1) do
-		if _G.HalloweenToggle then
-			for i = 1, #DoorPositions do
-				if not _G.HalloweenToggle then break end
-
-				local cf = DoorPositions[i]
-				_tp(cf + Vector3.new(0, 3, 0))
-				task.wait(0.2)
-
-				if plr.PlayerGui.Main.Dialogue.Visible == true then
-					plr.PlayerGui.Main.Dialogue.Visible = false
-				end
-
-				local prompt = FindNearestPrompt(cf.Position)
-				if prompt then
-					pcall(function()
-						fireproximityprompt(prompt)
-						task.wait(knockDelay)
-						fireproximityprompt(prompt)
-					end)
-				end
-
-				task.wait(doorDelay)
-
-				pcall(function()
-					replicated.Remotes.HalloweenEvent:FireServer("AcceptReward")
-					replicated.Remotes.HalloweenEvent:FireServer("Parlus")
-					replicated.Remotes.HalloweenEvent:FireServer("ignore")
-				end)
-
-				task.wait(trickDelay)
-			end
-		end
-	end
-end)
-
-local HalloweenDoorEnemies = Tabs.MiscFarm:AddToggle("AutoDefeatDoorEnemies", {
-	Title = "Auto Defeat Door Enemies",
-	Default = false
-})
-
-local HalloweenEnemies = {
-"Cursed Skeleton",
-"Vampire",
-"Gorilla",
-"Oni Soldier",
-"Celestial Soldier",
-"Snowman",
-"rip_return",
-"Unbound Werewolf",
-"Rip Infantry"
-}
-
-HalloweenDoorEnemies:OnChanged(function(value)
-	_G.AutoDefeatHalloweenDoorEnemie = value
-end)
-
-spawn(function()
-	while task.wait(0.5) do
-		if _G.AutoDefeatHalloweenDoorEnemie then
-			pcall(function()
-				for i, v in next, game.Workspace.Enemies:GetChildren() do
-					if v:IsA("Model")
-					and v:FindFirstChild("Humanoid")
-					and v.Humanoid.Health > 0
-					and table.find(HalloweenEnemies, v.Name) then
-
-						repeat
-							task.wait()
-							Attack.Kill(v, _G.AutoDefeatHalloweenDoorEnemie)
-						until not _G.AutoDefeatHalloweenDoorEnemie or not v.Parent or v.Humanoid.Health <= 0
-					end
-				end
-			end)
-		end
-	end
-end)
-
-local AutoWerewolf = Tabs.MiscFarm:AddToggle("AutoWerewolf", {
-    Title = "Auto Defeat Werewolf",
-    Default = false
-})
-
-AutoWerewolf:OnChanged(function(value)
-    _G.Werewolf = value
-end)
-
-task.spawn(function()
-    while task.wait(0.5) do
-        if _G.Werewolf then
-            pcall(function()
-                for i, v in pairs(game.Workspace.Enemies:GetChildren()) do
-                    if v:IsA("Model") 
-                    and v.Name == "Unbound Werewolf" 
-                    and v:FindFirstChild("Humanoid") 
-                    and v:FindFirstChild("HumanoidRootPart") then
-                    
-                        if v.Humanoid.Health > 0 then
-                            repeat
-                                task.wait()
-                                Attack.Kill(v, _G.Werewolf)
-                            until not _G.Werewolf or not v.Parent or v.Humanoid.Health <= 0
-                        end
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- 🟣 Botão Halloween Gacha
-Tabs.MiscFarm:AddButton({
-    Title = "Roll Event Halloween",
-    Description = "",
-    Callback = function()
-        replicated.Remotes.CommF_:InvokeServer("Cousin", "HalloweenGacha25")
-    end
-})
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local plr = Players.LocalPlayer
@@ -2648,10 +2505,7 @@ local function ToggleAutoStoreFruit(state) Options.AutoStoreFruit = state end
 local function ToggleAutoBringFruit(state) Options.AutoBringFruit = state end
 local function ToggleCollectTweenFruit(state) Options.CollectTweenFruit = state end
 
-Tabs.Fruit:AddParagraph({
-	Title = "Fruits",
-	Content = "Ative as funções Desejadas"
-})
+
 
 local T1 = Tabs.Fruit:AddToggle("AutoRandomFruit", { Title = "Auto Random Fruit", Default = false })
 T1:OnChanged(ToggleAutoRandomFruit)
@@ -3064,91 +2918,13 @@ spawn(function()
         end
     end
 end)
--- Button Teleport Submerged Island (SEM MEXER)
-FarmingSection:AddButton({
-    Title = "Teleport Submerged Island",
-    Description = "Vai até o NPC e Teleporta se for Level 2650+",
-    Callback = function()
-        local Players = game:GetService("Players")
-        local LocalPlayer = Players.LocalPlayer
-        local ReplicatedStorage = game:GetService("ReplicatedStorage")
-        local task = task
-        local MaxSpeed = 350
-        local npcPosition = CFrame.new(-16269.1016, 29.5177539, 1372.3204)
-        local finalPosition = CFrame.new(
-            11092.0186, -2087.72827, 9814.1748,
-            0.123509243, -7.78840175e-08, 5.95723648e-08,
-            1, -7.10704384e-08, 0.992343426,
-            -5.03383895e-08, 0.123509243, 0
-        )
 
-        local function getCharacter()  
-            if not LocalPlayer.Character then  
-                LocalPlayer.CharacterAdded:Wait()  
-            end  
-            LocalPlayer.Character:WaitForChild("HumanoidRootPart")  
-            return LocalPlayer.Character  
-        end  
-
-        local function toggleNoclip(Toggle)  
-            local char = getCharacter()  
-            for _,v in pairs(char:GetChildren()) do  
-                if v:IsA("BasePart") then  
-                    v.CanCollide = not Toggle  
-                end  
-            end  
-        end  
-
-        local function Teleport(GoalCFrame, Speed)  
-            Speed = Speed or MaxSpeed  
-            local char = getCharacter()  
-            local hrp = char:WaitForChild("HumanoidRootPart")  
-            toggleNoclip(true)  
-            local magnitude = (hrp.Position - GoalCFrame.Position).Magnitude  
-            while magnitude > 1 do  
-                local direction = (GoalCFrame.Position - hrp.Position).Unit  
-                hrp.CFrame = hrp.CFrame + direction * (Speed * task.wait())  
-                magnitude = (hrp.Position - GoalCFrame.Position).Magnitude  
-            end  
-            toggleNoclip(false)  
-        end  
-
-        local function GoToNPC()  
-            local level = LocalPlayer.Data.Level.Value  
-            if level >= 2650 then  
-                -- Teleporta até o NPC  
-                Teleport(npcPosition, MaxSpeed)  
-                task.wait(3)  
-                -- Chama os remotes
-                local SubmarineWorker = ReplicatedStorage.Modules.Net:FindFirstChild("RF/SubmarineWorkerSpeak")  
-                local CommF = ReplicatedStorage.Modules.Net:FindFirstChild("CommF_")  
-                if SubmarineWorker then  
-                    pcall(function()  
-                        SubmarineWorker:InvokeServer("TravelToSubmergedIsland")  
-                    end)  
-                end  
-                if CommF then  
-                    pcall(function()  
-                        CommF:InvokeServer("SetLastSpawnPoint", "SubmergedIsland")  
-                    end)  
-                end
-                -- Vai pra coordenada final
-                task.wait(1)
-                Teleport(finalPosition, MaxSpeed)
-            else  
-                warn("Level insuficiente (precisa ser 2650).")  
-            end  
-        end  
-
-        GoToNPC()  
-    end
-})
 	-- Definição da seção principal (Outros)
-Tabs.Main:AddSection("Quests/Outros")
+Tabs.Main:AddSection("Other")
 
 -- 1. Farm Mobs Perto
 local ClosetMons = Tabs.Main:AddToggle("ClosetMons", {
-Title = "Auto Farm Inimigos Próximos",
+Title = "Auto Farm Nearest",
 Description = "Farm Mobs Perto",
 Default = false
 })
