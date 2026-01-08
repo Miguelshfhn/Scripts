@@ -124,7 +124,7 @@ Marines = function()
 Pirates = function()
 		replicated.Remotes.CommF_:InvokeServer("SetTeam", "Pirates");
 	end;
-local I = (loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-NightMystic/Night-Mystic-/refs/heads/main/Ui%20Night%20Mystic")))();
+local I = (loadstring(game:HttpGet("https://pastefy.app/0ZkXtB7E/raw")))();
 if World1 then
 	Boss = {
 			"The Gorilla King",
@@ -2255,27 +2255,28 @@ QuestNeta = function()
 		};
 	end;
 
-local V=I:NewWindow();
-local i=V:T("Info");
-local server=V:T("Server")
-local s=V:T("Stats");
-local g=V:T("Shop");
-local y=V:T("Main");
-local CS_Tab = V:T("Farm Mastery");
-local x=V:T("Farming Other");
-local mf=V:T("Misc Farming");
-local t=V:T("Sea Events");
-local ss=V:T("Skill Sea Event"); 
-local m=V:T("Race");
-local v=V:T("Drago Dojo");
-local S=V:T("Prehistoric");
-local VI=V:T("Visual");
-local q=V:T("Pvp");
-local l=V:T("Teleport");
-local R=V:T("Get and Upgrade Itens");
-local B=V:T("Raid/Fruit");
-local u=V:T("Misc");
-local c=V:T("Settings");
+local V = Library:NewWindow();
+local i = V:T("Info", 10747363166);
+local server = V:T("Server", 10747334547);
+local s = V:T("Stats", 10747353112);
+local g = V:T("Shop", 10747346853);
+local y = V:T("Main", 10747311145);
+local CS_Tab = V:T("Farm Mastery", 10723343321);
+local x = V:T("Farming Other", 10723346539);
+local mf = V:T("Misc Farming", 10723345102);
+local t = V:T("Sea Events", 10723352353);
+local ss = V:T("Skill Sea Event", 10723394301); 
+local m = V:T("Race", 10723350393);
+local v = V:T("Drago Dojo", 11419711311);
+local S = V:T("Prehistoric", 10723381288);
+local VI = V:T("Visual", 10723349272);
+local q = V:T("Pvp", 10723344435);
+local l = V:T("Teleport", 10723374184);
+local R = V:T("Get and Upgrade Itens", 10723351323);
+local B = V:T("Raid/Fruit", 10723377953);
+local u = V:T("Misc", 10723387111);
+local c = V:T("Settings", 10734950309);
+
 
 local b=y:AddSection("Farming");
 local CS = CS_Tab:AddSection("Fruit And Gun Mastery")
