@@ -2785,75 +2785,126 @@ Travel:AddButton({
     end
 })
 
--- Lista de Ilhas (Gera a lista automaticamente)
-local Location = {}
-for _, e in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
-    table.insert(Location, e.Name)
+-- Tabelas de Dados
+local IslandCoords = {}
+local CurrentOptions = {}
+
+-- Define qual lista carregar baseado nas suas variáveis
+if World1 then
+    CurrentOptions = {"WindMill","Marine","Middle Town","Jungle","Pirate Village","Desert","Snow Island","MarineFord","Colosseum","Sky Island 1","Sky Island 2","Sky Island 3","Prison","Magma Village","Under Water Island","Fountain City","Shank Room","Mob Island"}
+    IslandCoords = {
+        ["WindMill"] = CFrame.new(979.79, 16.51, 1429.04),
+        ["Marine"] = CFrame.new(-2566.42, 6.85, 2045.25),
+        ["Middle Town"] = CFrame.new(-690.33, 15.09, 1582.23),
+        ["Jungle"] = CFrame.new(-1612.79, 36.85, 149.12),
+        ["Pirate Village"] = CFrame.new(-1181.30, 4.75, 3803.54),
+        ["Desert"] = CFrame.new(944.15, 20.91, 4373.30),
+        ["Snow Island"] = CFrame.new(1347.80, 104.66, -1319.73),
+        ["MarineFord"] = CFrame.new(-4914.82, 50.96, 4281.02),
+        ["Colosseum"] = CFrame.new(-1427.62, 7.28, -2792.77),
+        ["Sky Island 1"] = CFrame.new(-4869.10, 733.46, -2667.01),
+        ["Sky Island 2"] = Vector3.new(-4607.82, 872.54, -1667.55), -- Remote
+        ["Sky Island 3"] = Vector3.new(-7894.61, 5547.14, -380.29), -- Remote
+        ["Prison"] = CFrame.new(4875.33, 5.65, 734.85),
+        ["Magma Village"] = CFrame.new(-5247.71, 12.88, 8504.96),
+        ["Under Water Island"] = Vector3.new(61163.85, 11.67, 1819.78), -- Remote
+        ["Fountain City"] = CFrame.new(5127.12, 59.50, 4105.44),
+        ["Shank Room"] = CFrame.new(-1442.16, 29.87, -28.35),
+        ["Mob Island"] = CFrame.new(-2850.20, 7.39, 5354.99)
+    }
+elseif World2 then
+    CurrentOptions = {"The Cafe","Frist Spot","Dark Area","Flamingo Mansion","Flamingo Room","Green Zone","Factory","Colossuim","Zombie Island","Two Snow Mountain","Punk Hazard","Cursed Ship","Ice Castle","Forgotten Island","Ussop Island","Mini Sky Island"}
+    IslandCoords = {
+        ["The Cafe"] = CFrame.new(-380.47, 77.22, 255.82),
+        ["Frist Spot"] = CFrame.new(-11.31, 29.27, 2771.52),
+        ["Dark Area"] = CFrame.new(3780.03, 22.65, -3498.58),
+        ["Flamingo Mansion"] = CFrame.new(-483.73, 332.03, 595.32),
+        ["Flamingo Room"] = CFrame.new(2284.41, 15.15, 875.72),
+        ["Green Zone"] = CFrame.new(-2448.53, 73.01, -3210.63),
+        ["Factory"] = CFrame.new(424.12, 211.16, -427.54),
+        ["Colossuim"] = CFrame.new(-1503.62, 219.79, 1369.31),
+        ["Zombie Island"] = CFrame.new(-5622.03, 492.19, -781.78),
+        ["Two Snow Mountain"] = CFrame.new(753.14, 408.23, -5274.61),
+        ["Punk Hazard"] = CFrame.new(-6127.65, 15.95, -5040.28),
+        ["Cursed Ship"] = CFrame.new(923.40, 125.05, 32885.87),
+        ["Ice Castle"] = CFrame.new(6148.41, 294.38, -6741.11),
+        ["Forgotten Island"] = CFrame.new(-3032.76, 317.89, -10075.37),
+        ["Ussop Island"] = CFrame.new(4816.86, 8.45, 2863.81),
+        ["Mini Sky Island"] = CFrame.new(-288.74, 49326.31, -35248.59)
+    }
+elseif World3 then
+    CurrentOptions = {"Mansion","Port Town","Great Tree","Castle On The Sea","MiniSky","Hydra Island","Floating Turtle","Haunted Castle","Ice Cream Island","Peanut Island","Cake Island","Cocoa Island","Candy Island","Tiki Outpost"}
+    IslandCoords = {
+        ["Mansion"] = Vector3.new(-12471.16, 374.94, -7551.67), -- Remote
+        ["Port Town"] = CFrame.new(-290.73, 6.72, 5343.55),
+        ["Great Tree"] = CFrame.new(2681.27, 1682.80, -7190.98),
+        ["Castle On The Sea"] = CFrame.new(-5074.45, 314.51, -2991.05),
+        ["MiniSky"] = CFrame.new(-260.65, 49325.80, -35253.57),
+        ["Port Town"] = CFrame.new(-290.73, 6.72, 5343.55),
+        ["Hydra Island"] = CFrame.new(5255.10, 1004.19, 344.77),
+        ["Floating Turtle"] = CFrame.new(-13274.52, 531.82, -7579.22),
+        ["Haunted Castle"] = CFrame.new(-9515.37, 164.00, 5786.06),
+        ["Ice Cream Island"] = CFrame.new(-902.56, 79.93, -10988.84),
+        ["Peanut Island"] = CFrame.new(-2062.74, 50.47, -10232.56),
+        ["Cake Island"] = CFrame.new(-1884.77, 19.32, -11666.89),
+        ["Cocoa Island"] = CFrame.new(87.94, 73.55, -12319.46),
+        ["Candy Island"] = CFrame.new(-1014.42, 149.11, -14555.96),
+        ["Tiki Outpost"] = CFrame.new(-16218.68, 9.08, 445.61)
+    }
 end
 
+-- UI
 Travel:AddSection("Island")
 
--- Dropdown de Seleção de Ilha
 Travel:AddDropdown({
     Name = "Select Island",
-    Options = Location,
+    Options = CurrentOptions,
     Default = false,
-    Callback = function(I)
-        _G.Island = I
+    Callback = function(v)
+        _G.SelectIsland = v
     end,
 })
 
--- Toggle de Teleporte com sua lógica específica
 Travel:AddToggle({
-    Name = "Teleport to Island",
+    Name = "Auto Tween To Island",
     Default = false,
-    Callback = function(Value)
-        _G.Teleport = Value
+    Callback = function(value)
+        _G.TeleportIsland = value
         
-        if Value then
-            -- Definindo variáveis do jogador local
-            local plr = game.Players.LocalPlayer
-            local Character = plr.Character or plr.CharacterAdded:Wait()
-            local Root = Character:WaitForChild("HumanoidRootPart")
-            
-            -- Procurar a ilha selecionada
-            local targetIsland = workspace._WorldOrigin.Locations:FindFirstChild(_G.Island)
-            
-            if targetIsland then
-                spawn(function()
-                    -- 1. Subida Instantânea (700 studs acima de onde você está agora)
-                    Root.CFrame = Root.CFrame * CFrame.new(0, 700, 0)
-                    wait(0.1) -- Pequena pausa para o motor físico processar
+        if value then
+            spawn(function()
+                while _G.TeleportIsland do
+                    wait()
+                    local target = IslandCoords[_G.SelectIsland]
                     
-                    -- 2. Viagem (Mantendo a altura de 700 studs acima do destino)
-                    local destination = targetIsland.CFrame * CFrame.new(0, 700, 0)
-                    
-                    -- Repete o movimento até chegar perto do destino (eixo X e Z)
-                    repeat
-                        wait()
-                        -- Certifique-se que a função _tp existe no seu script
-                        if _tp then
-                            _tp(destination)
+                    if target then
+                        -- Se for um Vector3, é entrada por Remote (Sky2, Sky3, Underwater, Mansion)
+                        if typeof(target) == "Vector3" then
+                            game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("requestEntrance", target)
+                            _G.TeleportIsland = false -- Para o loop após entrar
                         else
-                            -- Fallback caso _tp não esteja definido:
-                            Root.CFrame = destination
+                            -- Teleporte normal usando sua função _tp
+                            if _tp then
+                                _tp(target)
+                            else
+                                -- Fallback caso _tp não esteja carregado
+                                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = target
+                            end
+                            
+                            -- Checa se chegou (distância menor que 15 studs)
+                            local dist = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - target.p).Magnitude
+                            if dist < 15 then
+                                _G.TeleportIsland = false
+                            end
                         end
-                    until not _G.Teleport or (Root.Position - destination.p).Magnitude < 10
-                    
-                    -- 3. Descida Instantânea (Teleporta para a superfície da ilha)
-                    if _G.Teleport then
-                        Root.CFrame = targetIsland.CFrame * CFrame.new(0, 5, 0) -- 5 studs para não bugar no chão
                     end
-                    
-                    -- 4. Desligar Automático
-                    _G.Teleport = false
-                    -- Se sua biblioteca suportar SetValue para desligar o botão visualmente:
-                    -- self:Set(false) 
-                end)
-            else
-                print("Selecione uma ilha primeiro!")
-                _G.Teleport = false
-            end
+                end
+                
+                -- Chama a função de parar o tween se ela existir
+                if StopTween then StopTween(_G.TeleportIsland) end
+            end)
+        else
+            if StopTween then StopTween(false) end
         end
     end,
 })
