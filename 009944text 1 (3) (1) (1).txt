@@ -2302,36 +2302,138 @@ _G.SelectedSkills = _G.SelectedSkills or {
     ["Blox Fruit"] = {}
 }
 
--- Todas as teclas possíveis
-local allSkills = {"Z", "X", "C", "V", "F"}
+SSS:AddSeperator("Melee")
 
--- Adiciona o dropdown universal
-SSS:AddDropdown({
-    Title = "Skills Universais",
-    Values = allSkills,
-    Multi = true, -- permite selecionar múltiplas
-    Default = {"Z", "X"}, -- você pode definir o padrão que quiser
-    Callback = function(selected)
-        -- Primeiro limpa todas as skills
-        for _, cat in pairs({"Melee", "Sword", "Gun", "Blox Fruit"}) do
-            for _, key in pairs(allSkills) do
-                _G.SelectedSkills[cat][key] = false
-                _G.SaveData["Skill_"..cat.."_"..key] = false
-            end
-        end
-
-        -- Depois ativa as selecionadas
-        for _, key in pairs(selected) do
-            for _, cat in pairs({"Melee", "Sword", "Gun", "Blox Fruit"}) do
-                _G.SelectedSkills[cat][key] = true
-                _G.SaveData["Skill_"..cat.."_"..key] = true
-            end
-        end
-
-        -- Salva as alterações
+-- [[ TOGGLES MELEE ]]
+SSS:AddToggle({
+    Title = "Skill Z",
+    Default = GetSetting("Skill_Melee_Z", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Melee"]["Z"] = I
+        _G.SaveData["Skill_Melee_Z"] = I 
         SaveSettings()
     end
 })
+
+SSS:AddToggle({
+    Title = "Skill X",
+    Default = GetSetting("Skill_Melee_X", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Melee"]["X"] = I
+        _G.SaveData["Skill_Melee_X"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddToggle({
+    Title = "Skill C",
+    Default = GetSetting("Skill_Melee_C", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Melee"]["C"] = I
+        _G.SaveData["Skill_Melee_C"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddSeperator("Sword")
+
+-- [[ TOGGLES SWORD ]]
+SSS:AddToggle({
+    Title = "Skill Z",
+    Default = GetSetting("Skill_Sword_Z", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Sword"]["Z"] = I
+        _G.SaveData["Skill_Sword_Z"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddToggle({
+    Title = "Skill X",
+    Default = GetSetting("Skill_Sword_X", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Sword"]["X"] = I
+        _G.SaveData["Skill_Sword_X"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddSeperator("Gun")
+
+-- [[ TOGGLES GUN ]]
+SSS:AddToggle({
+    Title = "Skill Z",
+    Default = GetSetting("Skill_Gun_Z", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Gun"]["Z"] = I
+        _G.SaveData["Skill_Gun_Z"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddToggle({
+    Title = "Skill X",
+    Default = GetSetting("Skill_Gun_X", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Gun"]["X"] = I
+        _G.SaveData["Skill_Gun_X"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddSeperator("Blox Fruit")
+
+-- [[ TOGGLES BLOX FRUIT ]]
+SSS:AddToggle({
+    Title = "Skill Z",
+    Default = GetSetting("Skill_Fruit_Z", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Blox Fruit"]["Z"] = I
+        _G.SaveData["Skill_Fruit_Z"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddToggle({
+    Title = "Skill X",
+    Default = GetSetting("Skill_Fruit_X", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Blox Fruit"]["X"] = I
+        _G.SaveData["Skill_Fruit_X"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddToggle({
+    Title = "Skill C",
+    Default = GetSetting("Skill_Fruit_C", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Blox Fruit"]["C"] = I
+        _G.SaveData["Skill_Fruit_C"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddToggle({
+    Title = "Skill V",
+    Default = GetSetting("Skill_Fruit_V", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Blox Fruit"]["V"] = I
+        _G.SaveData["Skill_Fruit_V"] = I 
+        SaveSettings()
+    end
+})
+
+SSS:AddToggle({
+    Title = "Skill F",
+    Default = GetSetting("Skill_Fruit_F", true), 
+    Callback = function(I)
+        _G.SelectedSkills["Blox Fruit"]["F"] = I
+        _G.SaveData["Skill_Fruit_F"] = I 
+        SaveSettings()
+    end
+})
+
 
 
 -- Secção de Configurações manuais
