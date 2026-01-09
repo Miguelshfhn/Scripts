@@ -1,6 +1,5 @@
 repeat task.wait() until game:IsLoaded()
 
--- // SISTEMA DE SAVE/LOAD // --
 local HttpService = game:GetService("HttpService")
 local FolderName = "Night Mystic"
 local FileName = "Settings.json"
@@ -10,7 +9,7 @@ if makefolder and not isfolder(FolderName) then makefolder(FolderName) end
 
 _G.SaveData = {}
 
--- Esta é a função que o botão vai chamar
+
 function SaveSettings()
     if writefile then
         local json = HttpService:JSONEncode(_G.SaveData)
@@ -31,7 +30,7 @@ function GetSetting(name, default)
     return default
 end
 
-LoadSettings() -- Carrega tudo antes de abrir a UI
+LoadSettings() 
 
 local Players = game:GetService("Players")
 local CollectionService = game:GetService("CollectionService")
@@ -70,7 +69,6 @@ end
 
 local Lighting = game:GetService("Lighting")
 
--- Full bright automático (bem pouquinho mais escuro)
 Lighting.Ambient = Color3.new(0.695, 0.695, 0.695)
 Lighting.ColorShift_Bottom = Color3.new(0.695, 0.695, 0.695)
 Lighting.ColorShift_Top = Color3.new(0.695, 0.695, 0.695)
@@ -124,7 +122,7 @@ Marines = function()
 Pirates = function()
 		replicated.Remotes.CommF_:InvokeServer("SetTeam", "Pirates");
 	end;
-local I = (loadstring(game:HttpGet("https://pastefy.app/IBm48kxZ/raw")))();
+local I = (loadstring(game:HttpGet("https://pastefy.app/AUsK5OL3/raw")))();
 if World1 then
 	Boss = {
 			"The Gorilla King",
@@ -315,7 +313,7 @@ gay = (function()
     local I = game:GetService("Lighting");
     local e = I:FindFirstChild("LightingLayers");
 
-    -- NÃO remover DarkFog
+  
 
     local K = workspace._WorldOrigin["Foam;"];
     if K and workspace._WorldOrigin["Foam;"] then
@@ -341,7 +339,6 @@ G.Dist = function(I, e)
 G.DistH = function(I, e)
 		return (Root.Position - (I:FindFirstChild("HumanoidRootPart")).Position).Magnitude > e;
 	end;
--- ALTURA ÚNICA AJUSTÁVEL DO MOB
 _G.MobHeight = _G.MobHeight or 20
 
 G.Kill = function(I, e)
