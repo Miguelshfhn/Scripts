@@ -952,85 +952,88 @@ task.spawn(function()
 	end;
 end);
 
--- =======================
--- CONFIG TWEEN
--- =======================
 getgenv().TweenSpeedFar = 300
 getgenv().TweenSpeedNear = 600
 
-local plr = game.Players.LocalPlayer
-local TweenService = game:GetService("TweenService")
+function CheckNearestTeleporter(v393)
+    local l_Position_1 = v393.Position
+    local l_huge_0 = math.huge
+    local v396 = nil
+    local l_PlaceId_1 = game.PlaceId
+    local v398 = {}
 
--- =======================
--- TELEPORTER SYSTEM
--- =======================
-function CheckNearestTeleporter(targetPart)
-    local pos = targetPart.Position
-    local nearestDist = math.huge
-    local nearestTP = nil
-    local PlaceId = game.PlaceId
-    local Teleporters = {}
-
-    if PlaceId == 100117331123089 then
-        Teleporters = {
+    if l_PlaceId_1 == 7449423635 or l_PlaceId_1 == 100117331123089 then
+        v398 = {
             ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
-            ["Hydra Island"] = Vector3.new(5657, 1013, -335),
+            ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
             Mansion = Vector3.new(-12462, 375, -7552),
             Castle = Vector3.new(-5036, 315, -3179),
-            ["Dimensional Shift"] = Vector3.new(-2097, 4776, -15013),
+            ["Dimensional Shift"] = Vector3.new(-2097.3447265625, 4776.24462890625, -15013.4990234375),
             ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
+            ["Beautiful Room"] = Vector3.new(5314.58203, 22.5364361, -125.942276, 1, 2.14762768E-8, -1.99111154E-13, -2.14762768E-8, 1, -3.0510602E-8, 1.98455903E-13, 3.0510602E-8, 1),
             ["Temple of Time"] = Vector3.new(28286, 14897, 103)
         }
-    elseif PlaceId == 79091703265657 then
-        Teleporters = {
+    elseif l_PlaceId_1 == 4442272183 or l_PlaceId_1 == 79091703265657 then
+        v398 = {
             ["Swan Mansion"] = Vector3.new(-390, 332, 673),
             ["Swan Room"] = Vector3.new(2285, 15, 905),
             ["Cursed Ship"] = Vector3.new(923, 126, 32852),
             ["Zombie Island"] = Vector3.new(-6509, 83, -133)
         }
-    elseif PlaceId == 85211729168715 then
-        Teleporters = {
+    elseif l_PlaceId_1 == 2753915549 or l_PlaceId_1 == 85211729168715 then
+        v398 = {
             Sky3 = Vector3.new(-7894, 5547, -380),
             Sky3Exit = Vector3.new(-4607, 874, -1667),
             UnderWater = Vector3.new(61163, 11, 1819),
-            ["Underwater City"] = Vector3.new(61165, 0, 1897),
-            ["Pirate Village"] = Vector3.new(-1242, 4, 3901),
+            ["Underwater City"] = Vector3.new(61165.19140625, 0.18704631924629211, 1897.379150390625),
+            ["Pirate Village"] = Vector3.new(-1242.4625244140625, 4.787059783935547, 3901.282958984375),
             UnderwaterExit = Vector3.new(4050, -1, -1814)
         }
     end
 
-    for _, tpPos in pairs(Teleporters) do
-        local dist = (tpPos - pos).Magnitude
-        if dist < nearestDist then
-            nearestDist = dist
-            nearestTP = tpPos
+    for , v400 in pairs(v398) do
+        local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
+        if l_Magnitude_1 < l_huge_0 then
+            l_huge_0 = l_Magnitude_1
+            v396 = v400
         end
     end
 
-    local HRP = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if HRP and nearestDist < (pos - HRP.Position).Magnitude then
-        return nearestTP
+    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+         if l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
+            return v396
+         else
+            return nil
+         end
     end
+    return nil
 end
 
-function requestEntrance(tpPos)
-    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", tpPos)
-    local HRP = plr.Character.HumanoidRootPart
-    HRP.CFrame = HRP.CFrame + Vector3.new(0, 50, 0)
-    task.wait(0.4)
+function requestEntrance(v402)
+    game.ReplicatedStorage.Remotes.CommF:InvokeServer("requestEntrance", v402)
+    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
+    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
+    task.wait(0.5)
 end
 
--- =======================
--- TWEEN COM TELEPORTER
--- =======================
-_tp = function(targetCFrame)
-    local char = plr.Character
-    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+local function _tp(I)
+    local plr = game.Players.LocalPlayer
+    local e = plr.Character
+    if not e or not e:FindFirstChild("HumanoidRootPart") then
+        return
+    end
 
-    local HRP = char.HumanoidRootPart
-    local Humanoid = char:FindFirstChildOfClass("Humanoid")
+    local HRP = e.HumanoidRootPart
+    local targetCFrame = (typeof(I) == "CFrame" and I) or (typeof(I) == "Vector3" and CFrame.new(I)) or I
+    
+    local v408 = CheckNearestTeleporter(targetCFrame)
+    if v408 then
+        requestEntrance(v408)
+    end
 
-    shouldTween = true
+    local C = HRP 
+    
+    getgenv().shouldTween = true
     getgenv().OnFarm = false
 
     if HRP.Anchored then
@@ -1038,32 +1041,27 @@ _tp = function(targetCFrame)
         task.wait()
     end
 
-    -- ▶ TELEPORTER CHECK
-    local fakePart = Instance.new("Part")
-    fakePart.Position = targetCFrame.Position
+    local targetPosition = targetCFrame.Position
+    local dist = (targetPosition - HRP.Position).Magnitude
 
-    local nearestTP = CheckNearestTeleporter(fakePart)
-    fakePart:Destroy()
-
-    if nearestTP then
-        requestEntrance(nearestTP)
-    end
-
-    local dist = (targetCFrame.Position - HRP.Position).Magnitude
-    local speed = dist <= 15 and getgenv().TweenSpeedNear or getgenv().TweenSpeedFar
-
+    local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
     local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
-    local tween = TweenService:Create(HRP, info, {CFrame = targetCFrame})
+    
+    local tween = game:GetService("TweenService"):Create(C, info, {CFrame = targetCFrame})
 
-    if Humanoid and Humanoid.Sit then
-        HRP.CFrame = CFrame.new(HRP.Position.X, targetCFrame.Y, HRP.Position.Z)
+    if e.Humanoid.Sit == true then
+        e.Humanoid.Sit = false
     end
 
     tween:Play()
 
     task.spawn(function()
         while tween.PlaybackState == Enum.PlaybackState.Playing do
-            if not shouldTween then
+            if not getgenv().shouldTween then
+                tween:Cancel()
+                break
+            end
+            if not e or not e:FindFirstChild("HumanoidRootPart") then
                 tween:Cancel()
                 break
             end
@@ -1073,15 +1071,12 @@ _tp = function(targetCFrame)
     end)
 end
 
--- =======================
--- FUNÇÕES FINAIS
--- =======================
-TeleportToTarget = function(CF)
-    _tp(CF)
+function TeleportToTarget(I)
+    _tp(I)
 end
 
-notween = function(CF)
-    plr.Character.HumanoidRootPart.CFrame = CF
+function notween(I)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = I
 end
 
 
