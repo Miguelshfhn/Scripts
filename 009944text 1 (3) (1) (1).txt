@@ -1078,8 +1078,8 @@ end);
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
-local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local LocalPlayer = Players.LocalPlayer
 
 getgenv().TweenSpeedFar = 300
 getgenv().TweenSpeedNear = 600
@@ -1091,7 +1091,7 @@ function CheckNearestTeleporter(v393)
     local v396 = nil
     local l_PlaceId_1 = game.PlaceId
     local v398 = {}
-    
+
     if l_PlaceId_1 ~= 85211729168715 then
         if l_PlaceId_1 ~= 79091703265657 then
             if l_PlaceId_1 == 100117331123089 then
@@ -1124,7 +1124,7 @@ function CheckNearestTeleporter(v393)
             UnderwaterExit = Vector3.new(4050, -1, -1814)
         }
     end
-    
+
     for _, v400 in pairs(v398) do
         local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
         if l_Magnitude_1 < l_huge_0 then
@@ -1132,7 +1132,7 @@ function CheckNearestTeleporter(v393)
             v396 = v400
         end
     end
-    
+
     if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
         if l_huge_0 <= (l_Position_1 - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
             return v396
@@ -1143,18 +1143,14 @@ end
 
 function requestEntrance(v402)
     ReplicatedStorage.Remotes.CommF:InvokeServer("requestEntrance", v402)
-    local l_HumanoidRootPart_3 = LocalPlayer.Character.HumanoidRootPart
-    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local l_HumanoidRootPart_3 = LocalPlayer.Character.HumanoidRootPart
+        l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
+    end
     task.wait(0.5)
 end
 
-function notween(I)
-    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-        LocalPlayer.Character.HumanoidRootPart.CFrame = I
-    end
-end
-
-function _tp(I)
+_tp = function(I)
     local e = LocalPlayer.Character
     if not e or not e:FindFirstChild("HumanoidRootPart") then
         return
@@ -1193,26 +1189,18 @@ function _tp(I)
     end)
 end
 
-function TeleportToTarget(I)
+TeleportToTarget = function(I)
+    local portal = CheckNearestTeleporter(I)
+    if portal then
+        requestEntrance(portal)
+        task.wait(0.5)
+    end
     _tp(I)
 end
 
-function topos(v405)
-    local l_LocalPlayer_1 = game.Players.LocalPlayer
-    if l_LocalPlayer_1.Character and l_LocalPlayer_1.Character:FindFirstChild("Humanoid") and l_LocalPlayer_1.Character.Humanoid.Health > 0 and l_LocalPlayer_1.Character:FindFirstChild("HumanoidRootPart") then
-        
-        if not v405 then
-            return
-        else
-            local v408 = CheckNearestTeleporter(v405)
-            if v408 then
-                requestEntrance(v408)
-                task.wait(0.5) -- Tempo para carregar após teleporte
-            end
-            
-            -- Executa o Tween
-            _tp(v405)
-        end
+notween = function(I)
+    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character.HumanoidRootPart.CFrame = I
     end
 end
 
