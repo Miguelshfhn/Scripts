@@ -3738,7 +3738,7 @@ l_ImageButton_0.MouseButton1Click:Connect(function()
         v466:Minimize(true)
     end
 end)
-local v484 = v466:MakeTab({"Th\195\180ng Tin | Info", ""})
+local v484 = v466:MakeTab({"Info", ""})
 local v485 = v466:MakeTab({"Farming", ""})
 local v486 = v466:MakeTab({"Auto Fishing", ""})
 local v487 = v466:MakeTab({"Quest | Items", ""})
@@ -9718,3 +9718,4 @@ v496:AddButton({Title = "Server Hop", Callback = function()
 end})
 
 return 
+
