@@ -3740,15 +3740,15 @@ l_ImageButton_0.MouseButton1Click:Connect(function()
 end)
 local v484 = v466:MakeTab({"Info", "info"})
 local v485 = v466:MakeTab({"Main", "home"})
-local v486 = v466:MakeTab({"Auto Fishing", "fish"})
+local v486 = v466:MakeTab({"Auto Fishing", "sailboat"})
 local v487 = v466:MakeTab({"Sub Farming", "sword"})
-local v488 = v466:MakeTab({"Volcano Dojo", "mountain"})
+local v488 = v466:MakeTab({"Volcano Dojo", "fire"})
 local v489 = v466:MakeTab({"Sea Event", "waves"})
 local v490 = v466:MakeTab({"Race V4", "clock"})
-local v491 = v466:MakeTab({"Raid | dungeon", "shield"})
+local v491 = v466:MakeTab({"Raid | dungeon", "rocket"})
 local v492 = v466:MakeTab({"Fruits | Check Stock", "cherry"})
 local v493 = v466:MakeTab({"Teleport", "mappin"})
-local v494 = v466:MakeTab({"PvP,Player", "target"})
+local v494 = v466:MakeTab({"Player", "swords"})
 local v495 = v466:MakeTab({"Shop", "shoppingcart"})
 local v496 = v466:MakeTab({"Settings", "settings"})
 v484:AddDiscordInvite({
@@ -9718,6 +9718,7 @@ v496:AddButton({Title = "Server Hop", Callback = function()
 end})
 
 return 
+
 
 
 
