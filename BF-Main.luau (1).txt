@@ -6,20 +6,14 @@ repeat
     task.wait()
 until game:IsLoaded()
 
-start_script_time = tick()
-
 if getgenv().CaliMatNuoc ~= true then
     getgenv().CaliMatNuoc = true
 
-    repeat  
-        task.wait()  
-    until game:GetService('Players').LocalPlayer  
-    
+    repeat task.wait() until game:GetService('Players').LocalPlayer  
     repeat  
         task.wait()  
         pcall(function()  
             local v2, v3, v4 = pairs(getconnections(game.Players.LocalPlayer.PlayerGui['Main (minimal)'].ChooseTeam.Container[getgenv().Team or 'Pirates'].Frame.TextButton.Activated))  
-
             while true do  
                 local v5  
                 v4, v5 = v2(v3, v4)  
@@ -30,35 +24,25 @@ if getgenv().CaliMatNuoc ~= true then
     until game:GetService('Players').LocalPlayer.Team ~= nil  
 
     local vu6 = game:GetService('Players').LocalPlayer  
-    local vu7 = workspace  
-    local v8 = game:GetService('RunService')  
     local vu9 = game:GetService('ReplicatedStorage')  
 
-    game:GetService('Lighting')  
-    game:GetService('Players')  
-    game:GetService('VirtualInputManager')  
-
-    local vu10 = vu9.Remotes:WaitForChild('CommF_')  
-    local vu11 = vu9:WaitForChild('Modules'):WaitForChild('Net')  
-    local vu12 = require(vu9:WaitForChild('Quests'))  
-    local vu13 = require(vu9:WaitForChild('GuideModule'))  
-
-    vu11:WaitForChild('RE/RegisterAttack')  
-    vu11:WaitForChild('RE/RegisterHit')  
-
-    local vu14 = game:GetService('HttpService')  
-    
-    game.ReplicatedStorage.Remotes:WaitForChild('Validator2')  
-    game.ReplicatedStorage.Modules.Net:WaitForChild('RE/ShootGunEvent')  
-
-    local v16 = identifyexecutor()  
+    -- Mantendo seus loaders originais
     local vu18 = loadstring(game:HttpGet([[https://github.com/HoangNguyenk8/Roblox/blob/main/Modules/Loadstring/FastAttackLoader.luau?raw=true]]))()  
-
-    -- Fluent Library
-    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()  
     loadstring(game:HttpGet([[https://raw.githubusercontent.com/HoangNguyenk8/Roblox/refs/heads/main/Hookfunction.luau]]))()  
+    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()  
 
-    -- Função de Notificação Simples
+    -- Janela Direta (Sem frescura de Premium/Developer/Hub Table)
+    local Window = Fluent:CreateWindow({  
+        Title = "Zinner Hub",  
+        SubTitle = "by Zinner",  
+        TabWidth = 160,  
+        Size = UDim2.fromOffset(480, 360),  
+        Acrylic = true,  
+        Theme = "Dark",  
+        MinimizeKey = Enum.KeyCode.RightControl  
+    })  
+
+    -- Notificação Limpa
     function Notify(tit, cont, dur)  
         Fluent:Notify({  
             Title = tit or "Zinner Hub",  
@@ -67,7 +51,7 @@ if getgenv().CaliMatNuoc ~= true then
         })  
     end  
 
-    -- Botão Flutuante (Mobile/Toggle)
+    -- Botão Flutuante (Mobile)
     local ZinnerL = Instance.new('ScreenGui')  
     ZinnerL.Parent = game.CoreGui  
     local ClickUI = Instance.new('ImageButton')  
@@ -85,24 +69,6 @@ if getgenv().CaliMatNuoc ~= true then
         game:GetService('VirtualInputManager'):SendKeyEvent(true, 'RightControl', false, game)  
         game:GetService('VirtualInputManager'):SendKeyEvent(false, 'RightControl', false, game)  
     end)  
-
-    -- Verificação de Executor
-    if v16 == 'Wave' or v16 == 'AWP' or v16 == 'Posstasium' then  
-        Notify('Zinner Hub', 'Seu executor suporta todas as funções.', 8)  
-    else  
-        Notify('Zinner Hub', 'Algumas funções podem não funcionar no seu executor.', 8)  
-    end  
-
-    -- Janela Principal (Título Limpo)
-    local Window = Fluent:Window({  
-        Title = "Zinner Hub",  
-        SubTitle = "by Zinner",  
-        TabWidth = 160,  
-        Size = UDim2.fromOffset(480, 360),  
-        Acrylic = true,  
-        Theme = "Dark",  
-        MinimizeKey = Enum.KeyCode.RightControl  
-    })  
 
     -- Anti-AFK
     vu6.Idled:Connect(function()  
