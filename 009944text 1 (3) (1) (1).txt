@@ -952,6 +952,7 @@ task.spawn(function()
 	end;
 end);
 
+local plr = game.Players.LocalPlayer
 getgenv().TweenSpeedFar = 300
 getgenv().TweenSpeedNear = 600
 
@@ -961,7 +962,7 @@ function CheckNearestTeleporter(v393)
     local v396 = nil
     local l_PlaceId_1 = game.PlaceId
     local v398 = {}
-
+    
     if l_PlaceId_1 == 7449423635 or l_PlaceId_1 == 100117331123089 then
         v398 = {
             ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
@@ -980,7 +981,7 @@ function CheckNearestTeleporter(v393)
             ["Cursed Ship"] = Vector3.new(923, 126, 32852),
             ["Zombie Island"] = Vector3.new(-6509, 83, -133)
         }
-    elseif l_PlaceId_1 == 2753915549 or l_PlaceId_1 == 85211729168715 then
+    else
         v398 = {
             Sky3 = Vector3.new(-7894, 5547, -380),
             Sky3Exit = Vector3.new(-4607, 874, -1667),
@@ -998,15 +999,12 @@ function CheckNearestTeleporter(v393)
             v396 = v400
         end
     end
-
-    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-         if l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
-            return v396
-         else
-            return nil
-         end
+    
+    if l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
+        return v396
+    else
+        return
     end
-    return nil
 end
 
 function requestEntrance(v402)
@@ -1016,24 +1014,21 @@ function requestEntrance(v402)
     task.wait(0.5)
 end
 
-local function _tp(I)
-    local plr = game.Players.LocalPlayer
+_tp = function(I)
     local e = plr.Character
     if not e or not e:FindFirstChild("HumanoidRootPart") then
         return
     end
 
     local HRP = e.HumanoidRootPart
-    local targetCFrame = (typeof(I) == "CFrame" and I) or (typeof(I) == "Vector3" and CFrame.new(I)) or I
-    
-    local v408 = CheckNearestTeleporter(targetCFrame)
+    local C = HRP 
+
+    local v408 = CheckNearestTeleporter(I)
     if v408 then
         requestEntrance(v408)
     end
 
-    local C = HRP 
-    
-    getgenv().shouldTween = true
+    shouldTween = true
     getgenv().OnFarm = false
 
     if HRP.Anchored then
@@ -1041,43 +1036,38 @@ local function _tp(I)
         task.wait()
     end
 
-    local targetPosition = targetCFrame.Position
-    local dist = (targetPosition - HRP.Position).Magnitude
-
+    local dist = (I.Position - HRP.Position).Magnitude
     local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
+
     local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
-    
-    local tween = game:GetService("TweenService"):Create(C, info, {CFrame = targetCFrame})
+    local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })
 
     if e.Humanoid.Sit == true then
-        e.Humanoid.Sit = false
+        C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)
     end
 
     tween:Play()
 
     task.spawn(function()
         while tween.PlaybackState == Enum.PlaybackState.Playing do
-            if not getgenv().shouldTween then
+            if not shouldTween then
                 tween:Cancel()
                 break
             end
-            if not e or not e:FindFirstChild("HumanoidRootPart") then
-                tween:Cancel()
-                break
-            end
-            task.wait(0.1)
+            task.wait(.1)
         end
         getgenv().OnFarm = true
     end)
 end
 
-function TeleportToTarget(I)
+TeleportToTarget = function(I)
     _tp(I)
 end
 
-function notween(I)
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = I
+notween = function(I)
+    plr.Character.HumanoidRootPart.CFrame = I
 end
+
 
 
 function BTP(I)
