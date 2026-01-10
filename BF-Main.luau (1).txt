@@ -11,117 +11,108 @@ start_script_time = tick()
 if getgenv().CaliMatNuoc ~= true then
     getgenv().CaliMatNuoc = true
 
-    repeat
-        task.wait()
-    until game:GetService('Players').LocalPlayer
-    repeat
-        task.wait()
-        pcall(function()
-            local v2, v3, v4 = pairs(getconnections(game.Players.LocalPlayer.PlayerGui['Main (minimal)'].ChooseTeam.Container[getgenv().Team or 'Pirates'].Frame.TextButton.Activated))
+    repeat  
+        task.wait()  
+    until game:GetService('Players').LocalPlayer  
+    
+    repeat  
+        task.wait()  
+        pcall(function()  
+            local v2, v3, v4 = pairs(getconnections(game.Players.LocalPlayer.PlayerGui['Main (minimal)'].ChooseTeam.Container[getgenv().Team or 'Pirates'].Frame.TextButton.Activated))  
 
-            while true do
-                local v5
+            while true do  
+                local v5  
+                v4, v5 = v2(v3, v4)  
+                if v4 == nil then break end  
+                v5.Function()  
+            end  
+        end)  
+    until game:GetService('Players').LocalPlayer.Team ~= nil  
 
-                v4, v5 = v2(v3, v4)
+    local vu6 = game:GetService('Players').LocalPlayer  
+    local vu7 = workspace  
+    local v8 = game:GetService('RunService')  
+    local vu9 = game:GetService('ReplicatedStorage')  
 
-                if v4 == nil then
-                    break
-                end
+    game:GetService('Lighting')  
+    game:GetService('Players')  
+    game:GetService('VirtualInputManager')  
 
-                v5.Function()
-            end
-        end)
-    until game:GetService('Players').LocalPlayer.Team ~= nil
+    local vu10 = vu9.Remotes:WaitForChild('CommF_')  
+    local vu11 = vu9:WaitForChild('Modules'):WaitForChild('Net')  
+    local vu12 = require(vu9:WaitForChild('Quests'))  
+    local vu13 = require(vu9:WaitForChild('GuideModule'))  
 
-    local vu6 = game:GetService('Players').LocalPlayer
-    local vu7 = workspace
-    local v8 = game:GetService('RunService')
-    local vu9 = game:GetService('ReplicatedStorage')
+    vu11:WaitForChild('RE/RegisterAttack')  
+    vu11:WaitForChild('RE/RegisterHit')  
 
-    game:GetService('Lighting')
-    game:GetService('Players')
-    game:GetService('VirtualInputManager')
+    local vu14 = game:GetService('HttpService')  
+    
+    game.ReplicatedStorage.Remotes:WaitForChild('Validator2')  
+    game.ReplicatedStorage.Modules.Net:WaitForChild('RE/ShootGunEvent')  
 
-    local _ = v8.Stepped
-    local _ = v8.RenderStepped
-    local vu10 = vu9.Remotes:WaitForChild('CommF_')
-    local vu11 = vu9:WaitForChild('Modules'):WaitForChild('Net')
-    local vu12 = require(vu9:WaitForChild('Quests'))
-    local vu13 = require(vu9:WaitForChild('GuideModule'))
+    local v16 = identifyexecutor()  
+    local vu18 = loadstring(game:HttpGet([[https://github.com/HoangNguyenk8/Roblox/blob/main/Modules/Loadstring/FastAttackLoader.luau?raw=true]]))()  
 
-    vu11:WaitForChild('RE/RegisterAttack')
-    vu11:WaitForChild('RE/RegisterHit')
+    -- Fluent Library
+    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()  
+    loadstring(game:HttpGet([[https://raw.githubusercontent.com/HoangNguyenk8/Roblox/refs/heads/main/Hookfunction.luau]]))()  
 
-    local _ = ({obj = {}}).obj
-    local vu14 = game:GetService('HttpService')
-    local vu15 = nil
+    -- Função de Notificação Simples
+    function Notify(tit, cont, dur)  
+        Fluent:Notify({  
+            Title = tit or "Zinner Hub",  
+            Content = cont or "...",  
+            Duration = dur or 5  
+        })  
+    end  
 
-    game.ReplicatedStorage.Remotes:WaitForChild('Validator2')
-    game.ReplicatedStorage.Modules.Net:WaitForChild('RE/ShootGunEvent')
+    -- Botão Flutuante (Mobile/Toggle)
+    local ZinnerL = Instance.new('ScreenGui')  
+    ZinnerL.Parent = game.CoreGui  
+    local ClickUI = Instance.new('ImageButton')  
+    ClickUI.Parent = ZinnerL  
+    ClickUI.Size = UDim2.new(0, 60, 0, 60)  
+    ClickUI.BackgroundTransparency = 1  
+    ClickUI.Image = 'rbxassetid://77947488747613'  
+    ClickUI.Position = UDim2.new(0.2, 0, 0.2, 0)  
+    ClickUI.Draggable = true  
+    local Corner = Instance.new('UICorner')  
+    Corner.Parent = ClickUI  
+    Corner.CornerRadius = UDim.new(0, 100)  
 
-    local v16 = identifyexecutor()
-    local vu17 = Vector3.new(-99999999.21484375, 37.187046974897385, 656.7513427734375).Unit
-    local vu18 = loadstring(game:HttpGet([[https://github.com/HoangNguyenk8/Roblox/blob/main/Modules/Loadstring/FastAttackLoader.luau?raw=true]]))()
+    ClickUI.MouseButton1Click:Connect(function()  
+        game:GetService('VirtualInputManager'):SendKeyEvent(true, 'RightControl', false, game)  
+        game:GetService('VirtualInputManager'):SendKeyEvent(false, 'RightControl', false, game)  
+    end)  
 
-    Hub = {}
-    Hub.Title = 'Zinner Hub' .. (getgenv().Premium and ' [Premium]' or (getgenv().Developer and ' [Developer]' or ' [Freemium]'))
-    Hub.Game = 'BloxFruits'
+    -- Verificação de Executor
+    if v16 == 'Wave' or v16 == 'AWP' or v16 == 'Posstasium' then  
+        Notify('Zinner Hub', 'Seu executor suporta todas as funções.', 8)  
+    else  
+        Notify('Zinner Hub', 'Algumas funções podem não funcionar no seu executor.', 8)  
+    end  
 
-    local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+    -- Janela Principal (Título Limpo)
+    local Window = Fluent:Window({  
+        Title = "Zinner Hub",  
+        SubTitle = "by Zinner",  
+        TabWidth = 160,  
+        Size = UDim2.fromOffset(480, 360),  
+        Acrylic = true,  
+        Theme = "Dark",  
+        MinimizeKey = Enum.KeyCode.RightControl  
+    })  
 
-    loadstring(game:HttpGet([[https://raw.githubusercontent.com/HoangNguyenk8/Roblox/refs/heads/main/Hookfunction.luau]]))()
-
-    function Notify(p20, p21, p22, p23)
-        Fluent:Notify({
-            Title = p20 or 'Zinner Hub',
-            Content = p21 or '...',
-            Description = p23 or '@_nguyenhoanggianam',
-            Duration = p22 or 5,
-        })
-    end
-
-    ZinnerL = Instance.new('ScreenGui')
-    ZinnerL.Parent = game.CoreGui
-    ClickUI = Instance.new('ImageButton')
-    ClickUI.Parent = ZinnerL
-    ClickUI.Size = UDim2.new(0, 60, 0, 60)
-    ClickUI.BackgroundTransparency = 1
-    ClickUI.Image = 'rbxassetid://77947488747613'
-    ClickUI.AnchorPoint = Vector2.new(0.5, 0.5)
-    ClickUI.Position = UDim2.new(0.2, 0, 0.2, 0)
-    ClickUI.BackgroundColor3 = Color3.new(0, 0, 0)
-    ClickUI.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    ClickUI.BorderSizePixel = 0
-    ClickUI.Draggable = true
-    Corner = Instance.new('UICorner')
-    Corner.Parent = ClickUI
-    Corner.CornerRadius = UDim.new(0, 100)
-
-    ClickUI.MouseButton1Click:Connect(function()
-        game:GetService('VirtualInputManager'):SendKeyEvent(true, 'RightControl', false, game)
-        game:GetService('VirtualInputManager'):SendKeyEvent(false, 'RightControl', false, game)
+    -- Anti-AFK
+    vu6.Idled:Connect(function()  
+        game:GetService('VirtualUser'):Button1Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)  
+        task.wait(1)  
+        game:GetService('VirtualUser'):Button1Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)  
     end)
 
-    if v16 == 'Wave' or (v16 == 'AWP' or v16 == 'Posstasium') then
-        Notify('Zinner Hub', [[Your currnently executor support all function, some function will work good]], 8)
-    else
-        Notify('Zinner Hub', [[Your currnently executor not support all function, some function will not work]], 8)
-    end
-
-    -- 🔹 Cria a Window do Fluent ORIGINAL
-    local Window = Fluent:Window({
-        Title = Hub.Title,
-        Description = 'discord.gg/vU6jRXpYsZ',
-        Size = UDim2.fromOffset(480, 360),
-        KeyCode = Enum.KeyCode.RightControl
-    })
-
-    vu6.Idled:Connect(function()
-        game:GetService('VirtualUser'):Button1Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-        task.wait(1)
-        game:GetService('VirtualUser'):Button1Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-    end)
 end
+
 
     local v26 = {
         'Welcome to my script',
@@ -7695,7 +7686,7 @@ VN : Ban can tu click khi mob yeu mau]], 7)
         end
     end)
 
-    -- Lista de abas e ícones
+-- Lista de abas e ícones
 local vu907 = {
     {'Shop Tab','rbxassetid://134556077676632'},
     {'Status Servers','rbxassetid://122223674767625'},
@@ -7713,50 +7704,51 @@ local vu907 = {
     {'Settings',''}
 }
 
-local Tabs = {} -- tabela pra guardar as abas
-local Elements = {} -- tabela pra guardar os elementos dentro das abas
+local Tabs = {} -- guarda abas
+local Elements = {} -- guarda elementos dentro das abas
 
--- Função que cria elementos conforme o tipo
+-- Função que cria elementos Fluent
 local function CreateElement(tab, type, data)
     if type == 'Toggle' then
-        return tab:NewToggle(data.Title, data)
+        local toggle = tab:AddToggle(data.Title, {Default = data.Default or false})
+        if data.Callback then toggle:OnChanged(data.Callback) end
+        return toggle
     elseif type == 'Button' then
-        return tab:NewButton(data)
+        local button = tab:AddButton({Title = data.Title, Description = data.Description, Callback = data.Callback})
+        return button
     elseif type == 'Dropdown' then
-        return tab:NewDropdown(data.Title, data)
+        local dropdown = tab:AddDropdown(data.Title, {Values = data.Values or {}, Multi = data.Multi or false, Default = data.Default})
+        if data.Callback then dropdown:OnChanged(data.Callback) end
+        return dropdown
     elseif type == 'Slider' then
-        return tab:NewSlider(data.Title, data)
+        local slider = tab:AddSlider(data.Title, {Min = data.Min or 0, Max = data.Max or 10, Default = data.Default or 0, Rounding = data.Rounding or 1, Callback = data.Callback})
+        return slider
     elseif type == 'Seperator' then
-        return tab:NewSeperator(data)
+        return tab:AddParagraph({Title = data.Title or "", Content = ""})
     elseif type == 'Label' then
-        return tab:NewParagraph(data)
+        return tab:AddParagraph({Title = data.Title, Content = data.Content})
     elseif type == 'Input' then
-        return tab:NewInput(data.Title, data)
+        local input = tab:AddInput(data.Title, {Default = data.Default or "", Placeholder = data.Placeholder or "", Callback = data.Callback})
+        return input
     end
 end
 
--- Cria todas as abas do Fluent ORIGINAL
+-- Cria todas as abas
 for i, info in pairs(vu907) do
     local tabName = info[1]
     local tabIcon = info[2]
-
-    Tabs[tabName] = Window:MakeTab({
-        Title = tabName,
-        Icon = tabIcon
-    })
-
+    Tabs[tabName] = Window:AddTab({Title = tabName, Icon = tabIcon})
     Elements[tabName] = {}
 
-    -- Se tiver elementos configurados para essa aba, cria eles
     if BuildInterface and BuildInterface[tabName] and BuildInterface[tabName].Feature then
         for _, feature in pairs(BuildInterface[tabName].Feature) do
-            local realInterface = CreateElement(Tabs[tabName], feature.Type, feature)
-            Elements[tabName][feature.Title] = realInterface
+            local realElement = CreateElement(Tabs[tabName], feature.Type, feature)
+            Elements[tabName][feature.Title] = realElement
         end
     end
 end
 
--- Loop de spam skill (adaptado pro seu sistema)
+-- Loop de spam skill
 spawn(function()
     while wait() do
         if SpamSkill then
@@ -7787,17 +7779,17 @@ end)
 
 -- Detecção de servidor
 if vu32.DetectOldServer() then
-    Notify('Detect Old Server','Enable Super Fast Attack!',7)
+    Fluent:Notify({Title = "Detect Old Server", Content = "Enable Super Fast Attack!", Duration = 7})
 else
-    Notify('Detect New Server','Enable Normal Fast Attack!',7)
+    Fluent:Notify({Title = "Detect New Server", Content = "Enable Normal Fast Attack!", Duration = 7})
 end
 
--- Função LoadScript original
+-- Função LoadScript adaptada
 function vu32.LoadScript()
     task.spawn(function()
         repeat task.wait() until vu15
         while task.wait() do
-            NoClip = false
+            local NoClip = false
             local success, err = pcall(function()
                 for name, func in pairs(vu32.AllFuncs) do
                     if vu192[name] and func[2] then
@@ -7820,7 +7812,9 @@ function vu32.LoadScript()
 end
 
 -- Inicializa UI e scripts
-vu32.BuildUI()
 vu32.LoadScript()
 vu32.LogPlayers()
 print('Loaded '..start_script_time)
+
+-- Seleciona primeira aba
+Window:SelectTab(1)
