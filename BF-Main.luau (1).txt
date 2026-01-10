@@ -7652,135 +7652,89 @@ VN : Ban can tu click khi mob yeu mau]], 7)
         end
     end)
 
--- Lista de abas e ícones
-local vu907 = {
-    {'Shop Tab','rbxassetid://134556077676632'},
-    {'Status Servers','rbxassetid://122223674767625'},
-    {'Config Farm','rbxassetid://127147149367603'},
-    {'Farmming Tab','rbxassetid://127561653320876'},
-    {'Stack Farmming','rbxassetid://72448332143088'},
-    {'Items Farmming','rbxassetid://97087268377873'},
-    {'Fruits and Raid','rbxassetid://119340207028601'},
-    {'Local Player','rbxassetid://98870151777863'},
-    {'PVP-Combat','rbxassetid://125736686613291'},
-    {'Volcano Events','rbxassetid://71385541823712'},
-    {'Sea Events','rbxassetid://96788654458681'},
-    {'Dojo','rbxassetid://91920478152016'},
-    {'Upgraded Race','rbxassetid://115164375298022'},
-    {'Settings',''}
+local Tabs = {
+    ['Shop Tab']        = Window:AddTab({ Title = "Shop Tab", Icon = "" }),
+    ['Status Servers']  = Window:AddTab({ Title = "Status Servers", Icon = "" }),
+    ['Config Farm']     = Window:AddTab({ Title = "Config Farm", Icon = "" }),
+    ['Farmming Tab']    = Window:AddTab({ Title = "Farmming Tab", Icon = "" }),
+    ['Stack Farmming']  = Window:AddTab({ Title = "Stack Farmming", Icon = "" }),
+    ['Items Farmming']  = Window:AddTab({ Title = "Items Farmming", Icon = "" }),
+    ['Fruits and Raid'] = Window:AddTab({ Title = "Fruits and Raid", Icon = "" }),
+    ['Local Player']    = Window:AddTab({ Title = "Local Player", Icon = "" }),
+    ['PVP-Combat']      = Window:AddTab({ Title = "PVP-Combat", Icon = "" }),
+    ['Volcano Events']  = Window:AddTab({ Title = "Volcano Events", Icon = "" }),
+    ['Sea Events']      = Window:AddTab({ Title = "Sea Events", Icon = "" }),
+    ['Dojo']            = Window:AddTab({ Title = "Dojo", Icon = "" }),
+    ['Upgraded Race']   = Window:AddTab({ Title = "Upgraded Race", Icon = "" }),
+    ['Settings']        = Window:AddTab({ Title = "Settings", Icon = "" })
 }
+local Elements = {}
 
-local Tabs = {} -- guarda abas
-local Elements = {} -- guarda elementos dentro das abas
-
--- Função que cria elementos Fluent
+-- Criador de elementos Fluent
 local function CreateElement(tab, type, data)
-    if type == 'Toggle' then
-        local toggle = tab:AddToggle(data.Title, {Default = data.Default or false})
-        if data.Callback then toggle:OnChanged(data.Callback) end
-        return toggle
-    elseif type == 'Button' then
-        local button = tab:AddButton({Title = data.Title, Description = data.Description, Callback = data.Callback})
-        return button
-    elseif type == 'Dropdown' then
-        local dropdown = tab:AddDropdown(data.Title, {Values = data.Values or {}, Multi = data.Multi or false, Default = data.Default})
-        if data.Callback then dropdown:OnChanged(data.Callback) end
-        return dropdown
-    elseif type == 'Slider' then
-        local slider = tab:AddSlider(data.Title, {Min = data.Min or 0, Max = data.Max or 10, Default = data.Default or 0, Rounding = data.Rounding or 1, Callback = data.Callback})
-        return slider
-    elseif type == 'Seperator' then
-        return tab:AddParagraph({Title = data.Title or "", Content = ""})
-    elseif type == 'Label' then
-        return tab:AddParagraph({Title = data.Title, Content = data.Content})
-    elseif type == 'Input' then
-        local input = tab:AddInput(data.Title, {Default = data.Default or "", Placeholder = data.Placeholder or "", Callback = data.Callback})
-        return input
+    if type == "Toggle" then
+        local t = tab:AddToggle(data.Flag or data.Title, {
+            Title = data.Title,
+            Default = data.Default or false
+        })
+        if data.Callback then t:OnChanged(data.Callback) end
+        return t
+
+    elseif type == "Button" then
+        return tab:AddButton({
+            Title = data.Title,
+            Description = data.Description,
+            Callback = data.Callback
+        })
+
+    elseif type == "Dropdown" then
+        local d = tab:AddDropdown(data.Flag or data.Title, {
+            Title = data.Title,
+            Values = data.Values or {},
+            Multi = data.Multi or false,
+            Default = data.Default
+        })
+        if data.Callback then d:OnChanged(data.Callback) end
+        return d
+
+    elseif type == "Slider" then
+        return tab:AddSlider(data.Flag or data.Title, {
+            Title = data.Title,
+            Min = data.Min or 0,
+            Max = data.Max or 100,
+            Default = data.Default or 0,
+            Rounding = data.Rounding or 1,
+            Callback = data.Callback
+        })
+
+    elseif type == "Label" then
+        return tab:AddParagraph({
+            Title = data.Title,
+            Content = data.Content or ""
+        })
+
+    elseif type == "Input" then
+        return tab:AddInput(data.Flag or data.Title, {
+            Title = data.Title,
+            Default = data.Default or "",
+            Placeholder = data.Placeholder or "",
+            Callback = data.Callback
+        })
     end
 end
 
--- Cria todas as abas
-for i, info in pairs(vu907) do
-    local tabName = info[1]
-    local tabIcon = info[2]
-    Tabs[tabName] = Window:AddTab({Title = tabName, Icon = tabIcon})
+-- Cria elementos dentro das abas
+for tabName, tab in pairs(Tabs) do
     Elements[tabName] = {}
-
     if BuildInterface and BuildInterface[tabName] and BuildInterface[tabName].Feature then
-        for _, feature in pairs(BuildInterface[tabName].Feature) do
-            local realElement = CreateElement(Tabs[tabName], feature.Type, feature)
-            Elements[tabName][feature.Title] = realElement
-        end
-    end
-end
-
--- Loop de spam skill
-spawn(function()
-    while wait() do
-        if SpamSkill then
-            pcall(function()
-                if vu192['Use Melee'] and vu32.GetSkill('Melee', vu192['Melee Skills']) then
-                    local v = vu32.GetSkill('Melee', vu192['Melee Skills'])
-                    vu32.EquipToolName(v[1])
-                    vu32.SendKey(v[2])
-                elseif vu192['Use Sword'] and vu32.GetSkill('Sword', vu192['Sword Skills']) then
-                    local v = vu32.GetSkill('Sword', vu192['Sword Skills'])
-                    vu32.EquipToolName(v[1])
-                    vu32.SendKey(v[2])
-                elseif vu192['Use Gun'] and vu32.GetSkill('Gun', vu192['Gun Skills']) then
-                    local v = vu32.GetSkill('Gun', vu192['Gun Skills'])
-                    vu32.EquipToolName(v[1])
-                    vu32.SendKey(v[2])
-                elseif vu192['Use Blox Fruit'] and vu32.GetSkill('Blox Fruit', vu192['Blox Fruit Skills']) then
-                    local v = vu32.GetSkill('Blox Fruit', vu192['Blox Fruit Skills'])
-                    vu32.EquipToolName(v[1])
-                    vu32.SendKey(v[2])
-                else
-                    vu32.RandomEquipWeapon()
-                end
-            end)
-        end
-    end
-end)
-
--- Detecção de servidor
-if vu32.DetectOldServer() then
-    Fluent:Notify({Title = "Detect Old Server", Content = "Enable Super Fast Attack!", Duration = 7})
-else
-    Fluent:Notify({Title = "Detect New Server", Content = "Enable Normal Fast Attack!", Duration = 7})
-end
-
--- Função LoadScript adaptada
-function vu32.LoadScript()
-    task.spawn(function()
-        repeat task.wait() until vu15
-        while task.wait() do
-            local NoClip = false
-            local success, err = pcall(function()
-                for name, func in pairs(vu32.AllFuncs) do
-                    if vu192[name] and func[2] then
-                        NoClip = true
-                        func[1]()
-                    end
-                end
-            end)
-            if not success then
-                print(err)
+        for _, feature in ipairs(BuildInterface[tabName].Feature) do
+            local el = CreateElement(tab, feature.Type, feature)
+            if el and feature.Title then
+                Elements[tabName][feature.Title] = el
             end
         end
-    end)
-
-    vu7.Map['WaterBase-Plane'].Size = Vector3.new(1000, 113, 1000)
-
-    if vu32.CheckSea(2) and workspace.Map.CircleIsland.Detail:FindFirstChild('LavaParts') then
-        workspace.Map.CircleIsland.Detail:FindFirstChild('LavaParts'):Destroy()
     end
 end
-
--- Inicializa UI e scripts
-vu32.LoadScript()
-vu32.LogPlayers()
-print('Loaded '..start_script_time)
 
 -- Seleciona primeira aba
 Window:SelectTab(1)
