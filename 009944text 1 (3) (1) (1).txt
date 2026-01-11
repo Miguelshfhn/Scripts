@@ -533,100 +533,133 @@ statsSetings = function(I, e)
 
 
 
-BringEnemy = function()
-	local L_45_ = {}
-	if not _B then
-		return
-	end
-	if not PosMon then
-		return
-	end
-	L_45_[4] = game["Players"]["LocalPlayer"]
-	L_45_[5] = L_45_[4]["Character"] and L_45_[4]["Character"]:FindFirstChild("HumanoidRootPart")
-	if not L_45_[5] then
-		return
-	end
-	L_45_[9] = game:GetService("TweenService")
-	L_45_[8] = _G["BringRange"]
-	L_45_[7] = _G["SpeedB"]
-	L_45_[6] = _G["MobM"]
-	L_45_[1] = 0
-	L_45_[2] = {}
-	for L_46_forvar0, L_47_forvar1 in pairs(workspace["Enemies"]:GetChildren()) do
-		local L_48_ = {}
-		L_48_[4], L_48_[1] = L_46_forvar0, L_47_forvar1
-		if L_45_[1] >= L_45_[6] then
-			break
-		end
-		L_48_[6] = false
-		for L_49_forvar0, L_50_forvar1 in ipairs(BossList or {}) do
-			local L_51_ = {}
-			L_51_[2], L_51_[1] = L_49_forvar0, L_50_forvar1
-			if L_48_[1]["Name"] == L_51_[1] then
-				L_48_[6] = true
-				break
-			end
-		end
-		if L_48_[6] then
-			continue
-		end
-		L_48_[2] = L_48_[1]:FindFirstChild("Humanoid")
-		L_48_[3] = L_48_[1]:FindFirstChild("HumanoidRootPart")
-		if not(L_48_[2] and (L_48_[3] and L_48_[2]["Health"] > 0)) then
-			continue
-		end
-		if (L_48_[3]["Position"] - L_45_[5]["Position"])["Magnitude"] <= L_45_[8] then
-			local L_52_ = {}
-			R_[1] += 1
-			L_52_[2] = Vector3["zero"]
-			L_52_[3] = 0
-			for L_53_forvar0, L_54_forvar1 in pairs(workspace["Enemies"]:GetChildren()) do
-				local L_55_ = {}
-				L_55_[2], L_55_[5] = L_53_forvar0, L_54_forvar1
-				L_55_[4] = L_55_[5]:FindFirstChild("Humanoid")
-				L_55_[1] = L_55_[5]:FindFirstChild("HumanoidRootPart")
-				if L_55_[4] and (L_55_[1] and (L_55_[4]["Health"] > 0 and L_55_[5]["Name"] == L_48_[1]["Name"])) then
-					D_[2] += L_55_[1]["Position"]
-					D_[3] += 1
-				end
-			end
-			L_52_[1] = L_52_[3] > 0 and L_52_[2] / L_52_[3] or L_48_[3]["Position"]
-			L_52_[4] = CFrame["new"](L_52_[1])
-			L_52_[5] = (L_48_[3]["Position"] - L_52_[4]["Position"])["Magnitude"]
-			if L_52_[5] > 3 then
-				local L_56_ = {}
-				L_56_[2] = TweenInfo["new"](L_52_[5] / L_45_[7], Enum["EasingStyle"]["Linear"]);
-				(L_45_[9]:Create(L_48_[3], L_56_[2], {
-					["CFrame"] = L_52_[4]
-				})):Play()
-			end
-			L_48_[3]["CanCollide"] = false
-			L_48_[3][L_1_[2]({
-				"AssemblyLinearVeloci";
-				"ty"
-			})] = Vector3["zero"]
-			L_48_[3][L_1_[2]({
-				"AssemblyAngularVeloc";
-				"ity"
-			})] = Vector3["zero"]
-			if L_48_[2]:FindFirstChild("Animator") then
-				L_48_[2]["Animator"]:Destroy()
-			end
-			if not L_48_[3]:FindFirstChild("BodyVelocity") then
-				local L_57_ = {}
-				L_57_[1] = Instance["new"]("BodyVelocity")
-				L_57_[1]["Name"] = "BodyVelocity"
-				L_57_[1]["MaxForce"] = Vector3["new"](1000000000, 1000000000, 1000000000)
-				L_57_[1]["Velocity"] = Vector3["zero"]
-				L_57_[1]["Parent"] = L_48_[3]
-			end
-			pcall(function()
-				sethiddenproperty(L_45_[4], "SimulationRadius", math["huge"])
-			end)
-		end
-	end
+--==================================================
+-- VARIÁVEIS DE CONTROLE NECESSÁRIAS
+--==================================================
+_G = _G or {}
+
+_B = false
+PosMon = nil
+
+_G.BringRange = _G.BringRange or 235
+_G.MaxBringMobs = _G.MaxBringMobs or 3 -- LIMITE DE MOBS
+
+_G.FarmPriorityElf = _G.FarmPriorityElf or false
+_G.FarmMastery_S   = _G.FarmMastery_S or false
+
+local TweenService = game:GetService("TweenService")
+local TweenInfoBring = TweenInfo.new(
+    0.45, -- velocidade do tween
+    Enum.EasingStyle.Linear,
+    Enum.EasingDirection.Out
+)
+
+--==================================================
+-- FUNÇÃO: VERIFICA SE QUALQUER FARM ESTÁ ATIVO
+--==================================================
+local function FarmAtivo()
+    if _G.FarmPriorityElf or _G.FarmElfLevelCustom then
+        return true
+    end
+
+    if _G.FarmMastery_S then  
+        return true  
+    end  
+
+    return _G.StartFarm and (
+        _G.Level or  
+        _G.AutoFarm_Bone or  
+        _G.AutoFarm_Cake or  
+        _G.FarmMastery_Dev or  
+        _G.FarmMastery_G or  
+        (getgenv()).AutoMaterial or _G.AutoTyrant
+    )
 end
 
+--==================================================
+-- FUNÇÃO: IGNORA MOBS INDESEJADOS
+--==================================================
+local function IsRaidMob(mob)
+    local n = mob.Name:lower()
+
+    if n:find("raid") or n:find("microchip") or n:find("island") then  
+        return true  
+    end  
+
+    if mob:GetAttribute("IsRaid")  
+        or mob:GetAttribute("RaidMob")  
+        or mob:GetAttribute("IsBoss") then  
+        return true  
+    end  
+
+    local hum = mob:FindFirstChild("Humanoid")  
+    if hum and hum.WalkSpeed == 0 then  
+        return true  
+    end  
+
+    if mob.Parent and tostring(mob.Parent):lower():find("_worldorigin") then  
+        return true  
+    end  
+
+    return false
+end
+
+--==================================================
+-- FUNÇÃO PRINCIPAL: BRING (USANDO VU32)
+--==================================================
+BringEnemy = function()
+    if not FarmAtivo() or not _B then return end
+
+    local plr = game.Players.LocalPlayer  
+    local char = plr.Character  
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")  
+    if not hrp then return end  
+
+    -- Simulation Radius  
+    pcall(function()  
+        sethiddenproperty(plr, "SimulationRadius", math.huge)  
+    end)  
+
+    local targetPos = PosMon or hrp.Position  
+    local enemies = vu7.Enemies:GetChildren()  
+
+    for _, mob in ipairs(enemies) do  
+        if vu32.IsAlive(mob) and isnetworkowner(mob.HumanoidRootPart) and vu32.GetDistance(mob.HumanoidRootPart.Position) <= 500 then
+            for _, part in pairs(mob:GetChildren()) do
+                if part:IsA("BasePart") then
+                    part.CanCollide = false
+                end
+            end
+
+            if not mob.HumanoidRootPart:FindFirstChild("Lock") then
+                local bv = Instance.new("BodyVelocity")
+                bv.Name = "Lock"
+                bv.Parent = mob.HumanoidRootPart
+                bv.Velocity = Vector3.new(0,0,0)
+                bv.MaxForce = Vector3.new(10000,10000,10000)
+            end
+
+            mob.Humanoid.WalkSpeed = 0
+            mob:SetPrimaryPartCFrame(CFrame.new(targetPos))
+        end
+    end
+end
+
+--==================================================
+-- LOOP CONTROLADOR
+--==================================================
+task.spawn(function()
+    while true do
+        if FarmAtivo() then
+            _B = true
+            BringEnemy()
+            _B = false
+        else  
+            _B = false  
+        end
+        task.wait(1)
+    end
+end)
 Useskills = function(I, e)
 		if I == "Melee" then
 			weaponSc("Melee");
