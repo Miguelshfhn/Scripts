@@ -533,149 +533,100 @@ statsSetings = function(I, e)
 
 
 
---==================================================
--- VARIÁVEIS DE CONTROLE NECESSÁRIAS
---==================================================
-_G = _G or {}
-
-_B = false
-PosMon = nil
-
-_G.BringRange = _G.BringRange or 235
-_G.MaxBringMobs = _G.MaxBringMobs or 3 -- LIMITE DE MOBS
-
-_G.FarmPriorityElf = _G.FarmPriorityElf or false
-_G.FarmMastery_S   = _G.FarmMastery_S or false
-
-local TweenService = game:GetService("TweenService")
-local TweenInfoBring = TweenInfo.new(
-    0.45, -- velocidade do tween
-    Enum.EasingStyle.Linear,
-    Enum.EasingDirection.Out
-)
-
---==================================================
--- FUNÇÃO: VERIFICA SE QUALQUER FARM ESTÁ ATIVO
---==================================================
-local function FarmAtivo()
-    -- PRIORIDADE ABSOLUTA (ELF)
-    if _G.FarmPriorityElf or _G.FarmElfLevelCustom then
-        return true
-    end
-
-    -- AUTO MASTERY ALL SWORD (INDEPENDENTE DO START FARM)  
-    if _G.FarmMastery_S then  
-        return true  
-    end  
-
-    -- OUTROS FARMS (DEPENDENTES DO START FARM)  
-    return _G.StartFarm and (
-        _G.Level or  
-        _G.AutoFarm_Bone or  
-        _G.AutoFarm_Cake or  
-        _G.FarmMastery_Dev or  
-        _G.FarmMastery_G or  
-        (getgenv()).AutoMaterial or  
-        _G.AutoTyrant or
-        _G.SailBoat_Hydra or _G.WardenBoss or _G.AutoFactory or _G.HighestMirage or _G.HCM or _G.PGB or _G.Leviathan1 or _G.UPGDrago or _G.Complete_Trials or _G.TpDrago_Prehis or _G.BuyDrago or _G.AutoFireFlowers or _G.DT_Uzoth or _G.AutoBerry or _G.Prehis_Find or _G.Prehis_Skills or _G.Prehis_DB or _G.Prehis_DE or _G.FarmBlazeEM or _G.Dojoo or _G.CollectPresent or _G.AutoLawKak or _G.TpLab or _G.AutoPhoenixF or _G.AutoFarmChest or _G.AutoHytHallow or _G.LongsWord or _G.BlackSpikey or _G.AutoHolyTorch or _G.TrainDrago or _G.AutoSaber or _G.FarmMastery_Dev or _G.CitizenQuest or _G.AutoEctoplasm or _G.KeysRen or _G.Auto_Rainbow_Haki or _G.obsFarm or _G.AutoBigmom or _G.Doughv2 or _G.AuraBoss or _G.Raiding or _G.Auto_Cavender or _G.TpPly or _G.Bartilo_Quest or _G.Level or _G.FarmEliteHunt or _G.AutoZou or _G.AutoFarm_Bone or (getgenv()).AutoMaterial or _G.CraftVM or _G.FrozenTP or _G.TPDoor or _G.AcientOne or _G.AutoFarmNear or _G.AutoRaidCastle or _G.DarkBladev3 or _G.AutoFarmRaid or _G.Auto_Cake_Prince or _G.Addealer or _G.TPNpc or _G.TwinHook or _G.FindMirage or _G.FarmChestM or _G.Shark or _G.TerrorShark or _G.Piranha or _G.MobCrew or _G.SeaBeast1 or _G.FishBoat or _G.Auto or _G.AutoPoleV2 or _G.Auto_SuperHuman or _G.AutoDeathStep or _G.Auto_SharkMan_Karate or _G.Auto_Electric_Claw or _G.AutoDragonTalon or _G.Auto_Def_DarkCoat or _G.Auto_God_Human or _G.Auto_Tushita or _G.AutoMatSoul or _G.AutoKenVTWO or _G.AutoSerpentBow or _G.AutoFMon or _G.Auto_Soul_Guitar or _G.TPGEAR or _G.AutoSaw or _G.AutoTridentW2 or _G.Auto_StartRaid or _G.AutoEvoRace or _G.AutoGetQuestBounty or _G.MarinesCoat or _G.TravelDres or _G.Defeating or _G.DummyMan or _G.Auto_Yama or _G.Auto_SwanGG or _G.SwanCoat or _G.AutoEcBoss or _G.Auto_Mink or _G.Auto_Human or _G.Auto_Skypiea or _G.Auto_Fish or _G.CDK_TS or _G.CDK_YM or _G.CDK or _G.AutoFarmGodChalice or _G.AutoFistDarkness or _G.AutoMiror or _G.Teleport or _G.AutoKilo or _G.AutoGetUsoap or _G.Praying or _G.TryLucky or _G.AutoColShad or _G.AutoUnHaki or _G.Auto_DonAcces or _G.AutoRipIngay or _G.DragoV3 or _G.DragoV1 or _G.SailBoats or NextIs or _G.FarmGodChalice or _G.IceBossRen or senth or senth2 or _G.Lvthan or _G.beasthunter or _G.DangerLV or _G.Relic123 or _G.tweenKitsune or _G.Collect_Ember or _G.AutofindKitIs or _G.snaguine or _G.TwFruits or _G.tweenKitShrine or _G.Tp_LgS or _G.Tp_MasterA or _G.tweenShrine or _G.FarmMastery_G or _G.FarmMastery_S
-    )
-end
-
---==================================================
--- FUNÇÃO: IGNORA MOBS INDESEJADOS
---==================================================
-local function IsRaidMob(mob)
-    local n = mob.Name:lower()
-
-    if n:find("raid") or n:find("microchip") or n:find("island") then  
-        return true  
-    end  
-
-    if mob:GetAttribute("IsRaid")  
-        or mob:GetAttribute("RaidMob")  
-        or mob:GetAttribute("IsBoss") then  
-        return true  
-    end  
-
-    local hum = mob:FindFirstChild("Humanoid")  
-    if hum and hum.WalkSpeed == 0 then  
-        return true  
-    end  
-
-    if mob.Parent and tostring(mob.Parent):lower():find("_worldorigin") then  
-        return true  
-    end  
-
-    return false
-end
-
---==================================================
--- FUNÇÃO PRINCIPAL: BRING
---==================================================
 BringEnemy = function()
-    if not FarmAtivo() or not _B then return end
-
-    local plr = game.Players.LocalPlayer  
-    local char = plr.Character  
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")  
-    if not hrp then return end  
-
-    -- Simulation Radius  
-    pcall(function()  
-        sethiddenproperty(plr, "SimulationRadius", math.huge)  
-    end)  
-
-    local targetPos = PosMon or hrp.Position  
-    local enemies = workspace.Enemies:GetChildren()  
-    local count = 0  
-
-    for _, mob in ipairs(enemies) do  
-        if count >= _G.MaxBringMobs then break end  
-
-        local hum = mob:FindFirstChild("Humanoid")  
-        local root = mob:FindFirstChild("HumanoidRootPart")  
-
-        if hum and root and hum.Health > 0 and not IsRaidMob(mob) then  
-            local dist = (root.Position - targetPos).Magnitude  
-
-            if dist <= _G.BringRange and not root:GetAttribute("Tweening") then  
-                count += 1  
-                root:SetAttribute("Tweening", true)  
-
-                local tween = TweenService:Create(  
-                    root,  
-                    TweenInfoBring,  
-                    { CFrame = CFrame.new(targetPos) }  
-                )  
-
-                tween:Play()  
-                tween.Completed:Once(function()  
-                    if root then  
-                        root:SetAttribute("Tweening", false)  
-                    end  
-                end)  
-            end  
-        end  
-    end
+	local L_45_ = {}
+	if not _B then
+		return
+	end
+	if not PosMon then
+		return
+	end
+	L_45_[4] = game["Players"]["LocalPlayer"]
+	L_45_[5] = L_45_[4]["Character"] and L_45_[4]["Character"]:FindFirstChild("HumanoidRootPart")
+	if not L_45_[5] then
+		return
+	end
+	L_45_[9] = game:GetService("TweenService")
+	L_45_[8] = _G["BringRange"]
+	L_45_[7] = _G["SpeedB"]
+	L_45_[6] = _G["MobM"]
+	L_45_[1] = 0
+	L_45_[2] = {}
+	for L_46_forvar0, L_47_forvar1 in pairs(workspace["Enemies"]:GetChildren()) do
+		local L_48_ = {}
+		L_48_[4], L_48_[1] = L_46_forvar0, L_47_forvar1
+		if L_45_[1] >= L_45_[6] then
+			break
+		end
+		L_48_[6] = false
+		for L_49_forvar0, L_50_forvar1 in ipairs(BossList or {}) do
+			local L_51_ = {}
+			L_51_[2], L_51_[1] = L_49_forvar0, L_50_forvar1
+			if L_48_[1]["Name"] == L_51_[1] then
+				L_48_[6] = true
+				break
+			end
+		end
+		if L_48_[6] then
+			continue
+		end
+		L_48_[2] = L_48_[1]:FindFirstChild("Humanoid")
+		L_48_[3] = L_48_[1]:FindFirstChild("HumanoidRootPart")
+		if not(L_48_[2] and (L_48_[3] and L_48_[2]["Health"] > 0)) then
+			continue
+		end
+		if (L_48_[3]["Position"] - L_45_[5]["Position"])["Magnitude"] <= L_45_[8] then
+			local L_52_ = {}
+			R_[1] += 1
+			L_52_[2] = Vector3["zero"]
+			L_52_[3] = 0
+			for L_53_forvar0, L_54_forvar1 in pairs(workspace["Enemies"]:GetChildren()) do
+				local L_55_ = {}
+				L_55_[2], L_55_[5] = L_53_forvar0, L_54_forvar1
+				L_55_[4] = L_55_[5]:FindFirstChild("Humanoid")
+				L_55_[1] = L_55_[5]:FindFirstChild("HumanoidRootPart")
+				if L_55_[4] and (L_55_[1] and (L_55_[4]["Health"] > 0 and L_55_[5]["Name"] == L_48_[1]["Name"])) then
+					D_[2] += L_55_[1]["Position"]
+					D_[3] += 1
+				end
+			end
+			L_52_[1] = L_52_[3] > 0 and L_52_[2] / L_52_[3] or L_48_[3]["Position"]
+			L_52_[4] = CFrame["new"](L_52_[1])
+			L_52_[5] = (L_48_[3]["Position"] - L_52_[4]["Position"])["Magnitude"]
+			if L_52_[5] > 3 then
+				local L_56_ = {}
+				L_56_[2] = TweenInfo["new"](L_52_[5] / L_45_[7], Enum["EasingStyle"]["Linear"]);
+				(L_45_[9]:Create(L_48_[3], L_56_[2], {
+					["CFrame"] = L_52_[4]
+				})):Play()
+			end
+			L_48_[3]["CanCollide"] = false
+			L_48_[3][L_1_[2]({
+				"AssemblyLinearVeloci";
+				"ty"
+			})] = Vector3["zero"]
+			L_48_[3][L_1_[2]({
+				"AssemblyAngularVeloc";
+				"ity"
+			})] = Vector3["zero"]
+			if L_48_[2]:FindFirstChild("Animator") then
+				L_48_[2]["Animator"]:Destroy()
+			end
+			if not L_48_[3]:FindFirstChild("BodyVelocity") then
+				local L_57_ = {}
+				L_57_[1] = Instance["new"]("BodyVelocity")
+				L_57_[1]["Name"] = "BodyVelocity"
+				L_57_[1]["MaxForce"] = Vector3["new"](1000000000, 1000000000, 1000000000)
+				L_57_[1]["Velocity"] = Vector3["zero"]
+				L_57_[1]["Parent"] = L_48_[3]
+			end
+			pcall(function()
+				sethiddenproperty(L_45_[4], "SimulationRadius", math["huge"])
+			end)
+		end
+	end
 end
 
---==================================================
--- LOOP CONTROLADOR
---==================================================
-task.spawn(function()
-    while task.wait(1) do
-        if FarmAtivo() then
-            _B = true
-            BringEnemy()
-            task.wait(3)
-            _B = false  
-            task.wait(5)  
-        else  
-            _B = false  
-            task.wait(1)  
-        end  
-    end
-end)
 Useskills = function(I, e)
 		if I == "Melee" then
 			weaponSc("Melee");
@@ -11309,14 +11260,6 @@ for I, e in pairs(replicated.Remotes.CommF_:InvokeServer("GetFruits", false)) do
 		table.insert(C5, K);
 	end;
 end;
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local hrp = character:WaitForChild("HumanoidRootPart")
-local replicated = ReplicatedStorage -- ajustar se necessário
-
--- Dropdown Frutas Básicas
 p:AddDropdown({
 	Title = "Select Fruit Stock",
 	Description = "",
@@ -11324,20 +11267,12 @@ p:AddDropdown({
 	Default = false,
 	Multi = false,
 	Callback = function(I)
-		_G.SelectFruit = I
+		_G.SelectFruit = I;
 	end,
-})
-
--- Botão Comprar Frutas Básicas
-p:AddButton({
-	Title = "Buy Basic Stock",
-	Description = "",
-	Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("PurchaseRawFruit", _G.SelectFruit)
-	end
-})
-
--- Dropdown Frutas Mirage
+});
+p:AddButton({ Title = "Buy Basic Stock", Description = "", Callback = function()
+		replicated.Remotes.CommF_:InvokeServer("PurchaseRawFruit", _G.SelectFruit);
+	end });
 p:AddDropdown({
 	Title = "Select Mirage Fruit",
 	Description = "",
@@ -11345,38 +11280,20 @@ p:AddDropdown({
 	Default = false,
 	Multi = false,
 	Callback = function(I)
-		SelectF_Adv = I
+		SelectF_Adv = I;
 	end,
-})
-
--- Lista de Frutas à Venda (Mirage)
-local M5 = {}
+});
+local M5 = {};
 for I, e in pairs(replicated.Remotes.CommF_:InvokeServer("GetFruits", false)) do
 	if e.OnSale == true then
-		local K = e.Name
-		table.insert(M5, K)
-	end
-end
-
--- Botão Comprar Frutas Mirage (Teleporta pro NPC Advanced)
-p:AddButton({
-	Title = "Buy Mirage Stock",
-	Description = "",
-	Callback = function()
-		-- Procurar NPC
-		local npcFolder = workspace:WaitForChild("NPCs") -- ajustar se estiver em outra pasta
-		local npc = npcFolder:FindFirstChild("AdvancedFruitDealer")
-		if npc and npc:FindFirstChild("HumanoidRootPart") then
-			-- Teleportar instantâneo
-			hrp.CFrame = npc.HumanoidRootPart.CFrame + Vector3.new(0, 3, 0)
-			wait(0.2) -- pequeno delay pra garantir spawn
-			-- Comprar fruta
-			replicated.Remotes.CommF_:InvokeServer("PurchaseRawFruit", SelectF_Adv)
-		else
-			warn("NPC AdvancedFruitDealer não encontrado!")
-		end
-	end
-})
+		local I = i5(e.Price);
+		local K = e.Name;
+		table.insert(M5, K);
+	end;
+end;
+p:AddButton({ Title = "Buy Mirage Stock", Description = "", Callback = function()
+		replicated.Remotes.CommF_:InvokeServer("PurchaseRawFruit", SelectF_Adv);
+	end });
 p:AddToggle({
     Title = "Auto Random Fruit",
     Description = "Automatic random devil fruit",
