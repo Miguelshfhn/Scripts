@@ -1122,6 +1122,9 @@ task.spawn(function()
 	end;
 end);
 
+local plr = game.Players.LocalPlayer
+local replicated = game.ReplicatedStorage
+
 if game.PlaceId == 2753915549 or game.PlaceId == 85211729168715 then
     World1 = true
 elseif game.PlaceId == 4442272183 or game.PlaceId == 79091703265657 then
@@ -1193,70 +1196,101 @@ function TelePPlayer(v404)
     game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v404
 end
 
--- =======================
--- TWEEN AJUSTADO POR DISTÂNCIA
--- =======================
-
-getgenv().TweenSpeedFar = 300   -- Velocidade Padrão (Longe)
-getgenv().TweenSpeedNear = 600  -- Velocidade Boost (Perto <= 15 studs)
+getgenv().TweenSpeedFar = 300
+getgenv().TweenSpeedNear = 600
 
 _tp = function(I)
-local e = plr.Character;
-if not e or not e:FindFirstChild("HumanoidRootPart") then
-return;
-end;
+    -- LÓGICA DO PORTAL INSERIDA AQUI
+    local PortalPlace = CheckNearestTeleporter(I)
+    if PortalPlace then
+        requestEntrance(PortalPlace)
+        return
+    end
+    -- FIM DA LÓGICA DO PORTAL
 
-local HRP = e.HumanoidRootPart;  
+    local e = plr.Character;
+    if not e or not e:FindFirstChild("HumanoidRootPart") then
+        return;
+    end;
 
--- Desativar farm enquanto tweena  
-shouldTween = true  
-getgenv().OnFarm = false  
+    local HRP = e.HumanoidRootPart;  
 
--- Garantir que não está ancorado  
-if HRP.Anchored then  
- HRP.Anchored = false  
- task.wait()  
-end  
+    shouldTween = true  
+    getgenv().OnFarm = false  
 
-local dist = (I.Position - HRP.Position).Magnitude  
+    if HRP.Anchored then  
+        HRP.Anchored = false  
+        task.wait()  
+    end  
 
--- ===============================  
---  SE ESTIVER ATÉ 15 STUDS → USA A VELOCIDADE DE PERTO
---  CASO CONTRÁRIO → USA A VELOCIDADE PADRÃO
--- ===============================  
-local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
+    local dist = (I.Position - HRP.Position).Magnitude  
 
-local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
-local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })  
+    local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
 
--- Caso esteja sentado  
-if e.Humanoid.Sit == true then  
- C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)  
-end  
+    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
+    local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })  
 
-tween:Play()  
+    if e.Humanoid.Sit == true then  
+        C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)  
+    end  
 
--- Anti travamento / controle  
-task.spawn(function()  
- while tween.PlaybackState == Enum.PlaybackState.Playing do  
-  if not shouldTween then  
-   tween:Cancel()  
-   break  
-  end  
-  task.wait(.1)  
- end  
+    tween:Play()  
 
- getgenv().OnFarm = true  
-end)
+    task.spawn(function()  
+        while tween.PlaybackState == Enum.PlaybackState.Playing do  
+            if not shouldTween then  
+                tween:Cancel()  
+                break  
+            end  
+            task.wait(.1)  
+        end  
 
+        getgenv().OnFarm = true  
+    end)
 end
 
 TeleportToTarget = function(I)
-_tp(I)
+    _tp(I)
 end
 
 notween = function(I)
-plr.Character.HumanoidRootPart.CFrame = I
+    plr.Character.HumanoidRootPart.CFrame = I
+end
+
+if World1 then
+	Location_Portal = { "Sky", "UnderWater" };
+elseif World2 then
+	Location_Portal = { "SwanRoom", "Cursed Ship" };
+elseif World3 then
+	Location_Portal = {
+			"Castle On The Sea",
+			"Mansion Cafe",
+			"Hydra Teleport",
+			"Canvendish Room",
+			"Temple of Time",
+		};
+end;
+
+Callback = function()
+    if _G.Island_PT == "Sky" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-7894, 5547, -380));
+    elseif _G.Island_PT == "UnderWater" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(61163, 11, 1819));
+    elseif _G.Island_PT == "SwanRoom" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(2285, 15, 905));
+    elseif _G.Island_PT == "Cursed Ship" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923, 126, 32852));
+    elseif _G.Island_PT == "Castle On The Sea" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602, -0.405007899, -4.31682743e-08, .914313197, -1.90943332e-08, 1, 3.8755779e-08, -0.914313197, -1.76180437e-09, -0.405007899));
+    elseif _G.Island_PT == "Mansion Cafe" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-12471.169921875, 374.94024658203, -7551.677734375));
+    elseif _G.Island_PT == "Hydra Teleport" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5643.4526367188, 1013.0858154297, -340.51025390625));
+    elseif _G.Island_PT == "Canvendish Room" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5314.5463867188, 22.562219619751, -127.06755065918));
+    elseif _G.Island_PT == "Temple of Time" then
+        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(28310.0234, 14895.1123, 109.456741, -0.469690144, -2.85620132e-08, -0.882831335, -3.23509219e-08, 1, -1.51411736e-08, .882831335, 2.14487486e-08, -0.469690144));
+    end;
 end
 
 
