@@ -1124,12 +1124,18 @@ end);
 
 
 
--- [[ VARIÁVEIS DE CONFIGURAÇÃO ]] --
-getgenv().TweenSpeedFar = 300   -- Velocidade Padrão (Longe)
-getgenv().TweenSpeedNear = 600  -- Velocidade Boost (Perto <= 15 studs)
+-- ==========================================
+-- SISTEMA DE TWEEN AJUSTADO (FIXED)
+-- ==========================================
+
+-- [[ VARIÁVEIS GLOBAIS ]] --
+getgenv().TweenSpeedFar = 300
+getgenv().TweenSpeedNear = 600
 
 local plr = game.Players.LocalPlayer
+local TweenService = game:GetService("TweenService")
 
+-- [[ IDENTIFICAÇÃO DE MUNDO ]] --
 local World1, World2, World3 = false, false, false
 if game.PlaceId == 2753915549 or game.PlaceId == 85211729168715 then
     World1 = true
@@ -1139,22 +1145,21 @@ elseif game.PlaceId == 7449423635 or game.PlaceId == 100117331123089 then
     World3 = true
 end
 
--- [[ FUNÇÕES AUXILIARES DE TELEPORTE DO JOGO ]] --
+-- [[ FUNÇÃO DE PORTAIS ]] --
 function CheckNearestTeleporter(v393)
     local l_Position_1 = v393.Position
     local l_huge_0 = math.huge
-    local v396 = nil
-    local l_PlaceId_1 = game.PlaceId
+    local v396_Name = nil
+    local v396_Pos = nil
     local v398 = {}
 
-    -- Definição dos Portais por Sea
     if World3 then
         v398 = {
             ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
-            ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
-            Mansion = Vector3.new(-12462, 375, -7552),
-            Castle = Vector3.new(-5036, 315, -3179),
-            ["Dimensional Shift"] = Vector3.new(-2097.3447265625, 4776.24462890625, -15013.4990234375),
+            ["Hydra Island"] = Vector3.new(5657, 1013, -335),
+            ["Mansion"] = Vector3.new(-12462, 375, -7552),
+            ["Castle"] = Vector3.new(-5036, 315, -3179),
+            ["Dimensional Shift"] = Vector3.new(-2097, 4776, -15013),
             ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
             ["Temple of Time"] = Vector3.new(28286, 14897, 103)
         }
@@ -1167,85 +1172,87 @@ function CheckNearestTeleporter(v393)
         }
     elseif World1 then
         v398 = {
-            Sky3 = Vector3.new(-7894, 5547, -380),
-            Sky3Exit = Vector3.new(-4607, 874, -1667),
-            UnderWater = Vector3.new(61163, 11, 1819),
-            ["Underwater City"] = Vector3.new(61165.19140625, 0.18704631924629211, 1897.379150390625),
-            ["Pirate Village"] = Vector3.new(-1242.4625244140625, 4.787059783935547, 3901.282958984375),
-            UnderwaterExit = Vector3.new(4050, -1, -1814)
+            ["Sky3"] = Vector3.new(-7894, 5547, -380),
+            ["Underwater City"] = Vector3.new(61165, 0, 1897),
+            ["Pirate Village"] = Vector3.new(-1242, 4, 3901)
         }
     end
 
-    for _, v400 in pairs(v398) do
-        local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
-        if l_Magnitude_1 < l_huge_0 then
-            l_huge_0 = l_Magnitude_1
-            v396 = v400
+    for name, pos in pairs(v398) do
+        local distToTarget = (pos - l_Position_1).Magnitude
+        if distToTarget < l_huge_0 then
+            l_huge_0 = distToTarget
+            v396_Name = name
+            v396_Pos = pos
         end
     end
 
-    -- Só retorna o portal se ele realmente encurtar o caminho comparado à posição atual
-    if v396 and l_huge_0 <= (l_Position_1 - plr.Character.HumanoidRootPart.Position).Magnitude then
-        return v396
+    -- Verifica se usar o portal é mais perto do que ir andando de onde estou agora
+    if v396_Pos and l_huge_0 <= (l_Position_1 - plr.Character.HumanoidRootPart.Position).Magnitude - 500 then
+        return v396_Name
     end
     return nil
 end
 
 function requestEntrance(v402)
     game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
-    if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-        plr.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame + Vector3.new(0, 50, 0)
-    end
-    task.wait(0.5)
+    task.wait(0.2)
 end
 
--- [[ FUNÇÃO PRINCIPAL DE TWEEN ]] --
+-- [[ FUNÇÃO TWEEN PRINCIPAL ]] --
 _tp = function(I)
-    local e = plr.Character
-    if not e or not e:FindFirstChild("HumanoidRootPart") then return end
-    local HRP = e.HumanoidRootPart
+    local char = plr.Character
+    if not char or not char:FindFirstChild("HumanoidRootPart") then return end
+    local C = char.HumanoidRootPart -- Definindo o C que faltava
 
-    -- 1. Verificar se existe um portal mais próximo do destino
-    local portalPos = CheckNearestTeleporter(I)
-    if portalPos then
-        requestEntrance(portalPos)
+    -- 1. Cancelar Tweens ativos para não "puxar de volta"
+    if getgenv().CurrentTween then 
+        getgenv().CurrentTween:Cancel() 
     end
 
-    -- 2. Iniciar lógica de Tween
-    shouldTween = true  
-    getgenv().OnFarm = false  
+    -- 2. Tentar usar Portal primeiro
+    local portalUtil = CheckNearestTeleporter(I)
+    if portalUtil then
+        requestEntrance(portalUtil)
+        task.wait(0.1)
+    end
 
-    if HRP.Anchored then  
-        HRP.Anchored = false  
-        task.wait()  
-    end  
-
-    local dist = (I.Position - HRP.Position).Magnitude  
+    -- 3. Configurações de Início
+    shouldTween = true
+    getgenv().OnFarm = false
     
-    -- Ajuste de velocidade por distância
+    if C.Anchored then C.Anchored = false end
+    if char.Humanoid.Sit then char.Humanoid.Sit = false end
+
+    local dist = (I.Position - C.Position).Magnitude
+    
+    -- Se estiver extremamente perto, só teleporta logo
+    if dist < 5 then
+        C.CFrame = I
+        getgenv().OnFarm = true
+        return
+    end
+
+    -- 4. Criar o Tween
     local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
-    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
+    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
     
-    -- "C" substituído por "HRP" para o Tween funcionar no seu personagem
-    local tween = game:GetService("TweenService"):Create(HRP, info, { CFrame = I })  
+    local tween = TweenService:Create(C, info, {CFrame = I})
+    getgenv().CurrentTween = tween -- Armazena para poder cancelar depois
+    tween:Play()
 
-    -- Correção para caso esteja sentado
-    if e:FindFirstChild("Humanoid") and e.Humanoid.Sit == true then  
-        HRP.CFrame = CFrame.new(HRP.Position.X, I.Y, HRP.Position.Z)  
-    end  
-
-    tween:Play()  
-
-    -- Controle de cancelamento e status
-    task.spawn(function()  
-        while tween.PlaybackState == Enum.PlaybackState.Playing do  
-            if not shouldTween then  
-                tween:Cancel()  
-                break  
-            end  
-            task.wait(.1)  
-        end  
-        getgenv().OnFarm = true  
+    -- 5. Loop de Verificação
+    task.spawn(function()
+        while tween.PlaybackState == Enum.PlaybackState.Playing do
+            if not shouldTween then
+                tween:Cancel()
+                break
+            end
+            -- Anti-queda (opcional: mantém o personagem na altura se estiver sentado)
+            if char.Humanoid.Sit then char.Humanoid.Sit = false end
+            task.wait(0.1)
+        end
+        getgenv().OnFarm = true
     end)
 end
 
@@ -1258,6 +1265,7 @@ notween = function(I)
         plr.Character.HumanoidRootPart.CFrame = I
     end
 end
+
 
 
 
