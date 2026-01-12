@@ -1122,12 +1122,14 @@ task.spawn(function()
 	end;
 end);
 
--- =======================
--- CONFIGURAÇÃO GLOBAL E VARIÁVEIS
--- =======================
-local plr = game:GetService("Players").LocalPlayer
 
--- Identificação do Mundo (World Check)
+
+-- [[ VARIÁVEIS DE CONFIGURAÇÃO ]] --
+getgenv().TweenSpeedFar = 300   -- Velocidade Padrão (Longe)
+getgenv().TweenSpeedNear = 600  -- Velocidade Boost (Perto <= 15 studs)
+
+local plr = game.Players.LocalPlayer
+
 local World1, World2, World3 = false, false, false
 if game.PlaceId == 2753915549 or game.PlaceId == 85211729168715 then
     World1 = true
@@ -1137,53 +1139,33 @@ elseif game.PlaceId == 7449423635 or game.PlaceId == 100117331123089 then
     World3 = true
 end
 
--- [[ VARIÁVEIS PARA O SEU INPUT ]] --
-getgenv().TweenSpeedFar = 300   -- Velocidade Padrão (Longe)
-getgenv().TweenSpeedNear = 600  -- Velocidade Boost (Perto <= 15 studs)
-
--- =======================
--- FUNÇÕES DE PORTAL / TELEPORTE
--- =======================
-
-function requestEntrance(v402)
-    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
-    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
-    -- Pequeno ajuste após teleporte para não bugar no chão
-    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0) 
-    task.wait(0.5)
-end
-
+-- [[ FUNÇÕES AUXILIARES DE TELEPORTE DO JOGO ]] --
 function CheckNearestTeleporter(v393)
-    -- Se v393 for CFrame, pegamos a Position, senão assume que já é Vector3 (safety)
-    local l_Position_1 = (typeof(v393) == "CFrame" and v393.Position) or v393
+    local l_Position_1 = v393.Position
     local l_huge_0 = math.huge
     local v396 = nil
     local l_PlaceId_1 = game.PlaceId
     local v398 = {}
-    
-    if l_PlaceId_1 ~= 85211729168715 then
-        if l_PlaceId_1 ~= 79091703265657 then
-            if l_PlaceId_1 == 100117331123089 then -- World 3
-                v398 = {
-                    ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
-                    ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
-                    Mansion = Vector3.new(-12462, 375, -7552),
-                    Castle = Vector3.new(-5036, 315, -3179),
-                    ["Dimensional Shift"] = Vector3.new(-2097.3447265625, 4776.24462890625, -15013.4990234375),
-                    ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
-                    ["Beautiful Room"] = Vector3.new(5314.58203, 22.5364361, -125.942276),
-                    ["Temple of Time"] = Vector3.new(28286, 14897, 103)
-                }
-            end
-        else -- World 2
-            v398 = {
-                ["Swan Mansion"] = Vector3.new(-390, 332, 673),
-                ["Swan Room"] = Vector3.new(2285, 15, 905),
-                ["Cursed Ship"] = Vector3.new(923, 126, 32852),
-                ["Zombie Island"] = Vector3.new(-6509, 83, -133)
-            }
-        end
-    else -- World 1
+
+    -- Definição dos Portais por Sea
+    if World3 then
+        v398 = {
+            ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
+            ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
+            Mansion = Vector3.new(-12462, 375, -7552),
+            Castle = Vector3.new(-5036, 315, -3179),
+            ["Dimensional Shift"] = Vector3.new(-2097.3447265625, 4776.24462890625, -15013.4990234375),
+            ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
+            ["Temple of Time"] = Vector3.new(28286, 14897, 103)
+        }
+    elseif World2 then
+        v398 = {
+            ["Swan Mansion"] = Vector3.new(-390, 332, 673),
+            ["Swan Room"] = Vector3.new(2285, 15, 905),
+            ["Cursed Ship"] = Vector3.new(923, 126, 32852),
+            ["Zombie Island"] = Vector3.new(-6509, 83, -133)
+        }
+    elseif World1 then
         v398 = {
             Sky3 = Vector3.new(-7894, 5547, -380),
             Sky3Exit = Vector3.new(-4607, 874, -1667),
@@ -1193,7 +1175,7 @@ function CheckNearestTeleporter(v393)
             UnderwaterExit = Vector3.new(4050, -1, -1814)
         }
     end
-    
+
     for _, v400 in pairs(v398) do
         local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
         if l_Magnitude_1 < l_huge_0 then
@@ -1201,86 +1183,60 @@ function CheckNearestTeleporter(v393)
             v396 = v400
         end
     end
-    
-    -- Verifica se o portal está mais perto do destino do que o jogador está do destino
-    local myPos = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character.HumanoidRootPart.Position
-    if myPos and l_huge_0 <= (l_Position_1 - myPos).Magnitude then
+
+    -- Só retorna o portal se ele realmente encurtar o caminho comparado à posição atual
+    if v396 and l_huge_0 <= (l_Position_1 - plr.Character.HumanoidRootPart.Position).Magnitude then
         return v396
-    else
-        return nil
     end
+    return nil
 end
 
--- =======================
--- SISTEMA DE TWEEN (Modificado)
--- =======================
+function requestEntrance(v402)
+    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", v402)
+    if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        plr.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame + Vector3.new(0, 50, 0)
+    end
+    task.wait(0.5)
+end
 
+-- [[ FUNÇÃO PRINCIPAL DE TWEEN ]] --
 _tp = function(I)
-    local e = plr.Character;
-    if not e or not e:FindFirstChild("HumanoidRootPart") then
-        return;
-    end;
+    local e = plr.Character
+    if not e or not e:FindFirstChild("HumanoidRootPart") then return end
+    local HRP = e.HumanoidRootPart
 
-    local HRP = e.HumanoidRootPart;
-    local C = HRP -- Definindo C para compatibilidade com seu script original
+    -- 1. Verificar se existe um portal mais próximo do destino
+    local portalPos = CheckNearestTeleporter(I)
+    if portalPos then
+        requestEntrance(portalPos)
+    end
 
-    -- Desativar farm enquanto tweena  
+    -- 2. Iniciar lógica de Tween
     shouldTween = true  
     getgenv().OnFarm = false  
 
-    -- Garantir que não está ancorado  
     if HRP.Anchored then  
         HRP.Anchored = false  
         task.wait()  
     end  
 
-    -- ===============================
-    -- LÓGICA DO PORTAL (Smart Teleport)
-    -- ===============================
-    -- Verifica se existe um portal melhor para usar antes de ir ao destino
-    local PortalPos = CheckNearestTeleporter(I)
-    if PortalPos then
-        -- Se encontrou um portal, tweenta até ele primeiro
-        local pDist = (PortalPos - HRP.Position).Magnitude
-        local pSpeed = pDist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
-        local pInfo = TweenInfo.new(pDist / pSpeed, Enum.EasingStyle.Linear)
-        local pTween = game:GetService("TweenService"):Create(C, pInfo, { CFrame = CFrame.new(PortalPos) })
-        
-        if e.Humanoid.Sit == true then
-             -- Se estiver sentado, tenta manter a altura correta (ajuste básico)
-             -- Nota: Geralmente é melhor sair do banco para entrar em portal, mas mantive sua lógica
-        end
-        
-        pTween:Play()
-        pTween.Completed:Wait() -- Espera chegar no portal
-        
-        -- Entra no portal
-        requestEntrance(PortalPos)
-        
-        -- Atualiza variáveis após o teleporte (pois o char pode ter mudado de posição drasticamente)
-        e = plr.Character
-        HRP = e:FindFirstChild("HumanoidRootPart")
-        C = HRP
-        if not HRP then return end -- Safety check
-    end
-
-    -- ===============================
-    -- TWEEN PARA O DESTINO FINAL (Original)
-    -- ===============================
     local dist = (I.Position - HRP.Position).Magnitude  
+    
+    -- Ajuste de velocidade por distância
     local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
-
     local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
-    local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })  
+    
+    -- "C" substituído por "HRP" para o Tween funcionar no seu personagem
+    local tween = game:GetService("TweenService"):Create(HRP, info, { CFrame = I })  
 
-    -- Caso esteja sentado  
-    if e.Humanoid.Sit == true then  
-        C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)  
+    -- Correção para caso esteja sentado
+    if e:FindFirstChild("Humanoid") and e.Humanoid.Sit == true then  
+        HRP.CFrame = CFrame.new(HRP.Position.X, I.Y, HRP.Position.Z)  
     end  
 
     tween:Play()  
 
-    -- Anti travamento / controle  
+    -- Controle de cancelamento e status
     task.spawn(function()  
         while tween.PlaybackState == Enum.PlaybackState.Playing do  
             if not shouldTween then  
@@ -1289,7 +1245,6 @@ _tp = function(I)
             end  
             task.wait(.1)  
         end  
-
         getgenv().OnFarm = true  
     end)
 end
@@ -1302,79 +1257,6 @@ notween = function(I)
     if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
         plr.Character.HumanoidRootPart.CFrame = I
     end
-end
-
--- CONFIGURAÇÃO MANUAL DE PORTAIS (MANTIDA)
-if World1 then
-	Location_Portal = { "Sky", "UnderWater" };
-elseif World2 then
-	Location_Portal = { "SwanRoom", "Cursed Ship" };
-elseif World3 then
-	Location_Portal = {
-			"Castle On The Sea",
-			"Mansion Cafe",
-			"Hydra Teleport",
-			"Canvendish Room",
-			"Temple of Time",
-		};
-end;
-
-Callback = function()
-    if _G.Island_PT == "Sky" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-7894, 5547, -380));
-    elseif _G.Island_PT == "UnderWater" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(61163, 11, 1819));
-    elseif _G.Island_PT == "SwanRoom" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(2285, 15, 905));
-    elseif _G.Island_PT == "Cursed Ship" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923, 126, 32852));
-    elseif _G.Island_PT == "Castle On The Sea" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602, -0.405007899, -4.31682743e-08, .914313197, -1.90943332e-08, 1, 3.8755779e-08, -0.914313197, -1.76180437e-09, -0.405007899));
-    elseif _G.Island_PT == "Mansion Cafe" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-12471.169921875, 374.94024658203, -7551.677734375));
-    elseif _G.Island_PT == "Hydra Teleport" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5643.4526367188, 1013.0858154297, -340.51025390625));
-    elseif _G.Island_PT == "Canvendish Room" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5314.5463867188, 22.562219619751, -127.06755065918));
-    elseif _G.Island_PT == "Temple of Time" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(28310.0234, 14895.1123, 109.456741, -0.469690144, -2.85620132e-08, -0.882831335, -3.23509219e-08, 1, -1.51411736e-08, .882831335, 2.14487486e-08, -0.469690144));
-    end;
-end
-
-if World1 then
-	Location_Portal = { "Sky", "UnderWater" };
-elseif World2 then
-	Location_Portal = { "SwanRoom", "Cursed Ship" };
-elseif World3 then
-	Location_Portal = {
-			"Castle On The Sea",
-			"Mansion Cafe",
-			"Hydra Teleport",
-			"Canvendish Room",
-			"Temple of Time",
-		};
-end;
-
-Callback = function()
-    if _G.Island_PT == "Sky" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-7894, 5547, -380));
-    elseif _G.Island_PT == "UnderWater" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(61163, 11, 1819));
-    elseif _G.Island_PT == "SwanRoom" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(2285, 15, 905));
-    elseif _G.Island_PT == "Cursed Ship" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(923, 126, 32852));
-    elseif _G.Island_PT == "Castle On The Sea" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602, -0.405007899, -4.31682743e-08, .914313197, -1.90943332e-08, 1, 3.8755779e-08, -0.914313197, -1.76180437e-09, -0.405007899));
-    elseif _G.Island_PT == "Mansion Cafe" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-12471.169921875, 374.94024658203, -7551.677734375));
-    elseif _G.Island_PT == "Hydra Teleport" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5643.4526367188, 1013.0858154297, -340.51025390625));
-    elseif _G.Island_PT == "Canvendish Room" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(5314.5463867188, 22.562219619751, -127.06755065918));
-    elseif _G.Island_PT == "Temple of Time" then
-        replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(28310.0234, 14895.1123, 109.456741, -0.469690144, -2.85620132e-08, -0.882831335, -3.23509219e-08, 1, -1.51411736e-08, .882831335, 2.14487486e-08, -0.469690144));
-    end;
 end
 
 
