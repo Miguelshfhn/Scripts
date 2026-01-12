@@ -1130,6 +1130,7 @@ getgenv().TweenSpeedNear = 600  -- Velocidade Boost (Perto <= 15 studs)
 
 local plr = game.Players.LocalPlayer
 
+-- [[ DETECÇÃO DE MUNDOS (Do Script 1) ]] --
 local World1, World2, World3 = false, false, false
 if game.PlaceId == 2753915549 or game.PlaceId == 85211729168715 then
     World1 = true
@@ -1139,15 +1140,13 @@ elseif game.PlaceId == 7449423635 or game.PlaceId == 100117331123089 then
     World3 = true
 end
 
--- [[ FUNÇÕES AUXILIARES DE TELEPORTE DO JOGO ]] --
+-- [[ FUNÇÕES AUXILIARES DE PORTAIS (Do Script 1) ]] --
 function CheckNearestTeleporter(v393)
     local l_Position_1 = v393.Position
     local l_huge_0 = math.huge
     local v396 = nil
-    local l_PlaceId_1 = game.PlaceId
     local v398 = {}
 
-    -- Definição dos Portais por Sea
     if World3 then
         v398 = {
             ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
@@ -1184,7 +1183,6 @@ function CheckNearestTeleporter(v393)
         end
     end
 
-    -- Só retorna o portal se ele realmente encurtar o caminho comparado à posição atual
     if v396 and l_huge_0 <= (l_Position_1 - plr.Character.HumanoidRootPart.Position).Magnitude then
         return v396
     end
@@ -1199,44 +1197,51 @@ function requestEntrance(v402)
     task.wait(0.5)
 end
 
--- [[ FUNÇÃO PRINCIPAL DE TWEEN ]] --
+-- [[ TWEEN (Lógica exata do Script 2 inserida aqui) ]] --
 _tp = function(I)
-    local e = plr.Character
-    if not e or not e:FindFirstChild("HumanoidRootPart") then return end
-    local HRP = e.HumanoidRootPart
-
-    -- 1. Verificar se existe um portal mais próximo do destino
+    -- Lógica de Portais (Script 1) antes de iniciar o movimento
     local portalPos = CheckNearestTeleporter(I)
     if portalPos then
         requestEntrance(portalPos)
+        task.wait(0.1)
     end
 
-    -- 2. Iniciar lógica de Tween
+    -- Início do código do Script 2 (Intocado no uso do C)
+    local e = plr.Character;
+    if not e or not e:FindFirstChild("HumanoidRootPart") then
+        return;
+    end;
+
+    local HRP = e.HumanoidRootPart;  
+
+    -- Desativar farm enquanto tweena  
     shouldTween = true  
     getgenv().OnFarm = false  
 
+    -- Garantir que não está ancorado  
     if HRP.Anchored then  
         HRP.Anchored = false  
         task.wait()  
     end  
 
     local dist = (I.Position - HRP.Position).Magnitude  
-    
-    -- Ajuste de velocidade por distância
+
+    -- Ajuste de velocidade (Script 2)
     local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
+
     local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
     
-    -- "C" substituído por "HRP" para o Tween funcionar no seu personagem
-    local tween = game:GetService("TweenService"):Create(HRP, info, { CFrame = I })  
+    -- [[ AQUI ESTÁ O USO DO C EXATAMENTE COMO PEDIU ]] --
+    local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })  
 
-    -- Correção para caso esteja sentado
-    if e:FindFirstChild("Humanoid") and e.Humanoid.Sit == true then  
-        HRP.CFrame = CFrame.new(HRP.Position.X, I.Y, HRP.Position.Z)  
+    -- Caso esteja sentado (Usando C)
+    if e.Humanoid.Sit == true then  
+        C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)  
     end  
 
     tween:Play()  
 
-    -- Controle de cancelamento e status
+    -- Anti travamento / controle  
     task.spawn(function()  
         while tween.PlaybackState == Enum.PlaybackState.Playing do  
             if not shouldTween then  
@@ -1245,6 +1250,7 @@ _tp = function(I)
             end  
             task.wait(.1)  
         end  
+
         getgenv().OnFarm = true  
     end)
 end
@@ -1258,6 +1264,7 @@ notween = function(I)
         plr.Character.HumanoidRootPart.CFrame = I
     end
 end
+
 
 
 
