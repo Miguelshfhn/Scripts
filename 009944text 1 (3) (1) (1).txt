@@ -2426,27 +2426,27 @@ QuestNeta = function()
 		};
 	end;
 
-local V=I:NewWindow();
-local i=V:T("Info");
+local V=I:NewWindow()
+local i=V:T("Info")
 local server=V:T("Server")
-local s=V:T("Stats");
-local g=V:T("Shop");
-local y=V:T("Main");
-local CS_Tab = V:T("Farm Mastery");
-local x=V:T("Farming Other");
-local mf=V:T("Misc Farming");
-local t=V:T("Sea Events");
-local ss=V:T("Skill Sea Event"); 
-local m=V:T("Race");
-local v=V:T("Drago Dojo");
-local S=V:T("Prehistoric");
-local VI=V:T("Visual");
-local q=V:T("Pvp");
-local l=V:T("Teleport");
-local R=V:T("Get and Upgrade Itens");
-local B=V:T("Raid/Fruit");
-local u=V:T("Misc");
-local c=V:T("Settings");
+local s=V:T("Stats")
+local g=V:T("Shop")
+local y=V:T("Main","rbxassetid://127561653320876")
+local CS_Tab=V:T("Farm Mastery")
+local x=V:T("Farming Other")
+local mf=V:T("Misc Farming")
+local t=V:T("Sea Events")
+local ss=V:T("Skill Sea Event")
+local m=V:T("Race")
+local v=V:T("Drago Dojo")
+local S=V:T("Prehistoric")
+local VI=V:T("Visual")
+local q=V:T("Pvp")
+local l=V:T("Teleport")
+local R=V:T("Get and Upgrade Itens")
+local B=V:T("Raid/Fruit")
+local u=V:T("Misc")
+local c=V:T("Settings","rbxassetid://127147149367603")
 
 local b=y:AddSection("Farming");
 local CS = CS_Tab:AddSection("Fruit And Gun Mastery")
