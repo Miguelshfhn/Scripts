@@ -1122,81 +1122,125 @@ task.spawn(function()
 	end;
 end);
 
--- =======================
--- TWEEN AJUSTADO POR DISTÂNCIA COM SISTEMA DE PORTAIS
--- =======================
+getgenv().TweenSpeedFar = 300
+getgenv().TweenSpeedNear = 600
 
--- [[ VARIÁVEIS PARA O SEU INPUT ]] --
-getgenv().TweenSpeedFar = 300   -- Velocidade Padrão (Longe)
-getgenv().TweenSpeedNear = 600  -- Velocidade Boost (Perto <= 15 studs)
+local plr = game:GetService("Players").LocalPlayer
+local PlaceId = game.PlaceId
+local World1, World2, World3 = false, false, false
+
+if PlaceId == 2753915549 or PlaceId == 85211729168715 then
+    World1 = true
+elseif PlaceId == 4442272183 or PlaceId == 79091703265657 then
+    World2 = true
+elseif PlaceId == 7449423635 or PlaceId == 100117331123089 then
+    World3 = true
+end
+
+local WorldPortals = {}
+
+if World1 then
+    WorldPortals = {
+        ["Sky3"] = Vector3.new(-7894, 5547, -380),
+        ["Sky3Exit"] = Vector3.new(-4607, 874, -1667),
+        ["Underwater City"] = Vector3.new(61163, 11, 1819),
+        ["Pirate Village"] = Vector3.new(-1242, 4, 3901),
+        ["Prison"] = Vector3.new(4875, 5, 740),
+        ["Middle Town"] = Vector3.new(-650, 7, 1450)
+    }
+elseif World2 then
+    WorldPortals = {
+        ["Swan Mansion"] = Vector3.new(-390, 332, 673),
+        ["Cursed Ship"] = Vector3.new(923, 126, 32852),
+        ["Zombie Island"] = Vector3.new(-6509, 83, -133),
+        ["Forgotten Island"] = Vector3.new(-3054, 235, -10142),
+        ["Snow Mountain"] = Vector3.new(753, 400, -5270),
+        ["Ice Castle"] = Vector3.new(6148, 294, -6741)
+    }
+elseif World3 then
+    WorldPortals = {
+        ["Mansion"] = Vector3.new(-12462, 375, -7552),
+        ["Hydra Island"] = Vector3.new(5657, 1013, -335),
+        ["Castle on the Sea"] = Vector3.new(-5036, 315, -3179),
+        ["Temple of Time"] = Vector3.new(28286, 14897, 103),
+        ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
+        ["Great Tree"] = Vector3.new(2681, 1682, -7190)
+    }
+end
+
+local function requestEntrance(portalName)
+    game:GetService("ReplicatedStorage").Remotes.CommF:InvokeServer("requestEntrance", portalName)
+end
+
+local function CheckShortestPath(TargetPosition)
+    local MyPos = plr.Character.HumanoidRootPart.Position
+    local DirectDistance = (TargetPosition - MyPos).Magnitude
+    
+    local BestPortal = nil
+    local ShortestDist = math.huge
+    
+    for Name, PortalPos in pairs(WorldPortals) do
+        local DistFromPortalToTarget = (TargetPosition - PortalPos).Magnitude
+        if DistFromPortalToTarget < ShortestDist then
+            ShortestDist = DistFromPortalToTarget
+            BestPortal = {Name = Name, Pos = PortalPos}
+        end
+    end
+    
+    if BestPortal and ShortestDist < DirectDistance then
+        return BestPortal
+    end
+    return nil
+end
 
 _tp = function(I)
     local e = plr.Character
     if not e or not e:FindFirstChild("HumanoidRootPart") then
         return
     end
-    
+
     local HRP = e.HumanoidRootPart
-    
-    -- Desativar farm enquanto tweena
+    local TargetPos = I.Position
+
+    local Shortcut = CheckShortestPath(TargetPos)
+    if Shortcut then
+        requestEntrance(Shortcut.Name)
+        HRP.CFrame = CFrame.new(Shortcut.Pos)
+        task.wait(0.5)
+    end
+
+    local dist = (TargetPos - HRP.Position).Magnitude
     shouldTween = true
     getgenv().OnFarm = false
-    
-    -- Garantir que não está ancorado
+
     if HRP.Anchored then
         HRP.Anchored = false
         task.wait()
     end
-    
-    local dist = (I.Position - HRP.Position).Magnitude
-    
-    -- ===============================
-    -- VERIFICAR SE HÁ UM PORTAL MAIS PRÓXIMO
-    -- ===============================
-    local nearestTeleporter = CheckNearestTeleporter(I)
-    
-    if nearestTeleporter then
-        -- Usar o portal primeiro
-        local portalDist = (nearestTeleporter - HRP.Position).Magnitude
-        local speed1 = portalDist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
-        local info1 = TweenInfo.new(portalDist / speed1, Enum.EasingStyle.Linear)
-        local tween1 = game:GetService("TweenService"):Create(C, info1, { CFrame = CFrame.new(nearestTeleporter) })
-        
-        tween1:Play()
-        tween1.Completed:Wait()
-        
-        -- Solicitar entrada no portal
-        requestEntrance(nearestTeleporter)
-        task.wait(1)
-        
-        -- Recalcular distância após teleporte
-        dist = (I.Position - HRP.Position).Magnitude
-    end
-    
-    -- ===============================
-    -- TWEEN FINAL PARA O DESTINO
-    -- ===============================
+
     local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
     local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
     local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })
-    
-    -- Caso esteja sentado
+
     if e.Humanoid.Sit == true then
-        C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)
+        e.Humanoid.Sit = false
+        C.CFrame = CFrame.new(C.Position.X, TargetPos.Y, C.Position.Z)
     end
-    
+
     tween:Play()
-    
-    -- Anti travamento / controle
+
     task.spawn(function()
         while tween.PlaybackState == Enum.PlaybackState.Playing do
             if not shouldTween then
                 tween:Cancel()
                 break
             end
-            task.wait(.1)
+            if not e or not e:FindFirstChild("HumanoidRootPart") then
+                tween:Cancel()
+                break
+            end
+            task.wait(0.1)
         end
-        
         getgenv().OnFarm = true
     end)
 end
@@ -1207,70 +1251,6 @@ end
 
 notween = function(I)
     plr.Character.HumanoidRootPart.CFrame = I
-end
-
--- ===============================
--- FUNÇÕES DE PORTAIS
--- ===============================
-function CheckNearestTeleporter(v393)
-    local l_Position_1 = v393.Position
-    local l_huge_0 = math.huge
-    local v396 = nil
-    local v398 = {}
-    
-    if World1 then
-        v398 = {
-            ["Sky3"] = Vector3.new(-7894, 5547, -380),
-            ["Sky3Exit"] = Vector3.new(-4607, 874, -1667),
-            ["UnderWater"] = Vector3.new(61163, 11, 1819),
-            ["Underwater City"] = Vector3.new(61165.19140625, 0.18704631924629211, 1897.379150390625),
-            ["Pirate Village"] = Vector3.new(-1242.4625244140625, 4.787059783935547, 3901.282958984375),
-            ["UnderwaterExit"] = Vector3.new(4050, -1, -1814)
-        }
-    elseif World2 then
-        v398 = {
-            ["Swan Mansion"] = Vector3.new(-390, 332, 673),
-            ["Swan Room"] = Vector3.new(2285, 15, 905),
-            ["Cursed Ship"] = Vector3.new(923, 126, 32852),
-            ["Zombie Island"] = Vector3.new(-6509, 83, -133)
-        }
-    elseif World3 then
-        v398 = {
-            ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
-            ["Hydra Island"] = Vector3.new(5657.88623046875, 1013.0790405273438, -335.4996337890625),
-            ["Mansion"] = Vector3.new(-12462, 375, -7552),
-            ["Castle"] = Vector3.new(-5036, 315, -3179),
-            ["Dimensional Shift"] = Vector3.new(-2097.3447265625, 4776.24462890625, -15013.4990234375),
-            ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
-            ["Beautiful Room"] = Vector3.new(5314.58203, 22.5364361, -125.942276, 1, 2.14762768E-8, -1.99111154E-13, -2.14762768E-8, 1, -3.0510602E-8, 1.98455903E-13, 3.0510602E-8, 1),
-            ["Temple of Time"] = Vector3.new(28286, 14897, 103)
-        }
-    end
-    
-    for _, v400 in pairs(v398) do
-        local l_Magnitude_1 = (v400 - l_Position_1).Magnitude
-        if l_Magnitude_1 < l_huge_0 then
-            l_huge_0 = l_Magnitude_1
-            v396 = v400
-        end
-    end
-    
-    if l_huge_0 <= (l_Position_1 - game.Players.LocalPlayer.Character.HumanoidRootPart.Position).Magnitude then
-        return v396
-    else
-        return nil
-    end
-end
-
-function requestEntrance(v402)
-    game.ReplicatedStorage.Remotes.CommF:InvokeServer("requestEntrance", v402)
-    local l_HumanoidRootPart_3 = game.Players.LocalPlayer.Character.HumanoidRootPart
-    l_HumanoidRootPart_3.CFrame = l_HumanoidRootPart_3.CFrame + Vector3.new(0, 50, 0)
-    task.wait(0.5)
-end
-
-function TelePPlayer(v404)
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v404
 end
 
 
