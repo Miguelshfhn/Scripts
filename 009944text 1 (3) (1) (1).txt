@@ -12008,51 +12008,44 @@ D:AddButton({ Title = "Buy Ken", Description = "", Callback = function()
 	end });
 D:AddSeperator("Fighting Style (Auto Buy)");
 
--- Função auxiliar para o loop de compra (mesma lógica do farm)
+-- [[ FUNÇÃO DE MOVIMENTO E COMPRA ]]
 local function StartAutoBuy(styleName, data)
-    task.spawn(function()
-        local settingKey = "AutoBuy_" .. styleName:gsub(" ", "")
-        while _G.SaveData[settingKey] do
-            task.wait()
+    spawn(function()
+        local sKey = "AutoBuy_" .. styleName:gsub(" ", "")
+        while task.wait() do
+            if not _G.SaveData[sKey] then break end
+            
             pcall(function()
-                local char = game.Players.LocalPlayer.Character
-                local hrp = char and char:FindFirstChild("HumanoidRootPart")
-                if not hrp then return end
-
-                -- Se estiver no Sea 3 querendo estilo do 1 ou 2
+                local Root = game.Players.LocalPlayer.Character.HumanoidRootPart
+                
                 if (data.World == 1 or data.World == 2) and World3 then
-                    if (hrp.Position - Sea3StyleCFrame.Position).Magnitude > 15 then
+                    if (Root.Position - Sea3StyleCFrame.Position).Magnitude > 15 then
                         _tp(Sea3StyleCFrame)
                     else
                         game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
                     end
-                    return
-                end
-
-                -- Verificação de Mundo (Travel)
-                if (data.World == 2 and not World2) then
+                elseif data.World == 2 and not World2 then
                     game.ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelDressrosa")
-                    task.wait(2) return
-                elseif (data.World == 3 and not World3) then
+                    task.wait(2)
+                elseif data.World == 3 and not World3 then
                     game.ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelZou")
-                    task.wait(2) return
-                end
-
-                -- Teleporte e Compra
-                local dist = (hrp.Position - data.Position.Position).Magnitude
-                if dist > 15 then
-                    _tp(data.Position)
+                    task.wait(2)
                 else
-                    if type(data.BuyCommand) == "table" then
-                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(data.BuyCommand))
-                        task.wait(0.3)
-                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer("BlackbeardReward", "DragonClaw", "2")
-                    elseif styleName == "Electric Claw" then
-                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand, "Start")
-                        task.wait(0.3)
-                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
+                    local dist = (Root.Position - data.Position.Position).Magnitude
+                    if dist > 15 then
+                        _tp(data.Position)
                     else
-                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
+                        if type(data.BuyCommand) == "table" then
+                            game.ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(data.BuyCommand))
+                            task.wait(0.3)
+                            game.ReplicatedStorage.Remotes.CommF_:InvokeServer("BlackbeardReward", "DragonClaw", "2")
+                        elseif styleName == "Electric Claw" then
+                            game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand, "Start")
+                            task.wait(0.3)
+                            game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
+                        else
+                            game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
+                        end
                     end
                 end
             end)
@@ -12060,7 +12053,7 @@ local function StartAutoBuy(styleName, data)
     end)
 end
 
--- [[ TOGGLES DOS ESTILOS ]]
+-- [[ CADA TOGGLE PARA 1 ]]
 
 D:AddToggle({
     Title = "Auto Black Leg",
@@ -12171,6 +12164,7 @@ D:AddToggle({
         if I then StartAutoBuy("Sanguine Art", FightingStyleData["Sanguine Art"]) end
     end
 })
+
 
 D:AddSeperator("Accessory");
 D:AddButton({ Title = "Buy Tomoe Ring", Description = "", Callback = function()
