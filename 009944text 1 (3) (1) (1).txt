@@ -12006,40 +12006,172 @@ D:AddButton({ Title = "Buy Soru", Description = "", Callback = function()
 D:AddButton({ Title = "Buy Ken", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("KenTalk", "Buy");
 	end });
-D:AddSeperator("Fighting - Style");
-D:AddButton({ Title = "Buy Black Leg", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuyBlackLeg");
-	end });
-D:AddButton({ Title = "Buy Electro", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuyElectro");
-	end });
-D:AddButton({ Title = "Buy Fishman Karate", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuyFishmanKarate");
-	end });
-D:AddButton({ Title = "Buy DragonClaw", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "DragonClaw", "2");
-	end });
-D:AddButton({ Title = "Buy Superhuman", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuySuperhuman");
-	end });
-D:AddButton({ Title = "Buy Death Step", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuyDeathStep");
-	end });
-D:AddButton({ Title = "Buy Sharkman Karate", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuySharkmanKarate");
-	end });
-D:AddButton({ Title = "Buy ElectricClaw", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuyElectricClaw");
-	end });
-D:AddButton({ Title = "Buy DragonTalon", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuyDragonTalon");
-	end });
-D:AddButton({ Title = "Buy Godhuman", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuyGodhuman");
-	end });
-D:AddButton({ Title = "Buy SanguineArt", Description = "", Callback = function()
-		replicated.Remotes.CommF_:InvokeServer("BuySanguineArt");
-	end });
+D:AddSeperator("Fighting Style (Auto Buy)");
+
+-- Função auxiliar para o loop de compra (mesma lógica do farm)
+local function StartAutoBuy(styleName, data)
+    task.spawn(function()
+        local settingKey = "AutoBuy_" .. styleName:gsub(" ", "")
+        while _G.SaveData[settingKey] do
+            task.wait()
+            pcall(function()
+                local char = game.Players.LocalPlayer.Character
+                local hrp = char and char:FindFirstChild("HumanoidRootPart")
+                if not hrp then return end
+
+                -- Se estiver no Sea 3 querendo estilo do 1 ou 2
+                if (data.World == 1 or data.World == 2) and World3 then
+                    if (hrp.Position - Sea3StyleCFrame.Position).Magnitude > 15 then
+                        _tp(Sea3StyleCFrame)
+                    else
+                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
+                    end
+                    return
+                end
+
+                -- Verificação de Mundo (Travel)
+                if (data.World == 2 and not World2) then
+                    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelDressrosa")
+                    task.wait(2) return
+                elseif (data.World == 3 and not World3) then
+                    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelZou")
+                    task.wait(2) return
+                end
+
+                -- Teleporte e Compra
+                local dist = (hrp.Position - data.Position.Position).Magnitude
+                if dist > 15 then
+                    _tp(data.Position)
+                else
+                    if type(data.BuyCommand) == "table" then
+                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(data.BuyCommand))
+                        task.wait(0.3)
+                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer("BlackbeardReward", "DragonClaw", "2")
+                    elseif styleName == "Electric Claw" then
+                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand, "Start")
+                        task.wait(0.3)
+                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
+                    else
+                        game.ReplicatedStorage.Remotes.CommF_:InvokeServer(data.BuyCommand)
+                    end
+                end
+            end)
+        end
+    end)
+end
+
+-- [[ TOGGLES DOS ESTILOS ]]
+
+D:AddToggle({
+    Title = "Auto Black Leg",
+    Default = GetSetting("AutoBuy_BlackLeg", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_BlackLeg"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Black Leg", FightingStyleData["Black Leg"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Electro",
+    Default = GetSetting("AutoBuy_Electro", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_Electro"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Electro", FightingStyleData["Electro"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Fishman Karate",
+    Default = GetSetting("AutoBuy_FishmanKarate", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_FishmanKarate"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Fishman Karate", FightingStyleData["Fishman Karate"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Dragon Claw",
+    Default = GetSetting("AutoBuy_DragonClaw", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_DragonClaw"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Dragon Claw", FightingStyleData["Dragon Claw"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Superhuman",
+    Default = GetSetting("AutoBuy_Superhuman", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_Superhuman"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Superhuman", FightingStyleData["Superhuman"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Death Step",
+    Default = GetSetting("AutoBuy_DeathStep", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_DeathStep"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Death Step", FightingStyleData["Death Step"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Sharkman Karate",
+    Default = GetSetting("AutoBuy_SharkmanKarate", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_SharkmanKarate"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Sharkman Karate", FightingStyleData["Sharkman Karate"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Electric Claw",
+    Default = GetSetting("AutoBuy_ElectricClaw", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_ElectricClaw"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Electric Claw", FightingStyleData["Electric Claw"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Dragon Talon",
+    Default = GetSetting("AutoBuy_DragonTalon", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_DragonTalon"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Dragon Talon", FightingStyleData["Dragon Talon"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Godhuman",
+    Default = GetSetting("AutoBuy_Godhuman", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_Godhuman"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Godhuman", FightingStyleData["Godhuman"]) end
+    end
+})
+
+D:AddToggle({
+    Title = "Auto Sanguine Art",
+    Default = GetSetting("AutoBuy_SanguineArt", false),
+    Callback = function(I)
+        _G.SaveData["AutoBuy_SanguineArt"] = I
+        SaveSettings()
+        if I then StartAutoBuy("Sanguine Art", FightingStyleData["Sanguine Art"]) end
+    end
+})
+
 D:AddSeperator("Accessory");
 D:AddButton({ Title = "Buy Tomoe Ring", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("BuyItem", "Tomoe Ring");
