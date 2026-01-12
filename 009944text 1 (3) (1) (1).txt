@@ -1130,137 +1130,128 @@ local PlaceId = game.PlaceId
 local World1, World2, World3 = false, false, false
 
 if PlaceId == 2753915549 or PlaceId == 85211729168715 then
-    World1 = true
+World1 = true
 elseif PlaceId == 4442272183 or PlaceId == 79091703265657 then
-    World2 = true
+World2 = true
 elseif PlaceId == 7449423635 or PlaceId == 100117331123089 then
-    World3 = true
+World3 = true
 end
 
 local WorldPortals = {}
 
 if World1 then
-    WorldPortals = {
-        ["Sky3"] = Vector3.new(-7894, 5547, -380),
-        ["Sky3Exit"] = Vector3.new(-4607, 874, -1667),
-        ["Underwater City"] = Vector3.new(61163, 11, 1819),
-        ["Pirate Village"] = Vector3.new(-1242, 4, 3901),
-        ["Prison"] = Vector3.new(4875, 5, 740),
-        ["Middle Town"] = Vector3.new(-650, 7, 1450)
-    }
+WorldPortals = {
+["Sky3"] = Vector3.new(-7894, 5547, -380),
+["Underwater City"] = Vector3.new(61163, 11, 1819)
+}
+
 elseif World2 then
-    WorldPortals = {
-        ["Swan Mansion"] = Vector3.new(-390, 332, 673),
-        ["Cursed Ship"] = Vector3.new(923, 126, 32852),
-        ["Zombie Island"] = Vector3.new(-6509, 83, -133),
-        ["Forgotten Island"] = Vector3.new(-3054, 235, -10142),
-        ["Snow Mountain"] = Vector3.new(753, 400, -5270),
-        ["Ice Castle"] = Vector3.new(6148, 294, -6741)
-    }
+WorldPortals = {
+["Swan Mansion"] = Vector3.new(-390, 332, 673),
+["Cursed Ship"] = Vector3.new(923, 126, 32852)
+}
+
 elseif World3 then
-    WorldPortals = {
-        ["Mansion"] = Vector3.new(-12462, 375, -7552),
-        ["Hydra Island"] = Vector3.new(5657, 1013, -335),
-        ["Castle on the Sea"] = Vector3.new(-5036, 315, -3179),
-        ["Temple of Time"] = Vector3.new(28286, 14897, 103),
-        ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
-        ["Great Tree"] = Vector3.new(2681, 1682, -7190)
-    }
+WorldPortals = {
+["Castle on the Sea"] = Vector3.new(-5036, 315, -3179),
+["Mansion"] = Vector3.new(-12462, 375, -7552),
+["Hydra Island"] = Vector3.new(5657, 1013, -335),
+["Temple of Time"] = Vector3.new(28286, 14897, 103)
+}
 end
 
 local function requestEntrance(portalName)
-    game:GetService("ReplicatedStorage").Remotes.CommF:InvokeServer("requestEntrance", portalName)
+game:GetService("ReplicatedStorage").Remotes.CommF:InvokeServer("requestEntrance", portalName)
 end
 
 local function CheckShortestPath(TargetPosition)
-    local MyPos = plr.Character.HumanoidRootPart.Position
-    local DirectDistance = (TargetPosition - MyPos).Magnitude
-    
-    local BestPortal = nil
-    local ShortestDist = math.huge
-    
-    for Name, PortalPos in pairs(WorldPortals) do
-        local DistFromPortalToTarget = (TargetPosition - PortalPos).Magnitude
-        if DistFromPortalToTarget < ShortestDist then
-            ShortestDist = DistFromPortalToTarget
-            BestPortal = {Name = Name, Pos = PortalPos}
-        end
-    end
-    
-    if BestPortal and ShortestDist < DirectDistance then
-        return BestPortal
-    end
-    return nil
+local MyPos = plr.Character.HumanoidRootPart.Position
+local DirectDistance = (TargetPosition - MyPos).Magnitude
+
+local BestPortal = nil  
+local ShortestDist = math.huge  
+  
+for Name, PortalPos in pairs(WorldPortals) do  
+    local DistFromPortalToTarget = (TargetPosition - PortalPos).Magnitude  
+    if DistFromPortalToTarget < ShortestDist then  
+        ShortestDist = DistFromPortalToTarget  
+        BestPortal = {Name = Name, Pos = PortalPos}  
+    end  
+end  
+  
+if BestPortal and ShortestDist < DirectDistance then  
+    return BestPortal  
+end  
+return nil
 end
 
 _tp = function(I)
-    local e = plr.Character
-    if not e or not e:FindFirstChild("HumanoidRootPart") then
-        return
-    end
+local e = plr.Character
+if not e or not e:FindFirstChild("HumanoidRootPart") then
+return
+end
 
-    local HRP = e.HumanoidRootPart
-    local TargetPos = I.Position
+local HRP = e.HumanoidRootPart  
+local TargetPos = I.Position  
 
-    local Shortcut = CheckShortestPath(TargetPos)
-    if Shortcut then
-        HRP.CFrame = CFrame.new(Shortcut.Pos)
-        task.wait(0.1)
-        requestEntrance(Shortcut.Name)
-        task.wait(0.5)
+local Shortcut = CheckShortestPath(TargetPos)  
+if Shortcut then  
+    HRP.CFrame = CFrame.new(Shortcut.Pos)  
+    task.wait(0.1)  
+    requestEntrance(Shortcut.Name)  
+    task.wait(0.5)  
 
-        if (HRP.Position - Shortcut.Pos).Magnitude < 100 then
-            HRP.CFrame = CFrame.new(Shortcut.Pos)
-            task.wait(0.2)
-            requestEntrance(Shortcut.Name)
-            task.wait(0.5)
-        end
-    end
+    if (HRP.Position - Shortcut.Pos).Magnitude < 100 then  
+        HRP.CFrame = CFrame.new(Shortcut.Pos)  
+        task.wait(0.2)  
+        requestEntrance(Shortcut.Name)  
+        task.wait(0.5)  
+    end  
+end  
 
-    local dist = (TargetPos - HRP.Position).Magnitude
-    shouldTween = true
-    getgenv().OnFarm = false
+local dist = (TargetPos - HRP.Position).Magnitude  
+shouldTween = true  
+getgenv().OnFarm = false  
 
-    if HRP.Anchored then
-        HRP.Anchored = false
-        task.wait()
-    end
+if HRP.Anchored then  
+    HRP.Anchored = false  
+    task.wait()  
+end  
 
-    local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
-    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
-    local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })
+local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)  
+local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
+local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })  
 
-    if e.Humanoid.Sit == true then
-        e.Humanoid.Sit = false
-        C.CFrame = CFrame.new(C.Position.X, TargetPos.Y, C.Position.Z)
-    end
+if e.Humanoid.Sit == true then  
+    e.Humanoid.Sit = false  
+    C.CFrame = CFrame.new(C.Position.X, TargetPos.Y, C.Position.Z)  
+end  
 
-    tween:Play()
+tween:Play()  
 
-    task.spawn(function()
-        while tween.PlaybackState == Enum.PlaybackState.Playing do
-            if not shouldTween then
-                tween:Cancel()
-                break
-            end
-            if not e or not e:FindFirstChild("HumanoidRootPart") then
-                tween:Cancel()
-                break
-            end
-            task.wait(0.1)
-        end
-        getgenv().OnFarm = true
-    end)
+task.spawn(function()  
+    while tween.PlaybackState == Enum.PlaybackState.Playing do  
+        if not shouldTween then  
+            tween:Cancel()  
+            break  
+        end  
+        if not e or not e:FindFirstChild("HumanoidRootPart") then  
+            tween:Cancel()  
+            break  
+        end  
+        task.wait(0.1)  
+    end  
+    getgenv().OnFarm = true  
+end)
 end
 
 TeleportToTarget = function(I)
-    _tp(I)
+_tp(I)
 end
 
 notween = function(I)
-    plr.Character.HumanoidRootPart.CFrame = I
+plr.Character.HumanoidRootPart.CFrame = I
 end
-
 
 function BTP(I)
 	local e = game.Players.LocalPlayer;
