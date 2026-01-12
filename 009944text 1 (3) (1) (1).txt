@@ -1204,9 +1204,17 @@ _tp = function(I)
 
     local Shortcut = CheckShortestPath(TargetPos)
     if Shortcut then
-        requestEntrance(Shortcut.Name)
         HRP.CFrame = CFrame.new(Shortcut.Pos)
+        task.wait(0.1)
+        requestEntrance(Shortcut.Name)
         task.wait(0.5)
+
+        if (HRP.Position - Shortcut.Pos).Magnitude < 100 then
+            HRP.CFrame = CFrame.new(Shortcut.Pos)
+            task.wait(0.2)
+            requestEntrance(Shortcut.Name)
+            task.wait(0.5)
+        end
     end
 
     local dist = (TargetPos - HRP.Position).Magnitude
