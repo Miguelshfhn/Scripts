@@ -1122,73 +1122,144 @@ task.spawn(function()
 	end;
 end);
 
--- =======================
--- TWEEN AJUSTADO POR DISTÂNCIA
--- =======================
+getgenv().TweenSpeedFar = 300
+getgenv().TweenSpeedNear = 600
 
--- [[ VARIÁVEIS PARA O SEU INPUT ]] --
-getgenv().TweenSpeedFar = 300   -- Velocidade Padrão (Longe)
-getgenv().TweenSpeedNear = 600  -- Velocidade Boost (Perto <= 15 studs)
+local plr = game:GetService("Players").LocalPlayer
+local PlaceId = game.PlaceId
+local World1, World2, World3 = false, false, false
+
+if PlaceId == 2753915549 or PlaceId == 85211729168715 then
+    World1 = true
+elseif PlaceId == 4442272183 or PlaceId == 79091703265657 then
+    World2 = true
+elseif PlaceId == 7449423635 or PlaceId == 100117331123089 then
+    World3 = true
+end
+
+local WorldPortals = {}
+
+if World1 then
+    WorldPortals = {
+        ["Sky3"] = Vector3.new(-7894, 5547, -380),
+        ["Sky3Exit"] = Vector3.new(-4607, 874, -1667),
+
+        ["UnderWater"] = Vector3.new(61163, 11, 1819),
+        ["Underwater City"] = Vector3.new(61165.19140625, 0.18704631924629211, 1897.379150390625),
+        ["UnderwaterExit"] = Vector3.new(4050, -1, -1814),
+
+        ["Pirate Village"] = Vector3.new(-1242.4625244140625, 4.787059783935547, 3901.282958984375)
+    }
+
+elseif World2 then
+    WorldPortals = {
+        ["Swan Mansion"] = Vector3.new(-390, 332, 673),
+        ["Swan Room"] = Vector3.new(2285, 15, 905),
+        ["Cursed Ship"] = Vector3.new(923, 126, 32852),
+        ["Zombie Island"] = Vector3.new(-6509, 83, -133)
+    }
+
+elseif World3 then
+    WorldPortals = {
+        ["Castle on the Sea"] = Vector3.new(-5036, 315, -3179),
+        ["Mansion"] = Vector3.new(-12462, 375, -7552),
+        ["Hydra Island"] = Vector3.new(5657, 1013, -335),
+        ["Temple of Time"] = Vector3.new(28286, 14897, 103)
+    }
+end
+
+local function requestEntrance(portalName)
+    game:GetService("ReplicatedStorage").Remotes.CommF:InvokeServer("requestEntrance", portalName)
+end
+
+local function CheckShortestPath(TargetPosition)
+    local MyPos = plr.Character.HumanoidRootPart.Position
+    local DirectDistance = (TargetPosition - MyPos).Magnitude
+
+    local BestPortal = nil
+    local ShortestDist = math.huge
+
+    for Name, PortalPos in pairs(WorldPortals) do
+        local DistFromPortalToTarget = (TargetPosition - PortalPos).Magnitude
+        if DistFromPortalToTarget < ShortestDist then
+            ShortestDist = DistFromPortalToTarget
+            BestPortal = {Name = Name, Pos = PortalPos}
+        end
+    end
+
+    if BestPortal and ShortestDist < DirectDistance then
+        return BestPortal
+    end
+    return nil
+end
 
 _tp = function(I)
-local e = plr.Character;
-if not e or not e:FindFirstChild("HumanoidRootPart") then
-return;
-end;
+    local e = plr.Character
+    if not e or not e:FindFirstChild("HumanoidRootPart") then
+        return
+    end
 
-local HRP = e.HumanoidRootPart;  
+    local HRP = e.HumanoidRootPart
+    local TargetPos = I.Position
 
--- Desativar farm enquanto tweena  
-shouldTween = true  
-getgenv().OnFarm = false  
+    local Shortcut = CheckShortestPath(TargetPos)
+    if Shortcut then
+        HRP.CFrame = CFrame.new(Shortcut.Pos)
+        task.wait(0.1)
+        requestEntrance(Shortcut.Name)
+        task.wait(0.5)
 
--- Garantir que não está ancorado  
-if HRP.Anchored then  
-	HRP.Anchored = false  
-	task.wait()  
-end  
+        if (HRP.Position - Shortcut.Pos).Magnitude < 100 then
+            HRP.CFrame = CFrame.new(Shortcut.Pos)
+            task.wait(0.2)
+            requestEntrance(Shortcut.Name)
+            task.wait(0.5)
+        end
+    end
 
-local dist = (I.Position - HRP.Position).Magnitude  
+    local dist = (TargetPos - HRP.Position).Magnitude
+    shouldTween = true
+    getgenv().OnFarm = false
 
--- ===============================  
---  SE ESTIVER ATÉ 15 STUDS → USA A VELOCIDADE DE PERTO
---  CASO CONTRÁRIO → USA A VELOCIDADE PADRÃO
--- ===============================  
-local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
+    if HRP.Anchored then
+        HRP.Anchored = false
+        task.wait()
+    end
 
-local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
-local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })  
+    local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
+    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
+    local tween = game:GetService("TweenService"):Create(C, info, {CFrame = I})
 
--- Caso esteja sentado  
-if e.Humanoid.Sit == true then  
-	C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)  
-end  
+    if e.Humanoid.Sit == true then
+        e.Humanoid.Sit = false
+        C.CFrame = CFrame.new(C.Position.X, TargetPos.Y, C.Position.Z)
+    end
 
-tween:Play()  
+    tween:Play()
 
--- Anti travamento / controle  
-task.spawn(function()  
-	while tween.PlaybackState == Enum.PlaybackState.Playing do  
-		if not shouldTween then  
-			tween:Cancel()  
-			break  
-		end  
-		task.wait(.1)  
-	end  
-
-	getgenv().OnFarm = true  
-end)
-
+    task.spawn(function()
+        while tween.PlaybackState == Enum.PlaybackState.Playing do
+            if not shouldTween then
+                tween:Cancel()
+                break
+            end
+            if not e or not e:FindFirstChild("HumanoidRootPart") then
+                tween:Cancel()
+                break
+            end
+            task.wait(0.1)
+        end
+        getgenv().OnFarm = true
+    end)
 end
 
 TeleportToTarget = function(I)
-_tp(I)
+    _tp(I)
 end
 
 notween = function(I)
-plr.Character.HumanoidRootPart.CFrame = I
+    plr.Character.HumanoidRootPart.CFrame = I
 end
-
 
 function BTP(I)
 	local e = game.Players.LocalPlayer;
@@ -11981,108 +12052,255 @@ local function c5(I, e)
 	end;
 	return d;
 end;
+function AttackNoCoolDown()
+	local I = (game:GetService("Players")).LocalPlayer;
+	local e = I.Character;
+	if not e then
+		return;
+	end;
+	local K = nil;
+	for I, e in ipairs(e:GetChildren()) do
+		if e:IsA("Tool") then
+			K = e;
+			break;
+		end;
+	end;
+	if not K then
+		return;
+	end;
+	local n = c5(e, 60);
+	if #n == 0 then
+		return;
+	end;
+	local d = game:GetService("ReplicatedStorage");
+	local z = d:FindFirstChild("Modules");
+	if not z then
+		return;
+	end;
+	local H = ((d:WaitForChild("Modules")):WaitForChild("Net")):WaitForChild("RE/RegisterAttack");
+	local F = ((d:WaitForChild("Modules")):WaitForChild("Net")):WaitForChild("RE/RegisterHit");
+	if not H or not F then
+		return;
+	end;
+	local Q, X = {}, nil;
+	for I, e in ipairs(n) do
+		if not e:GetAttribute("IsBoat") then
+			local I = {
+					"RightLowerArm",
+					"RightUpperArm",
+					"LeftLowerArm",
+					"LeftUpperArm",
+					"RightHand",
+					"LeftHand",
+				};
+			local K = e:FindFirstChild(I[math.random(#I)]) or e.PrimaryPart;
+			if K then
+				table.insert(Q, { e, K });
+				X = K;
+			end;
+		end;
+	end;
+	if not X then
+		return;
+	end;
+	H:FireServer(0);
+	local P = I:FindFirstChild("PlayerScripts");
+	if not P then
+		return;
+	end;
+	local w = P:FindFirstChildOfClass("LocalScript");
+	while not w do
+		P.ChildAdded:Wait();
+		w = P:FindFirstChildOfClass("LocalScript");
+	end;
+	local O;
+	if getsenv then
+		local I, e = pcall(getsenv, w);
+		if I and e then
+			O = e._G.SendHitsToServer;
+		end;
+	end;
+	local G, J = pcall(function()
+			return (require(z.Flags)).COMBAT_REMOTE_THREAD or false;
+		end);
+	if G and (J and O) then
+		O(X, Q);
+	elseif G and not J then
+		F:FireServer(X, Q);
+	end;
+end;
+CameraShakerR = require(game.ReplicatedStorage.Util.CameraShaker);
+CameraShakerR:Stop();
+get_Monster = function()
+		for I, e in pairs(workspace.Enemies:GetChildren()) do
+			local K = e:FindFirstChild("UpperTorso") or e:FindFirstChild("Head");
+			if e:FindFirstChild("HumanoidRootPart", true) and K then
+				if (e.Head.Position - plr.Character.HumanoidRootPart.Position).Magnitude <= 50 then
+					return true, K.Position;
+				end;
+			end;
+		end;
+		for I, e in pairs(workspace.SeaBeasts:GetChildren()) do
+			if e:FindFirstChild("HumanoidRootPart") and (e:FindFirstChild("Health") and e.Health.Value > 0) then
+				return true, e.HumanoidRootPart.Position;
+			end;
+		end;
+		for I, e in pairs(workspace.Enemies:GetChildren()) do
+			if e:FindFirstChild("Health") and (e.Health.Value > 0 and e:FindFirstChild("VehicleSeat")) then
+				return true, e.Engine.Position;
+			end;
+		end;
+	end;
+Actived = function()
+		local I = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool");
+		for I, e in next, getconnections(I.Activated) do
+			if typeof(e.Function) == "function" then
+				getupvalues(e.Function);
+			end;
+		end;
+	end;
+task.spawn(function()
+	RunSer.Heartbeat:Connect(function()
+		pcall(function()
+			if not _G.Seriality then
+				return;
+			end;
+			AttackNoCoolDown();
+			local I = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool");
+			local e = I.ToolTip;
+			local K, n = get_Monster();
+			if e == "Blox Fruit" then
+				if K then
+					local e = I:FindFirstChild("LeftClickRemote");
+					if e then
+						Actived();
+						e:FireServer(Vector3.new(.01, -500, .01), 1, true);
+						e:FireServer(false);
+					end;
+				end;
+			end;
+		end);
+	end);
+end);
+-- FastAttack extraído do seu script (cole isso onde precisar)
+local FastAttackModule = {}
+
+-- Dependências (ajuste se já tiver essas variáveis no seu ambiente)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
-
 local Player = Players.LocalPlayer
-local Modules = ReplicatedStorage:WaitForChild("Modules")
-local Net = Modules:WaitForChild("Net")
 
-local RegisterAttack = Net:WaitForChild("RE/RegisterAttack")
-local RegisterHit = Net:WaitForChild("RE/RegisterHit")
+local function SafeWaitForChild(parent, childName)
+    local success, result = pcall(function()
+        return parent:WaitForChild(childName)
+    end)
+    if not success or not result then
+        warn("SafeWaitForChild falhou: " .. tostring(childName))
+    end
+    return result
+end
 
-local function AttackNoCoolDown()
+local Modules = SafeWaitForChild(ReplicatedStorage, "Modules")
+local Net = SafeWaitForChild(Modules, "Net")
+
+-- Configs usadas pelo loop externo (podem ser mudadas em runtime)
+local Settings = {
+    AutoClick = true,
+    ClickDelay = 0
+}
+
+-- Implementação do FastAttack
+local FastAttack = {
+    Distance = 100,
+    attackMobs = true,
+    attackPlayers = true,
+    Equipped = nil
+}
+
+local RegisterAttack = SafeWaitForChild(Net, "RE/RegisterAttack")
+local RegisterHit = SafeWaitForChild(Net, "RE/RegisterHit")
+
+local function IsAlive(character)
+    return character and character:FindFirstChild("Humanoid") and character.Humanoid.Health > 0
+end
+
+-- Procura inimigos (Head) dentro da pasta passada (Enemies ou Characters)
+local function ProcessEnemies(OthersEnemies, Folder)
+    local BasePart = nil
+    for _, Enemy in ipairs(Folder:GetChildren()) do
+        local Head = Enemy:FindFirstChild("Head")
+        if Head and IsAlive(Enemy) and Player:DistanceFromCharacter(Head.Position) < FastAttack.Distance then
+            if Enemy ~= Player.Character then
+                table.insert(OthersEnemies, { Enemy, Head })
+                BasePart = Head
+            end
+        end
+    end
+    return BasePart
+end
+
+function FastAttack:Attack(BasePart, OthersEnemies)
+    if not BasePart or #OthersEnemies == 0 then return end
+    -- envia RegisterAttack com delay configurado e depois RegisterHit com os alvos
+    pcall(function()
+        RegisterAttack:FireServer(Settings.ClickDelay or 0)
+        RegisterHit:FireServer(BasePart, OthersEnemies)
+    end)
+end
+
+function FastAttack:AttackNearest()
+    local OthersEnemies = {}
+    -- assume que as pastas 'Enemies' e 'Characters' existem no workspace
+    local EnemiesFolder = workspace:FindFirstChild("Enemies")
+    local CharactersFolder = workspace:FindFirstChild("Characters")
+    local Part1 = nil
+    local Part2 = nil
+    if EnemiesFolder then Part1 = ProcessEnemies(OthersEnemies, EnemiesFolder) end
+    if CharactersFolder then Part2 = ProcessEnemies(OthersEnemies, CharactersFolder) end
+
     local character = Player.Character
     if not character then return end
+    local equippedWeapon = character:FindFirstChildOfClass("Tool")
 
-    local tool
-    for _, v in ipairs(character:GetChildren()) do
-        if v:IsA("Tool") then
-            tool = v
-            break
-        end
-    end
-    if not tool then return end
-
-    local targets = c5(character, 60)
-    if #targets == 0 then return end
-
-    local hitList = {}
-    local basePart
-
-    for _, enemy in ipairs(targets) do
-        if not enemy:GetAttribute("IsBoat") then
-            local parts = {
-                "RightLowerArm","RightUpperArm",
-                "LeftLowerArm","LeftUpperArm",
-                "RightHand","LeftHand"
-            }
-            local part = enemy:FindFirstChild(parts[math.random(#parts)]) or enemy.PrimaryPart
-            if part then
-                hitList[#hitList+1] = {enemy, part}
-                basePart = part
+    -- Se a arma tem LeftClickRemote, usa ela (some armas enviam direção)
+    if equippedWeapon and equippedWeapon:FindFirstChild("LeftClickRemote") then
+        for _, enemyData in ipairs(OthersEnemies) do
+            local enemy = enemyData[1]
+            if enemy and enemy:FindFirstChild("HumanoidRootPart") and character:FindFirstChild("HumanoidRootPart") then
+                local direction = (enemy.HumanoidRootPart.Position - character:GetPivot().Position).Unit
+                pcall(function()
+                    equippedWeapon.LeftClickRemote:FireServer(direction, 1)
+                end)
             end
         end
-    end
-
-    if not basePart then return end
-
-    RegisterAttack:FireServer(0)
-    RegisterHit:FireServer(basePart, hitList)
-end
-
-local function get_Monster()
-    for _, e in pairs(workspace.Enemies:GetChildren()) do
-        local part = e:FindFirstChild("UpperTorso") or e:FindFirstChild("Head")
-        if part and e:FindFirstChild("HumanoidRootPart") then
-            if (part.Position - Player.Character.HumanoidRootPart.Position).Magnitude <= 50 then
-                return true
-            end
-        end
-    end
-    for _, e in pairs(workspace.SeaBeasts:GetChildren()) do
-        if e:FindFirstChild("HumanoidRootPart") and e:FindFirstChild("Health") and e.Health.Value > 0 then
-            return true
-        end
-    end
-    for _, e in pairs(workspace.Enemies:GetChildren()) do
-        if e:FindFirstChild("Health") and e.Health.Value > 0 and e:FindFirstChild("VehicleSeat") then
-            return true
-        end
+    elseif #OthersEnemies > 0 then
+        -- fallback: usa RegisterHit
+        self:Attack(Part1 or Part2, OthersEnemies)
+    else
+        task.wait(0)
     end
 end
 
-local function Actived()
-    local tool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
-    if not tool then return end
-    for _, c in next, getconnections(tool.Activated) do
-        if typeof(c.Function) == "function" then
-            getupvalues(c.Function)
-        end
+function FastAttack:BladeHits()
+    local Equipped = IsAlive(Player.Character) and Player.Character:FindFirstChildOfClass("Tool")
+    if Equipped and Equipped.ToolTip ~= "Gun" then
+        self:AttackNearest()
+    else
+        task.wait(0)
     end
 end
 
-RunService.Heartbeat:Connect(function()
-    if not _G.Seriality then return end
-    pcall(function()
-        AttackNoCoolDown()
-    end)
+-- loop automático que dispara BladeHits de acordo com Settings
+task.spawn(function()
+    while task.wait(Settings.ClickDelay) do
+        if Settings.AutoClick then
+            FastAttack:BladeHits()
+        end
+    end
 end)
 
-RunService.Heartbeat:Connect(function()
-    if not _G.Seriality then return end
-    pcall(function()
-        local tool = Player.Character and Player.Character:FindFirstChildOfClass("Tool")
-        if tool and tool.ToolTip == "Blox Fruit" then
-            if get_Monster() then
-                local remote = tool:FindFirstChild("LeftClickRemote")
-                if remote then
-                    Actived()
-                    remote:FireServer(Vector3.new(0.01,-500,0.01),1,true)
-                    remote:FireServer(false)
-                end
-            end
-        end
-    end)
-end)
+-- exporta / cacheia no _ENV como no original
+_ENV.rz_FastAttack = FastAttack
+FastAttackModule.FastAttack = FastAttack
+return FastAttackModule
