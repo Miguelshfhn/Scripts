@@ -1146,9 +1146,7 @@ if World1 then
 
         ["UnderWater"] = Vector3.new(61163, 11, 1819),
         ["Underwater City"] = Vector3.new(61165.19140625, 0.18704631924629211, 1897.379150390625),
-        ["UnderwaterExit"] = Vector3.new(4050, -1, -1814),
-
-        ["Pirate Village"] = Vector3.new(-1242.4625244140625, 4.787059783935547, 3901.282958984375)
+        ["UnderwaterExit"] = Vector3.new(4050, -1, -1814)
     }
 
 elseif World2 then
@@ -1206,15 +1204,20 @@ _tp = function(I)
     if Shortcut then
         HRP.CFrame = CFrame.new(Shortcut.Pos)
         task.wait(0.1)
-        requestEntrance(Shortcut.Name)
-        task.wait(0.5)
 
-        if (HRP.Position - Shortcut.Pos).Magnitude < 100 then
-            HRP.CFrame = CFrame.new(Shortcut.Pos)
-            task.wait(0.2)
-            requestEntrance(Shortcut.Name)
-            task.wait(0.5)
+        local Before = HRP.Position
+        shouldTween = false
+        requestEntrance(Shortcut.Name)
+
+        for i = 1, 50 do
+            if (HRP.Position - Before).Magnitude > 50 then
+                break
+            end
+            task.wait(0.1)
         end
+
+        task.wait(0.2)
+        shouldTween = true
     end
 
     local dist = (TargetPos - HRP.Position).Magnitude
