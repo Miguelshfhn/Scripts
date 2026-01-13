@@ -3692,6 +3692,24 @@ end
     end
 
     
+-- Definição das Abas (Tabs) baseadas no seu BuildInterface
+local Tabs = {
+    Shop = Window:AddTab({ Title = "Shop Tab", Icon = "shopping-cart" }),
+    Status = Window:AddTab({ Title = "Status Servers", Icon = "bar-chart-2" }),
+    ConfigFarm = Window:AddTab({ Title = "Config Farm", Icon = "settings" }),
+    Farming = Window:AddTab({ Title = "Farmming Tab", Icon = "sword" }),
+    Stack = Window:AddTab({ Title = "Stack Farmming", Icon = "layers" }),
+    Items = Window:AddTab({ Title = "Items Farmming", Icon = "backpack" }),
+    FruitsRaid = Window:AddTab({ Title = "Fruits and Raid", Icon = "cherry" }),
+    LocalPlayer = Window:AddTab({ Title = "Local Player", Icon = "user" }),
+    PVP = Window:AddTab({ Title = "PVP-Combat", Icon = "crosshair" }),
+    SeaEvents = Window:AddTab({ Title = "Sea Events", Icon = "anchor" }),
+    Volcano = Window:AddTab({ Title = "Volcano Events", Icon = "flame" }),
+    Dojo = Window:AddTab({ Title = "Dojo", Icon = "home" }),
+    Race = Window:AddTab({ Title = "Upgraded Race", Icon = "zap" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
+}
+
 local Options = Fluent.Options
 
 do
@@ -7121,89 +7139,4 @@ end
         end
     end)
 
-local Tabs = {
-    ['Shop Tab']        = Window:AddTab({ Title = "Shop Tab", Icon = "" }),
-    ['Status Servers']  = Window:AddTab({ Title = "Status Servers", Icon = "" }),
-    ['Config Farm']     = Window:AddTab({ Title = "Config Farm", Icon = "" }),
-    ['Farmming Tab']    = Window:AddTab({ Title = "Farmming Tab", Icon = "" }),
-    ['Stack Farmming']  = Window:AddTab({ Title = "Stack Farmming", Icon = "" }),
-    ['Items Farmming']  = Window:AddTab({ Title = "Items Farmming", Icon = "" }),
-    ['Fruits and Raid'] = Window:AddTab({ Title = "Fruits and Raid", Icon = "" }),
-    ['Local Player']    = Window:AddTab({ Title = "Local Player", Icon = "" }),
-    ['PVP-Combat']      = Window:AddTab({ Title = "PVP-Combat", Icon = "" }),
-    ['Volcano Events']  = Window:AddTab({ Title = "Volcano Events", Icon = "" }),
-    ['Sea Events']      = Window:AddTab({ Title = "Sea Events", Icon = "" }),
-    ['Dojo']            = Window:AddTab({ Title = "Dojo", Icon = "" }),
-    ['Upgraded Race']   = Window:AddTab({ Title = "Upgraded Race", Icon = "" }),
-    ['Settings']        = Window:AddTab({ Title = "Settings", Icon = "" })
-}
-local Elements = {}
-
--- Criador de elementos Fluent
-local function CreateElement(tab, type, data)
-    if type == "Toggle" then
-        local t = tab:AddToggle(data.Flag or data.Title, {
-            Title = data.Title,
-            Default = data.Default or false
-        })
-        if data.Callback then t:OnChanged(data.Callback) end
-        return t
-
-    elseif type == "Button" then
-        return tab:AddButton({
-            Title = data.Title,
-            Description = data.Description,
-            Callback = data.Callback
-        })
-
-    elseif type == "Dropdown" then
-        local d = tab:AddDropdown(data.Flag or data.Title, {
-            Title = data.Title,
-            Values = data.Values or {},
-            Multi = data.Multi or false,
-            Default = data.Default
-        })
-        if data.Callback then d:OnChanged(data.Callback) end
-        return d
-
-    elseif type == "Slider" then
-        return tab:AddSlider(data.Flag or data.Title, {
-            Title = data.Title,
-            Min = data.Min or 0,
-            Max = data.Max or 100,
-            Default = data.Default or 0,
-            Rounding = data.Rounding or 1,
-            Callback = data.Callback
-        })
-
-    elseif type == "Label" then
-        return tab:AddParagraph({
-            Title = data.Title,
-            Content = data.Content or ""
-        })
-
-    elseif type == "Input" then
-        return tab:AddInput(data.Flag or data.Title, {
-            Title = data.Title,
-            Default = data.Default or "",
-            Placeholder = data.Placeholder or "",
-            Callback = data.Callback
-        })
-    end
-end
-
--- Cria elementos dentro das abas
-for tabName, tab in pairs(Tabs) do
-    Elements[tabName] = {}
-    if BuildInterface and BuildInterface[tabName] and BuildInterface[tabName].Feature then
-        for _, feature in ipairs(BuildInterface[tabName].Feature) do
-            local el = CreateElement(tab, feature.Type, feature)
-            if el and feature.Title then
-                Elements[tabName][feature.Title] = el
-            end
-        end
-    end
-end
-
--- Seleciona primeira aba
 Window:SelectTab(1)
