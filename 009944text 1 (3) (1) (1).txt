@@ -170,7 +170,7 @@ Marines = function()
 Pirates = function()
 		replicated.Remotes.CommF_:InvokeServer("SetTeam", "Pirates");
 	end;
-local I = (loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-NightMystic/Night-Mystic-/refs/heads/main/Ui%20Night%20Mystic")))();
+local I = (loadstring(game:HttpGet("https://pastefy.app/dC5PNp19/raw")))();
 if World1 then
 	Boss = {
 			"The Gorilla King",
@@ -1912,16 +1912,20 @@ MaterialMon = function()
 				MPos = CFrame.new(-5428, 78, -5959);
 				SP = "Default";
 			elseif SelectMaterial == "Ectoplasm" then
-				MMon = {
-						"Ship Deckhand",
-						"Ship Engineer",
-						"Ship Steward",
-						"Ship Officer",
-					};
-				MPos = CFrame.new(911.35827636719, 125.95812988281, 33159.5390625);
-				SP = "Default";
-				local I = Vector3.new(61163.8515625, 5.342342376709, 1819.7841796875);
-				shouldRequestEntrance(I, 18000);
+    MMon = {
+            "Ship Deckhand",
+            "Ship Engineer",
+            "Ship Steward",
+            "Ship Officer",
+        };
+    MPos = CFrame.new(911.35827636719, 125.95812988281, 33159.5390625);
+    SP = "Default";
+    -- Coordenada CORRIGIDA para a entrada do Navio Assombrado (Sea 2)
+    local I = Vector3.new(923.21252441406, 126.9760055542, 32852.83203125);
+    
+    -- Verifica se você está longe da entrada. Se estiver, pede para entrar.
+    shouldRequestEntrance(I, 1000); 
+
 			elseif SelectMaterial == "Mystic Droplet" then
 				MMon = { "Water Fighter" };
 				MPos = CFrame.new(-3385, 239, -10542);
@@ -1980,46 +1984,58 @@ QuestNeta = function()
 	end;
 
 local V=I:NewWindow();
-local i=V:T("Info");
-local server=V:T("Server")
-local s=V:T("Stats");
-local g=V:T("Shop");
-local y=V:T("Main");
-local CS_Tab = V:T("Farm Mastery");
-local x=V:T("Farming Other");
-local mf=V:T("Misc Farming");
-local t=V:T("Sea Events");
-local ss=V:T("Skill Sea Event"); 
-local m=V:T("Race");
-local v=V:T("Drago Dojo");
-local S=V:T("Prehistoric");
-local VI=V:T("Visual");
-local q=V:T("Pvp");
-local l=V:T("Teleport");
-local R=V:T("Get and Upgrade Itens");
-local B=V:T("Raid/Fruit");
-local u=V:T("Misc");
-local c=V:T("Settings");
 
-local b=y:AddSection("Farming");
-local CS = CS_Tab:AddSection("Fruit And Gun Mastery")
-local serverSection=server:AddSection("Server")
-local T=c:AddSection("Setting");
-local j=x:AddSection("Other Farming");
-local MF=mf:AddSection("Fishing");
-local A=t:AddSection("Sea Events");
-local SSS=ss:AddSection("Settings Skill Sea Event");
-local h=m:AddSection("Race");
-local W=v:AddSection("Drago Dojo");
-local f=S:AddSection("Prehistoric");
-local VI_S=VI:AddSection("Appearance");
-local E=q:AddSection("Combat");
-local Y=l:AddSection("Teleport");
-local RR=R:AddSection("Get and Upgrade Itens");
-local p=B:AddSection("Fruits");
-local D=g:AddSection("Shop");
-local Z=u:AddSection("Misc");
-local SS=s:AddSection("Stats");
+-- TABS (somente nomes alterados)
+local i        = V:T("Discord","rbxassetid://73132811772878")
+local server   = V:T("Status And Server","rbxassetid://122223674767625")
+local g        = V:T("Shop","rbxassetid://134556077676632")
+local y        = V:T("Main Farm","rbxassetid://127561653320876")
+local CS_Tab   = V:T("Farm Mastery","rbxassetid://10709782497")
+local x        = V:T("Farm Others","rbxassetid://72448332143088")
+local t        = V:T("Sea Events","rbxassetid://96788654458681")
+local m        = V:T("Race Upgrade","rbxassetid://115164375298022")
+local v        = V:T("Dojo Quest & Drago Race","rbxassetid://91920478152016")
+local VI       = V:T("Visuals & ESP","rbxassetid://10723346959")
+local q        = V:T("Local Player","rbxassetid://98870151777863")
+local l        = V:T("Teleport","rbxassetid://10734886004")
+local R        = V:T("Get Items & Upgrade","rbxassetid://10709782582")
+local B        = V:T("Raid & Fruit","rbxassetid://10709790875")
+local c        = V:T("Settings & Misc","rbxassetid://127147149367603")
+
+-- SECTIONS (somente nomes alterados)
+local b    = y:AddSection("Auto Farm main");
+local CS   = CS_Tab:AddSection("Farm Mastery");
+
+local serverSection = server:AddSection("Server Options");
+
+local D    = g:AddSection("Shop, Styles & Accessories");
+
+local j    = x:AddSection("Farm events");
+local TT   = x:AddSection("Fishing");
+local outros   = x:AddSection("Farm others");
+
+local A  = t:AddSection("Sea Events")
+local zu = t:AddSection("maritime islands")
+local o = t:AddSection("Configure skills for Sea events")
+
+local h    = m:AddSection("Race V2/ V3 / V4");
+
+local nn    = m:AddSection("Upgrade V4");
+
+local RR   = R:AddSection("Swords & accessories");
+
+local W    = v:AddSection("Dojo Quest");
+
+local VI_S = VI:AddSection("ESP & World Visuals");
+local E    = q:AddSection("PVP, Movement & Aimbot");
+
+local Y    = l:AddSection("Teleports");
+local T    = c:AddSection("Script Settings");
+local kk    = c:AddSection("Misc & Codes");
+
+local p    = B:AddSection("Raid & Fruits");
+
+local Discord_Info = i:AddSection("discord server");
 
 -- [[ CONFIGURAÇÃO INICIAL (Coloque no topo do script) ]]
 _G.SelectedSkills = _G.SelectedSkills or {
@@ -2029,10 +2045,11 @@ _G.SelectedSkills = _G.SelectedSkills or {
     ["Blox Fruit"] = {}
 }
 
-SSS:AddSeperator("Melee")
+if World2 or World3 then
+o:AddSeperator("configures skills for maritime events (Melee)")
 
 -- [[ TOGGLES MELEE ]]
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill Z",
     Default = GetSetting("Skill_Melee_Z", true), 
     Callback = function(I)
@@ -2042,7 +2059,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill X",
     Default = GetSetting("Skill_Melee_X", true), 
     Callback = function(I)
@@ -2052,7 +2069,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill C",
     Default = GetSetting("Skill_Melee_C", true), 
     Callback = function(I)
@@ -2062,10 +2079,10 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddSeperator("Sword")
+o:AddSeperator("Sword")
 
 -- [[ TOGGLES SWORD ]]
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill Z",
     Default = GetSetting("Skill_Sword_Z", true), 
     Callback = function(I)
@@ -2075,7 +2092,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill X",
     Default = GetSetting("Skill_Sword_X", true), 
     Callback = function(I)
@@ -2085,10 +2102,10 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddSeperator("Gun")
+o:AddSeperator("Gun")
 
 -- [[ TOGGLES GUN ]]
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill Z",
     Default = GetSetting("Skill_Gun_Z", true), 
     Callback = function(I)
@@ -2098,7 +2115,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill X",
     Default = GetSetting("Skill_Gun_X", true), 
     Callback = function(I)
@@ -2108,10 +2125,10 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddSeperator("Blox Fruit")
+o:AddSeperator("Blox Fruit")
 
 -- [[ TOGGLES BLOX FRUIT ]]
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill Z",
     Default = GetSetting("Skill_Fruit_Z", true), 
     Callback = function(I)
@@ -2121,7 +2138,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill X",
     Default = GetSetting("Skill_Fruit_X", true), 
     Callback = function(I)
@@ -2131,7 +2148,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill C",
     Default = GetSetting("Skill_Fruit_C", true), 
     Callback = function(I)
@@ -2141,7 +2158,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill V",
     Default = GetSetting("Skill_Fruit_V", true), 
     Callback = function(I)
@@ -2151,7 +2168,7 @@ SSS:AddToggle({
     end
 })
 
-SSS:AddToggle({
+o:AddToggle({
     Title = "Skill F",
     Default = GetSetting("Skill_Fruit_F", true), 
     Callback = function(I)
@@ -2160,8 +2177,11 @@ SSS:AddToggle({
         SaveSettings()
     end
 })
+end
 
-
+if World1 then
+o:AddSeperator("only in Sea 3")
+end
 
 -- Secção de Configurações manuais
 local ConfigSection = c:AddSection("Manual Save")
@@ -3142,9 +3162,9 @@ VI_S:AddButton({
     end
 })
 
-VI_S:AddSeperator("Fps");
+kk:AddSeperator("Fps");
 
-VI_S:AddButton({
+kk:AddButton({
     Title = "Stretch the screen",
     Description = "",
     Callback = function()
@@ -3175,7 +3195,7 @@ VI_S:AddButton({
         getgenv().gg_scripters = "Aori0001"
     end
 })
-VI_S:AddButton({ Title = "Fps Boost", Description = "", Callback = function()
+kk:AddButton({ Title = "Fps Boost", Description = "", Callback = function()
 		LowCpu();
 	end });
 
@@ -3303,64 +3323,6 @@ spawn(function()
 	end;
 end);
 if World3 then
-RR:AddSeperator("Bones");
-
--- AUTO RANDOM BONES
-RR:AddToggle({
-    Title = "Auto Random Bone",
-    Default = false,
-    Callback = function(v)
-        _G.Auto_Random_Bone = v
-    end,
-})
-
-spawn(function()
-    while wait(Sec) do
-        if _G.Auto_Random_Bone then
-            replicated.Remotes.CommF_:InvokeServer("Bones","Buy",1,1)
-        end
-    end
-end)
-
--- AUTO SOUL REAPER
-RR:AddToggle({
-    Title = "Auto Soul Reaper",
-    Default = false,
-    Callback = function(v)
-        _G.AutoHytHallow = v
-    end,
-})
-
-spawn(function()
-    while wait(Sec) do
-        if _G.AutoHytHallow then
-            pcall(function()
-
-                local mob = GetConnectionEnemies("Soul Reaper")
-
-                if mob then
-                    repeat task.wait()
-                        G.Kill(mob,_G.AutoHytHallow)
-                    until mob.Humanoid.Health <= 0 or not _G.AutoHytHallow
-
-                else
-                    if not GetBP("Hallow Essence") then
-                        repeat task.wait(.1)
-                            replicated.Remotes.CommF_:InvokeServer("Bones","Buy",1,1)
-                        until not _G.AutoHytHallow or GetBP("Hallow Essence")
-                    else
-                        local pos = CFrame.new(-8932.32,146.83,6062.55)
-                        repeat wait(.1)
-                            _tp(pos)
-                        until not _G.AutoHytHallow or plr.Character.HumanoidRootPart.CFrame == pos
-                        EquipWeapon("Hallow Essence")
-                    end
-                end
-
-            end)
-        end
-    end
-end)
 RR:AddSeperator("Skull Guitar");
 RR:AddToggle({
 	Title = "Auto Skull Guitar",
@@ -3750,8 +3712,10 @@ spawn(function()
 	end
 end)
 
+serverSection:AddSeperator("Server - Status");
+
 -- Sistema Time Zone
-local Time = SS:AddParagraph({Title = "Time Zone", Desc = ""})
+local Time = serverSection:AddParagraph({Title = "Time Zone", Desc = ""})
 function UpdateOS()
     local date = os.date("*t")
     local hour = date.hour % 24
@@ -3774,7 +3738,7 @@ spawn(function()
 end)
 
 -- Sistema Game Time
-local Timmessss = SS:AddParagraph({Title = "Time", Desc = ""})
+local Timmessss = serverSection:AddParagraph({Title = "Time", Desc = ""})
 function UpdateTime()
     local GameTime = math.floor(workspace.DistributedGameTime + 0.5)
     local Hour = math.floor(GameTime / (60 ^ 2)) % 24
@@ -3790,7 +3754,7 @@ end)
 
 -- Sistema de Verificação de Ilhas
 local function CheckIsland(name, folder, childName)
-    local p = SS:AddParagraph({Title = name, Desc = "Status: "})
+    local p = serverSection:AddParagraph({Title = name, Desc = "Status: "})
     spawn(function()
         pcall(function()
             while wait() do
@@ -3810,7 +3774,7 @@ CheckIsland("Prehistoric Island", game.Workspace._WorldOrigin.Locations, "Prehis
 CheckIsland("Frozen Dimension", game.Workspace._WorldOrigin.Locations, "Frozen Dimension")
 
 -- Sistema Cake Prince Kill
-local MobCakePrince = SS:AddParagraph({Title = "Dimension Killed", Desc = ""})
+local MobCakePrince = serverSection:AddParagraph({Title = "Dimension Killed", Desc = ""})
 spawn(function()
     while wait() do
         pcall(function()
@@ -3830,7 +3794,7 @@ spawn(function()
 end)
 
 -- Sistema Tyrant of the Skies
-local TyrantStatus = SS:AddParagraph({Title = "Tyrant of the Skies", Desc = "Status: "})
+local TyrantStatus = serverSection:AddParagraph({Title = "Tyrant of the Skies", Desc = "Status: "})
 spawn(function()
     pcall(function()
         while wait() do
@@ -3844,7 +3808,7 @@ spawn(function()
 end)
 
 -- Sistema Rip_Indra
-local CheckRip = SS:AddParagraph({Title = "Rip_Indra", Desc = "Status: "})
+local CheckRip = serverSection:AddParagraph({Title = "Rip_Indra", Desc = "Status: "})
 spawn(function()
     while wait() do
         pcall(function()
@@ -3859,7 +3823,7 @@ spawn(function()
 end)
 
 -- Sistema Dough King
-local CheckDoughKing = SS:AddParagraph({Title = "Dough King", Desc = "Status: "})
+local CheckDoughKing = serverSection:AddParagraph({Title = "Dough King", Desc = "Status: "})
 spawn(function()
     while wait() do
         pcall(function()
@@ -3874,7 +3838,7 @@ spawn(function()
 end)
 
 -- Sistema Elite Hunter
-local EliteHunter = SS:AddParagraph({Title = "Elite Hunter", Desc = "Status: "})
+local EliteHunter = serverSection:AddParagraph({Title = "Elite Hunter", Desc = "Status: "})
 spawn(function()
     while wait() do
         pcall(function()
@@ -3892,7 +3856,7 @@ spawn(function()
 end)
 
 -- Sistema Pull Lever
-local Pullever = SS:AddParagraph({Title = "Pull Lever", Desc = "Status: "})
+local Pullever = serverSection:AddParagraph({Title = "Pull Lever", Desc = "Status: "})
 spawn(function()
     while wait() do
         pcall(function()
@@ -3906,7 +3870,7 @@ spawn(function()
 end)
 
 -- Sistema Full Moon
-local FM = SS:AddParagraph({Title = "Full Moon", Desc = ""})
+local FM = serverSection:AddParagraph({Title = "Full Moon", Desc = ""})
 spawn(function()
     while wait() do
         pcall(function()
@@ -3929,7 +3893,7 @@ spawn(function()
 end)
 
 -- Sistema Legendary Sword
-local LegendarySword = SS:AddParagraph({Title = "Legendary Sword", Desc = "Status: "})
+local LegendarySword = serverSection:AddParagraph({Title = "Legendary Sword", Desc = "Status: "})
 spawn(function()
     pcall(function()
         while wait() do
@@ -3948,7 +3912,7 @@ spawn(function()
 end)
 
 -- Sistema Bone
-local Bone = SS:AddParagraph({Title = "Bone", Desc = ""})
+local Bone = serverSection:AddParagraph({Title = "Bone", Desc = ""})
 spawn(function()
     pcall(function()
         while wait() do
@@ -3958,6 +3922,26 @@ spawn(function()
     end)
 end)
 
+serverSection:AddSeperator("Place id");
+
+-- Paragraph que mostra o PlaceId atual
+local PlaceInfo = serverSection:AddParagraph({
+    Title = "PlaceId",
+    Content = ""
+})
+
+PlaceInfo:SetDesc("Current PlaceId: " .. tostring(game.PlaceId))
+
+-- ROOT FIX: sempre atualizar o HRP quando o player respawnar
+local Root
+plr.CharacterAdded:Connect(function(char)
+    task.wait(0.5)
+    Root = char:WaitForChild("HumanoidRootPart")
+end)
+
+if plr.Character then
+    Root = plr.Character:WaitForChild("HumanoidRootPart")
+end
 -- =========================================================
 -- NOVO SISTEMA DE PESCA (COM SAVE SYSTEM INTEGRADO)
 -- =========================================================
@@ -4067,8 +4051,9 @@ _G.AutoQuestComplete = false
 _G.AutoSellFish = false
 _G.AutoSkillZ = false
 
+
 -- 1. SELEÇÃO DE VARA
-MF:AddDropdown({
+TT:AddDropdown({
     Title = "Select Fishing Rod",
     Description = "",
     Values = {
@@ -4089,7 +4074,7 @@ MF:AddDropdown({
 })
 
 -- 2. SELEÇÃO DE ISCA
-MF:AddDropdown({
+TT:AddDropdown({
     Title = "Select Bait",
     Description = "",
     Values = {
@@ -4118,7 +4103,7 @@ MF:AddDropdown({
 })
 
 -- 3. TOGGLE AUTO BUY BAIT
-MF:AddToggle({
+TT:AddToggle({
     Title = "Auto Buy Bait",
     Description = "Crafta a isca selecionada automaticamente",
     -- Carrega se estava ligado
@@ -4148,7 +4133,7 @@ task.spawn(function()
 end)
 
 -- 4. TOGGLE AUTO FISHING (CAST/CATCH)
-MF:AddToggle({
+TT:AddToggle({
     Title = "Auto Fishing",
     Description = "Lança e puxa a vara automaticamente",
     -- Carrega se estava ligado
@@ -4223,7 +4208,7 @@ task.spawn(function()
 end)
 
 -- 5. AUTO QUEST FISHING
-MF:AddToggle({
+TT:AddToggle({
     Title = "Auto Quest Fishing",
     Description = "Pega missão com o NPC Angler",
     -- Carrega se estava ligado
@@ -4260,7 +4245,7 @@ task.spawn(function()
 end)
 
 -- 6. AUTO COMPLETE QUEST
-MF:AddToggle({
+TT:AddToggle({
     Title = "Auto Complete Quest",
     Description = "Entrega a quest automaticamente",
     -- Carrega se estava ligado
@@ -4290,7 +4275,7 @@ task.spawn(function()
 end)
 
 -- 7. AUTO SELL FISH
-MF:AddToggle({
+TT:AddToggle({
     Title = "Auto Sell Fish",
     Description = "Vende peixes automaticamente",
     -- Carrega se estava ligado
@@ -4320,7 +4305,7 @@ task.spawn(function()
 end)
 
 -- 8. AUTO SPAM SKILL Z
-MF:AddToggle({
+TT:AddToggle({
     Title = "Auto use skill of the rod",
     Description = "Spamma a skill Z da ferramenta equipada",
     -- Carrega se estava ligado
@@ -4343,244 +4328,8 @@ task.spawn(function()
     end
 end)
 
-MF:AddSeperator("Seas");
 
-MF:AddToggle({
-	Title = "Auto Sea 2",
-	Description = "",
-	Default = false,
-	Callback = function(I)
-		_G.TravelDres = I;
-	end,
-});
-spawn(function()
-	while wait(Sec) do
-		pcall(function()
-			if _G.TravelDres then
-				if plr.Data.Level.Value >= 700 then
-					if workspace.Map.Ice.Door.CanCollide == true and workspace.Map.Ice.Door.Transparency == 0 then
-						replicated.Remotes.CommF_:InvokeServer("DressrosaQuestProgress", "Detective");
-						EquipWeapon("Key");
-						repeat
-							wait();
-							_tp(CFrame.new(1347.7124, 37.3751602, -1325.6488));
-						until not _G.TravelDres or Root.Position == (CFrame.new(1347.7124, 37.3751602, -1325.6488)).Position;
-					elseif workspace.Map.Ice.Door.CanCollide == false and workspace.Map.Ice.Door.Transparency == 1 then
-						if Enemies:FindFirstChild("Ice Admiral") then
-							for I, e in pairs(Enemies:GetChildren()) do
-								if e.Name == "Ice Admiral" and G.Alive(e) then
-									repeat
-										task.wait();
-										G.Kill(e, _G.TravelDres);
-									until _G.TravelDres == false or e.Humanoid.Health <= 0;
-									replicated.Remotes.CommF_:InvokeServer("TravelDressrosa");
-								end;
-							end;
-						else
-							_tp(CFrame.new(1347.7124, 37.3751602, -1325.6488));
-						end;
-					else
-						replicated.Remotes.CommF_:InvokeServer("TravelDressrosa");
-					end;
-				end;
-			end;
-		end);
-	end;
-end);
-
-MF:AddToggle({
-	Title = "Auto Sea 3",
-	Description = "",
-	Default = false,
-	Callback = function(I)
-		_G.Zou = I;
-	end,
-});
-spawn(function()
-	while wait(Sec) do
-		pcall(function()
-			if _G.AutoZou then
-				if plr.Data.Level.Value >= 1500 then
-					if replicated.Remotes.CommF_:InvokeServer("BartiloQuestProgress", "Bartilo") == 3 then
-						if (replicated.Remotes.CommF_:InvokeServer("GetUnlockables")).FlamingoAccess ~= nil then
-							replicated.Remotes.CommF_:InvokeServer("F_", "TravelZou");
-							if replicated.Remotes.CommF_:InvokeServer("ZQuestProgress", "Check") == 0 then
-								local I = GetConnectionEnemies("rip_indra");
-								if I then
-									repeat
-										wait();
-										G.Kill(I, _G.AutoZou);
-									until not _G.AutoZou or not I.Parent or I.Humanoid.Health <= 0;
-									Check = 2;
-									repeat
-										wait();
-										replicated.Remotes.CommF_:InvokeServer("F_", "TravelZou");
-									until Check == 1;
-								else
-									replicated.Remotes.CommF_:InvokeServer("F_", "ZQuestProgress", "Check");
-									wait(.1);
-									replicated.Remotes.CommF_:InvokeServer("F_", "ZQuestProgress", "Begin");
-								end;
-							elseif replicated.Remotes.CommF_:InvokeServer("ZQuestProgress", "Check") == 1 then
-								replicated.Remotes.CommF_:InvokeServer("F_", "TravelZou");
-							else
-								local I = GetConnectionEnemies("Don Swan");
-								if I then
-									repeat
-										wait();
-										G.Kill(I, _G.AutoZou);
-									until not _G.AutoZou or not I.Parent or I.Humanoid.Health <= 0;
-								else
-									repeat
-										wait();
-										_tp(CFrame.new(2288.802, 15.1870775, 863.034607));
-									until not _G.AutoZou or Root.Position == (CFrame.new(2288.802, 15.1870775, 863.034607)).Position;
-									if Root.CFrame == CFrame.new(2288.802, 15.1870775, 863.034607) then
-										notween(CFrame.new(2288.802, 15.1870775, 863.034607));
-									end;
-								end;
-							end;
-						else
-							if (replicated.Remotes.CommF_:InvokeServer("GetUnlockables")).FlamingoAccess == nil then
-								TabelDevilFruitStore = {};
-								TabelDevilFruitOpen = {};
-								for I, e in pairs(replicated.Remotes.CommF_:InvokeServer("getInventoryFruits")) do
-									for I, e in pairs(e) do
-										if I == "Name" then
-											table.insert(TabelDevilFruitStore, e);
-										end;
-									end;
-								end;
-								for I, e in next, (game.ReplicatedStorage:WaitForChild("Remotes")).CommF_:InvokeServer("GetFruits") do
-									if e.Price >= 1000000 then
-										table.insert(TabelDevilFruitOpen, e.Name);
-									end;
-								end;
-								for I, e in pairs(TabelDevilFruitOpen) do
-									for I, K in pairs(TabelDevilFruitStore) do
-										if e == K and (replicated.Remotes.CommF_:InvokeServer("GetUnlockables")).FlamingoAccess == nil then
-											if not plr.Backpack:FindFirstChild(K) then
-												replicated.Remotes.CommF_:InvokeServer("F_", "LoadFruit", K);
-											else
-												replicated.Remotes.CommF_:InvokeServer("F_", "TalkTrevor", "1");
-												replicated.Remotes.CommF_:InvokeServer("F_", "TalkTrevor", "2");
-												replicated.Remotes.CommF_:InvokeServer("F_", "TalkTrevor", "3");
-											end;
-										end;
-									end;
-								end;
-								replicated.Remotes.CommF_:InvokeServer("F_", "TalkTrevor", "1");
-								replicated.Remotes.CommF_:InvokeServer("F_", "TalkTrevor", "2");
-								replicated.Remotes.CommF_:InvokeServer("F_", "TalkTrevor", "3");
-							end;
-						end;
-					else
-						if replicated.Remotes.CommF_:InvokeServer("BartiloQuestProgress", "Bartilo") == 0 then
-							if string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "Swan Pirates") and (string.find(plr.PlayerGui.Main.Quest.Container.QuestTitle.Title.Text, "50") and plr.PlayerGui.Main.Quest.Visible == true) then
-								local I = GetConnectionEnemies("Swan Pirate");
-								if I then
-									pcall(function()
-										repeat
-											wait();
-											G.Kill(I, _G.AutoZou);
-										until not I.Parent or I.Humanoid.Health <= 0 or _G.AutoZou == false or plr.PlayerGui.Main.Quest.Visible == false;
-									end);
-								else
-									_tp(CFrame.new(1057.92761, 137.614319, 1242.08069));
-								end;
-							else
-								_tp(CFrame.new(-456.28952, 73.0200958, 299.895966));
-							end;
-						elseif replicated.Remotes.CommF_:InvokeServer("BartiloQuestProgress", "Bartilo") == 1 then
-							local I = GetConnectionEnemies("Jeremy");
-							if I then
-								repeat
-									wait();
-									G.Kill(I, _G.AutoZou);
-								until not I.Parent or I.Humanoid.Health <= 0 or _G.AutoZou == false;
-							else
-								_tp(CFrame.new(2099.88159, 448.931, 648.997375));
-							end;
-						elseif replicated.Remotes.CommF_:InvokeServer("BartiloQuestProgress", "Bartilo") == 2 then
-							repeat
-								wait();
-								_tp(CFrame.new(-1836, 11, 1714));
-							until not _G.AutoZou or Root.Position == (CFrame.new(-1836, 11, 1714)).Position;
-							if Root.CFrame == CFrame.new(-1836, 11, 1714) then
-								notween(CFrame.new(-1836, 11, 1714));
-							end;
-							notween(CFrame.new(-1850.49329, 13.1789551, 1750.89685));
-							wait(.1);
-							notween(CFrame.new(-1858.87305, 19.3777466, 1712.01807));
-							wait(.1);
-							notween(CFrame.new(-1803.94324, 16.5789185, 1750.89685));
-							wait(.1);
-							notween(CFrame.new(-1858.55835, 16.8604317, 1724.79541));
-							wait(.1);
-							notween(CFrame.new(-1869.54224, 15.987854, 1681.00659));
-							wait(.1);
-							notween(CFrame.new(-1800.0979, 16.4978027, 1684.52368));
-							wait(.1);
-							notween(CFrame.new(-1819.26343, 14.795166, 1717.90625));
-							wait(.1);
-							notween(CFrame.new(-1813.51843, 14.8604736, 1724.79541));
-						end;
-					end;
-				end;
-			end;
-		end);
-	end;
-end);
-
-
-local I1 = i:AddSection("Info")
-
-I1:AddParagraph({
-    Title = "Notice",
-    Content = [[
-Night Mystic is officially back.
-This decision was made through a community vote.
-]]
-})
-
-I1:AddParagraph({
-    Title = "Important",
-    Content = [[
-There is no schedule for future updates.
-The dev team is currently without time and motivation.
-
-We created a new Discord server focused on finders.
-Do not ask for updates.
-]]
-})
-
--- Botão para copiar Discord (logo abaixo da mensagem)
-I1:AddButton({
-    Title = "Copy Discord",
-    Description = "Join the new server",
-    Callback = function()
-        setclipboard("https://discord.gg/gkud3frejh")
-    end,
-})
-
--- Paragraph que mostra o PlaceId atual
-local PlaceInfo = I1:AddParagraph({
-    Title = "PlaceId",
-    Content = ""
-})
-
-PlaceInfo:SetDesc("Current PlaceId: " .. tostring(game.PlaceId))
-
--- ROOT FIX: sempre atualizar o HRP quando o player respawnar
-local Root
-plr.CharacterAdded:Connect(function(char)
-    task.wait(0.5)
-    Root = char:WaitForChild("HumanoidRootPart")
-end)
-
-if plr.Character then
-    Root = plr.Character:WaitForChild("HumanoidRootPart")
-end
+Discord_Info:AddDiscord("Night Mystic", "gkud3frejh")
 
 b:AddSeperator("Farming")
 
@@ -5559,9 +5308,70 @@ spawn(function()
 		end;
 	end;
 end);
+
 if World3 then
-b:AddSeperator("Dark Dragger + Valkyrie");
+b:AddSeperator("Bones");
+
+-- AUTO RANDOM BONES
 b:AddToggle({
+    Title = "Auto Random Bone",
+    Default = false,
+    Callback = function(v)
+        _G.Auto_Random_Bone = v
+    end,
+})
+
+spawn(function()
+    while wait(Sec) do
+        if _G.Auto_Random_Bone then
+            replicated.Remotes.CommF_:InvokeServer("Bones","Buy",1,1)
+        end
+    end
+end)
+
+-- AUTO SOUL REAPER
+b:AddToggle({
+    Title = "Auto Soul Reaper",
+    Default = false,
+    Callback = function(v)
+        _G.AutoHytHallow = v
+    end,
+})
+
+spawn(function()
+    while wait(Sec) do
+        if _G.AutoHytHallow then
+            pcall(function()
+
+                local mob = GetConnectionEnemies("Soul Reaper")
+
+                if mob then
+                    repeat task.wait()
+                        G.Kill(mob,_G.AutoHytHallow)
+                    until mob.Humanoid.Health <= 0 or not _G.AutoHytHallow
+
+                else
+                    if not GetBP("Hallow Essence") then
+                        repeat task.wait(.1)
+                            replicated.Remotes.CommF_:InvokeServer("Bones","Buy",1,1)
+                        until not _G.AutoHytHallow or GetBP("Hallow Essence")
+                    else
+                        local pos = CFrame.new(-8932.32,146.83,6062.55)
+                        repeat wait(.1)
+                            _tp(pos)
+                        until not _G.AutoHytHallow or plr.Character.HumanoidRootPart.CFrame == pos
+                        EquipWeapon("Hallow Essence")
+                    end
+                end
+
+            end)
+        end
+    end
+end)
+end
+if World3 then
+outros:AddSeperator("Dark Dragger + Valkyrie");
+outros:AddToggle({
     Title = "Auto Kill Rip Indra",
     Description = "",
     -- 1. Carrega se estava ligado ou não
@@ -5596,7 +5406,7 @@ spawn(function()
 		end);
 	end;
 end);
-b:AddToggle({
+outros:AddToggle({
     Title = "Auto Active Cores",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -6146,16 +5956,16 @@ end
 -- =====================
 -- UI
 -- =====================
-j:AddSeperator("Boss Farm")
+outros:AddSeperator("Boss Farm")
 
-local BossDropdown = j:AddDropdown({
+local BossDropdown = outros:AddDropdown({
     Title = "Select Boss",
     Values = Boss, 
     Default = Boss[1],
     Callback = function(v) _G.FindBoss = v end
 })
 
-j:AddButton({
+outros:AddButton({
     Title = "Refresh Boss List",
     Description = "",
     Callback = function()
@@ -6188,7 +5998,7 @@ j:AddButton({
     end
 })
 
-j:AddToggle({
+outros:AddToggle({
     Title = "Auto Farm Boss Select",
     Default = false,
     Callback = function(v)
@@ -6197,7 +6007,7 @@ j:AddToggle({
     end
 })
 
-j:AddToggle({
+outros:AddToggle({
     Title = "Accept Quest Boss",
     Default = false,
     Callback = function(v)
@@ -6205,7 +6015,7 @@ j:AddToggle({
     end
 })
 
-j:AddToggle({
+outros:AddToggle({
     Title = "Farm All Bosses",
     Description = "",
     Default = false,
@@ -6330,8 +6140,8 @@ end)
 
 
 
-j:AddSeperator("Quests");
-j:AddToggle({
+outros:AddSeperator("Quests");
+outros:AddToggle({
     Title = "Auto Farm Observation",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -6419,7 +6229,7 @@ spawn(function()
 	end;
 end);
 if World3 then
-j:AddToggle({
+outros:AddToggle({
 	Title = "Auto Observation V2",
 	Description = "",
 	-- 1. Carrega se estava ligado ou desligado ao abrir o script
@@ -6527,7 +6337,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+outros:AddToggle({
 	Title = "Auto Citizen Quest",
 	Description = "",
 	Default = false,
@@ -6582,7 +6392,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddSeperator("Cursed Swords");
+outros:AddSeperator("Cursed Swords");
 local r = j:AddParagraph({ Title = "Elites Process ", Content = "" });
 spawn(function()
 	while wait(Sec) do
@@ -6591,7 +6401,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+outros:AddToggle({
 	Title = "Auto Elite Quest",
 	Description = "",
 	-- 1. Carrega o estado salvo ou false por padrão
@@ -6633,7 +6443,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+outros:AddToggle({
     Title = "Stop when got God's Chalice",
     Description = "",
     -- 1. Carrega o estado salvo ou inicia como true (padrão do seu script)
@@ -6659,7 +6469,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+outros:AddToggle({
 	Title = "Auto Tushita Sword",
 	Description = "",
 	Default = false,
@@ -6721,7 +6531,7 @@ spawn(function()
 	end;
 end);
 -- AUTO YAMA (EXATAMENTE COMO VOCÊ ENVIou)
-j:AddToggle({
+outros:AddToggle({
     Title = "Auto Yama Sword",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -6763,9 +6573,9 @@ end);
 end
 if World2 or World3 then
 -- SECTION BUSO/AURA COLOURS
-j:AddSeperator("Buso/Aura Colours");
+outros:AddSeperator("Buso/Aura Colours");
 
-j:AddToggle({
+outros:AddToggle({
     Title = "Teleport Barista Haki",
     Description = "",
     -- 1. Carrega se estava ligado ou desligado ao abrir o script
@@ -6794,7 +6604,7 @@ spawn(function()
     end;
 end);
 
-j:AddButton({
+outros:AddButton({
     Title = "Buy Buso Colors",
     Description = "",
     Callback = function()
@@ -6803,7 +6613,7 @@ j:AddButton({
 });
 end
 if World3 then
-j:AddToggle({
+outros:AddToggle({
     Title = "Auto Rainbow Haki",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -6905,7 +6715,7 @@ spawn(function()
 end);
 end
 
-j:AddToggle({
+outros:AddToggle({
     Title = "Accept Quest Bypass [Risk]",
     Description = "",
     -- 1. Carrega se estava ligado ou desligado
@@ -6921,7 +6731,7 @@ j:AddToggle({
     end,
 })
 if World3 then
-j:AddSeperator("Cursed Dual Katana");
+RR:AddSeperator("Cursed Dual Katana");
 local I5 = j:AddParagraph({ Title = " Number Cursed dual katana quests ", Content = "Quest Numbers :" });
 spawn(function()
 	while wait(.2) do
@@ -6942,7 +6752,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
     Title = "Auto Get CDK [ Last Quest ]",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -6984,7 +6794,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
     Title = "Auto Yama CDK",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -7173,7 +6983,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
     Title = "Auto Tushita CDK",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -7338,8 +7148,8 @@ spawn(function()
 end);
 end
 if World2 then
-j:AddSeperator("True Triple Katana Sword");
-j:AddToggle({
+RR:AddSeperator("True Triple Katana Sword");
+RR:AddToggle({
     Title = "Auto Buy Legendary Sword",
     Description = "",
     Default = GetSetting("TpLegendarySword_Save", false),
@@ -7365,7 +7175,7 @@ j:AddToggle({
         end
     end,
 })
-j:AddToggle({
+RR:AddToggle({
     Title = "Teleport Legendary Sword Dealer",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -7394,9 +7204,9 @@ spawn(function()
 	end;
 end);
 
-j:AddSeperator("Law");
+RR:AddSeperator("Law");
 
-j:AddToggle({
+RR:AddToggle({
     Title = "Auto Law Raid",
     Description = "",
     Default = false,
@@ -7431,8 +7241,8 @@ spawn(function()
 end)
 end
 if World1 then
-j:AddSeperator("world 1 items");
-j:AddToggle({
+RR:AddSeperator("world 1 items");
+RR:AddToggle({
 	Title = "Auto Saw Sword",
 	Description = "",
 	Default = false,
@@ -7457,7 +7267,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Saber Sword",
 	Description = "",
 	Default = false,
@@ -7550,7 +7360,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Usoap\'s Hat",
 	Description = "",
 	Default = false,
@@ -7577,7 +7387,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Bisento V2",
 	Description = "",
 	Default = false,
@@ -7607,7 +7417,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Warden Sword",
 	Description = "",
 	Default = false,
@@ -7632,7 +7442,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Marine Coat",
 	Description = "",
 	Default = false,
@@ -7657,7 +7467,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Swan Coat",
 	Description = "",
 	Default = false,
@@ -7684,8 +7494,8 @@ spawn(function()
 end);
 end
 if World2 then
-j:AddSeperator("world 2 items");
-j:AddToggle({
+RR:AddSeperator("world 2 items");
+RR:AddToggle({
     Title = "Auto Rengoku Sword",
     Description = "",
     Default = false,
@@ -7726,7 +7536,7 @@ spawn(function()
         end)
     end
 end)
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Dragon Trident",
 	Description = "",
 	Default = false,
@@ -7751,7 +7561,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Long Sword",
 	Description = "",
 	Default = false,
@@ -7776,7 +7586,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Black Spikey",
 	Description = "",
 	Default = false,
@@ -7801,7 +7611,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Midnight Blade",
 	Description = "",
 	Default = false,
@@ -7832,7 +7642,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Darkbeard",
 	Description = "",
 	Default = false,
@@ -7865,7 +7675,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Unlocked DonSwan",
 	Description = "",
 	Default = false,
@@ -7916,7 +7726,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Swan Glasses",
 	Description = "",
 	Default = false,
@@ -7943,8 +7753,8 @@ spawn(function()
 end);
 end
 if World3 then
-j:AddSeperator("Sea 3");
-j:AddToggle({
+RR:AddSeperator("Sea 3");
+RR:AddToggle({
 	Title = "Auto Canvendish Sword",
 	Description = "",
 	Default = false,
@@ -7969,7 +7779,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Twin Hooks",
 	Description = "",
 	Default = false,
@@ -7996,7 +7806,7 @@ spawn(function()
 		end);
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Serpent Bow",
 	Description = "",
 	Default = false,
@@ -8019,7 +7829,7 @@ spawn(function()
 		end;
 	end;
 end);
-j:AddToggle({
+RR:AddToggle({
 	Title = "Auto Lei Accessory",
 	Description = "",
 	Default = false,
@@ -8046,8 +7856,8 @@ spawn(function()
 end);
 end
 if World3 then
-h:AddSeperator("Mystic Island / Full Moon");
-h:AddToggle({
+zu:AddSeperator("Mystic Island / Full Moon");
+zu:AddToggle({
     Title = "Auto Find Mirage Island",
     Description = "turn on for finding & tween mirage island",
     -- 1. Carrega se estava ligado ou desligado
@@ -8098,7 +7908,7 @@ spawn(function()
 		end;
 	end;
 end);
-h:AddToggle({
+zu:AddToggle({
     Title = "Auto Tween To Highest Point",
     Description = "Voa até o ponto mais alto da Mirage (Ideal para olhar a Lua)",
     -- 1. Carrega o estado salvo
@@ -8130,7 +7940,7 @@ task.spawn(function()
         end
     end
 end)
-h:AddToggle({
+zu:AddToggle({
     Title = "Auto Collect Gear",
     Description = "Coleta a engrenagem na Mirage (Blue Gear)",
     -- 1. Carrega se o coletor estava ativo
@@ -8170,7 +7980,7 @@ task.spawn(function()
         end
     end
 end)
-h:AddToggle({
+zu:AddToggle({
     Title = "Change Transparency can see",
     Description = "Deixa os obstáculos da Mirage transparentes",
     -- 1. Carrega se estava ativo
@@ -8219,7 +8029,7 @@ task.spawn(function()
         end
     end
 end)
-h:AddToggle({
+zu:AddToggle({
     Title = "Auto Tween Advanced Fruit Dealer",
     Description = "Voa até o vendedor de frutas avançado na Mirage",
     -- 1. Carrega se o teleporte estava ativo
@@ -8256,7 +8066,7 @@ task.spawn(function()
         end
     end
 end)
-h:AddToggle({
+zu:AddToggle({
 	Title = "Auto Collect Mirage Chest",
 	Description = "",
 	Default = false,
@@ -8299,7 +8109,7 @@ spawn(function()
 end);
 end
 if World2 then
-h:AddSeperator("Upgrade Races V3");
+h:AddSeperator("Upgrade Races");
 h:AddToggle({
     Title = "Auto Mink V2/V3",
     Description = "",
@@ -8506,11 +8316,11 @@ end);
 h:AddSeperator("Race upgrade v4 only in Sea 3");
 end
 if World1 or World3 then
-h:AddSeperator("only in Sea 2");
+h:AddSeperator("only in Sea 2 upgrade to Race v4");
 end
 if World3 then
-h:AddSeperator("Trials Quests / Misc V4");
-local K5 = h:AddParagraph({ Title = " Tiers V4 Status ", Content = "" });
+nn:AddSeperator("Trials Quests / Misc V4");
+local K5 = nn:AddParagraph({ Title = " Tiers V4 Status ", Content = "" });
 spawn(function()
 	pcall(function()
 		while wait(.2) do
@@ -8518,7 +8328,7 @@ spawn(function()
 		end;
 	end);
 end);
-h:AddToggle({
+nn:AddToggle({
 	Title = "Auto Look At Moon",
 	Description = "",
 	Default = false,
@@ -8540,7 +8350,7 @@ task.spawn(function()
 		end;
 	end;
 end);
-h:AddToggle({
+nn:AddToggle({
 	Title = "Auto Pull Lever",
 	Description = "",
 	Default = false,
@@ -8561,7 +8371,7 @@ spawn(function()
 		end;
 	end;
 end);
-h:AddToggle({
+nn:AddToggle({
 	Title = "Auto Train V4",
 	Description = "turn on for farm tier + auto upgrade your tier level",
 	Default = false,
@@ -8600,16 +8410,16 @@ spawn(function()
 		end);
 	end;
 end);
-h:AddButton({ Title = "Teleport to Temple of Time", Description = "", Callback = function()
+nn:AddButton({ Title = "Teleport to Temple of Time", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(28286.35546875, 14895.301757812, 102.62469482422));
 	end });
-h:AddButton({ Title = "Teleport to Ancient One", Description = "", Callback = function()
+nn:AddButton({ Title = "Teleport to Ancient One", Description = "", Callback = function()
 		notween(CFrame.new(28981.552734375, 14888.426757812, -120.24584960938));
 	end });
-h:AddButton({ Title = "Teleport to Ancient Clock", Description = "", Callback = function()
+nn:AddButton({ Title = "Teleport to Ancient Clock", Description = "", Callback = function()
 		notween(CFrame.new(29549, 15069, -88));
 	end });
-h:AddToggle({
+nn:AddToggle({
 	Title = "Auto Teleport to Race Doors",
 	Description = "",
 	Default = false,
@@ -8638,7 +8448,7 @@ spawn(function()
 		end);
 	end;
 end);
-h:AddToggle({
+nn:AddToggle({
 	Title = "Auto Complete Trial Race",
 	Description = "",
 	Default = false,
@@ -8746,7 +8556,7 @@ spawn(function()
 		end);
 	end;
 end);
-h:AddToggle({
+nn:AddToggle({
 	Title = "Auto Kill Player After Trial",
 	Description = "turn on for kill player after the race trials",
 	Default = false,
@@ -8774,6 +8584,9 @@ spawn(function()
 		end);
 	end;
 end);
+end
+if World1 or World2 then
+nn:AddSeperator("only in Sea 3");
 end
 if World3 then
 W:AddSeperator("Dojo Quest & Drago Race");
@@ -9387,9 +9200,9 @@ if World1 or World2 then
 W:AddSeperator("only in Sea 3");
 end
 if World3 then
-f:AddSeperator("Volcanic Magnet");
+zu:AddSeperator("Volcanic Magnet");
 -- Configurações de UI e Toggle
-f:AddToggle({
+zu:AddToggle({
     Title = "Auto Craft Volcanic Magnet",
     Description = "turn on for auto farm material and craft volcanic magnet & stop when you have 1 volcanic magnet",
     Default = false,
@@ -9398,7 +9211,7 @@ f:AddToggle({
     end,
 });
 
-f:AddButton({ 
+zu:AddButton({ 
     Title = "Craft Volcanic Magnet", 
     Description = "", 
     Callback = function()
@@ -9453,8 +9266,8 @@ spawn(function()
         end);
     end;
 end);
-f:AddSeperator("Prehistoric Island");
-f:AddToggle({
+zu:AddSeperator("Prehistoric Island");
+zu:AddToggle({
     Title = "Auto Find Prehistoric Island",
     Description = "",
     -- 1. Carrega se o buscador estava ativado
@@ -9542,7 +9355,7 @@ task.spawn(function()
         end
     end
 end)
-f:AddToggle({
+zu:AddToggle({
     Title = "Auto Event Prehistoric Island",
     Description = "",
     -- 1. Carrega o estado salvo
@@ -9709,7 +9522,7 @@ end)
 -- BOTÃO MANUAL DE APAGAR LAVA
 --------------------------------------------------------------------
 
-f:AddButton({
+zu:AddButton({
     Title = "Remove Lava",
     Description = "",
     Callback = function()
@@ -9729,7 +9542,7 @@ f:AddButton({
     end
 })
 -- 1. TOGGLE: Dino Bones
-f:AddToggle({
+zu:AddToggle({
     Title = "Auto Collect Dino Bones",
     Description = "",
     Default = GetSetting("DinoBones_Save", false),
@@ -9741,7 +9554,7 @@ f:AddToggle({
 })
 
 -- 2. TOGGLE: Dragon Eggs
-f:AddToggle({
+zu:AddToggle({
     Title = "Auto Collect Dragon Eggs",
     Description = "",
     Default = GetSetting("DragonEggs_Save", false),
@@ -9753,7 +9566,7 @@ f:AddToggle({
 })
 
 -- 3. TOGGLE: Auto Reset
-f:AddToggle({
+zu:AddToggle({
     Title = "Auto Reset When Complete Volcano",
     Description = "",
     Default = GetSetting("ResetVolcano_Save", false),
@@ -9850,7 +9663,7 @@ task.spawn(function()
 end)
 end
 if World1 or World2 then
-f:AddSeperator("only in Sea 3")
+zu:AddSeperator("only in Sea 3")
 end
 if World2 or World3 then
     A:AddSeperator("Sea Event / Setting Sail")
@@ -9902,75 +9715,77 @@ if World2 or World3 then
         end,
     });
 spawn(function()
-    while wait() do
+    while task.wait(0.5) do
         if _G.SailBoats then
             pcall(function()
                 local I = CheckBoat()
                 local PlaceId = game.PlaceId
+                local DealerPos = nil
+                local Destination = nil
                 
-                -- [PARTE 1] COMPRAR O BARCO
-                if not I then
-                    local BoatDealerPos
-                    -- Sea 2 (Kingdom of Rose)
-                    if PlaceId == 4442272183 or PlaceId == 79091703265657 then 
-                        BoatDealerPos = CFrame.new(3062, 53, -3952)
-                    -- Sea 3 (Port Town)
-                    elseif PlaceId == 7449423635 or PlaceId == 100117331123089 then 
-                        BoatDealerPos = CFrame.new(-16927.451, 9.086, 433.864)
-                    else
-                        -- Fallback (Previne erro no Sea 1)
-                        BoatDealerPos = CFrame.new(3062, 53, -3952) 
-                    end
-
-                    TeleportToTarget(BoatDealerPos)
-                    if (BoatDealerPos.Position - plr.Character.HumanoidRootPart.Position).Magnitude <= 25 then
-                        wait(0.5)
-                        replicated.Remotes.CommF_:InvokeServer("BuyBoat", _G.SelectedBoat)
-                    end
-
-                -- [PARTE 2] PILOTAR O BARCO
-                elseif I and (not (CheckShark() and _G.Shark or CheckTerrorShark() and _G.TerrorShark or CheckFishCrew() and _G.MobCrew or CheckPiranha() and _G.Piranha) and (not (CheckEnemiesBoat() and _G.FishBoat) and (not (CheckSeaBeast() and _G.SeaBeast1) and (not (_G.PGB and CheckPirateGrandBrigade()) and (not (_G.HCM and CheckHauntedCrew()) and not (_G.Leviathan1 and CheckLeviathan())))))) then
+                -- [[ CORREÇÃO SEA 2 e SEA 3 ]]
+                if PlaceId == 4442272183 or PlaceId == 79091703265657 then 
+                    -- SEA 2: Define coordenadas do Sea 2
+                    DealerPos = CFrame.new(3062, 53, -3952)
+                    Destination = CFrame.new(2800, 50, -14500) -- Vai para trás do navio assombrado (Safe Zone)
                     
+                    -- Força barco Guardian no Sea 2 (Beast Hunter buga lá)
+                    if _G.SelectedBoat == "Beast Hunter" or _G.SelectedBoat == "Terror Jaw" then
+                        _G.SelectedBoat = "Guardian"
+                    end
+                elseif PlaceId == 7449423635 or PlaceId == 100117331123089 then 
+                    -- SEA 3: Mantém a lógica original
+                    DealerPos = CFrame.new(-16927.451, 9.086, 433.864)
+                    if _G.DangerSc == "Lv 1" then Destination = CFrame.new(-21998, 30, -682)
+                    elseif _G.DangerSc == "Lv 2" then Destination = CFrame.new(-26779, 30, -822)
+                    elseif _G.DangerSc == "Lv 3" then Destination = CFrame.new(-31171, 30, -2256)
+                    elseif _G.DangerSc == "Lv 4" then Destination = CFrame.new(-34054, 30, -2560)
+                    elseif _G.DangerSc == "Lv 5" then Destination = CFrame.new(-38887, 30, -2162)
+                    elseif _G.DangerSc == "Lv 6" then Destination = CFrame.new(-44541, 30, -1244)
+                    elseif _G.DangerSc == "Lv Infinite" then Destination = CFrame.new(-10000000, 31, 37016)
+                    else Destination = CFrame.new(-44541, 30, -1244) end
+                end
+
+                -- [[ FASE 1: COMPRAR ]]
+                if not I then
+                    if DealerPos then
+                        -- Só teleporta se estiver longe (Evita spam de TP)
+                        if (DealerPos.Position - plr.Character.HumanoidRootPart.Position).Magnitude > 15 then
+                            TeleportToTarget(DealerPos)
+                        else
+                            replicated.Remotes.CommF_:InvokeServer("BuyBoat", _G.SelectedBoat)
+                            task.wait(1.5)
+                        end
+                    end
+
+                -- [[ FASE 2: PILOTAR ]]
+                elseif I then
+                    -- Senta no barco
                     if plr.Character.Humanoid.Sit == false then
                         local seat = I:FindFirstChild("VehicleSeat")
                         if seat then
-                            local e = seat.CFrame * CFrame.new(0, 1, 0)
-                            _tp(e)
+                            plr.Character.HumanoidRootPart.CFrame = seat.CFrame * CFrame.new(0, 2, 0)
+                            task.wait(0.2)
+                            fireproximityprompt(seat.ProximityPrompt)
                         end
                     else
-                        local CFrameSelectedZone 
-
-                        -- LÓGICA DE DESTINO
-                        if PlaceId == 4442272183 or PlaceId == 79091703265657 then 
-                            -- SEA 2: Vai para trás do navio amaldiçoado (Safe Zone de Farm)
-                            CFrameSelectedZone = CFrame.new(2800, 50, -14500) 
-                        
-                        elseif PlaceId == 7449423635 or PlaceId == 100117331123089 then 
-                            -- SEA 3: Usa o menu
-                            if _G.DangerSc == "Lv 1" then CFrameSelectedZone = CFrame.new(-21998, 30, -682)
-                            elseif _G.DangerSc == "Lv 2" then CFrameSelectedZone = CFrame.new(-26779, 30, -822)
-                            elseif _G.DangerSc == "Lv 3" then CFrameSelectedZone = CFrame.new(-31171, 30, -2256)
-                            elseif _G.DangerSc == "Lv 4" then CFrameSelectedZone = CFrame.new(-34054, 30, -2560)
-                            elseif _G.DangerSc == "Lv 5" then CFrameSelectedZone = CFrame.new(-38887, 30, -2162)
-                            elseif _G.DangerSc == "Lv 6" then CFrameSelectedZone = CFrame.new(-44541, 30, -1244)
-                            elseif _G.DangerSc == "Lv Infinite" then CFrameSelectedZone = CFrame.new(-10000000, 31, 37016)
-                            else CFrameSelectedZone = CFrame.new(-44541, 30, -1244) end -- Default Sea 3
+                        -- Lógica de Ataque (Pausa o barco se tiver inimigo)
+                        if (CheckSeaBeast() and _G.SeaBeast1) or 
+                           (CheckEnemiesBoat() and _G.FishBoat) or 
+                           (_G.PGB and CheckPirateGrandBrigade()) or
+                           (_G.HCM and CheckHauntedCrew()) or
+                           (_G.Leviathan1 and CheckLeviathan()) or
+                           (_G.Shark and CheckShark()) or 
+                           (_G.TerrorShark and CheckTerrorShark()) then
+                            
+                            -- Sobe para segurança
+                            _tp(I.PrimaryPart.CFrame * CFrame.new(0, 50, 0)) 
                         else
-                             CFrameSelectedZone = CFrame.new(0, 50, 0) -- Fallback
-                        end
-
-                        -- MOVIMENTAÇÃO
-                        repeat
-                            wait()
-                            local currentPos = I.PrimaryPart.Position
-                            -- Se spawnou algo, sobe para segurança
-                            if not _G.FishBoat and CheckEnemiesBoat() or not _G.PGB and CheckPirateGrandBrigade() or not _G.TerrorShark and CheckTerrorShark() then
-                                _tp(CFrame.new(currentPos.X, 150, currentPos.Z))
-                            else
-                                _tp(CFrameSelectedZone)
+                            -- Navega
+                            if Destination then
+                                _tp(Destination)
                             end
-                        until _G.SailBoats == false or CheckShark() and _G.Shark or CheckTerrorShark() and _G.TerrorShark or CheckFishCrew() and _G.MobCrew or CheckPiranha() and _G.Piranha or CheckSeaBeast() and _G.SeaBeast1 or CheckEnemiesBoat() and _G.FishBoat or _G.Leviathan1 and CheckLeviathan() or _G.HCM and CheckHauntedCrew() or _G.PGB and CheckPirateGrandBrigade() or (plr.Character:WaitForChild("Humanoid")).Sit == false
-                        plr.Character.Humanoid.Sit = false
+                        end
                     end
                 end
             end)
@@ -9978,8 +9793,9 @@ spawn(function()
     end
 end)
 
+
 spawn(function()
-    while wait(Sec) do
+    while task.wait(1) do
         pcall(function()
             for I, e in pairs(workspace.Boats:GetChildren()) do
                 for I, e in pairs(workspace.Boats[e.Name]:GetDescendants()) do
@@ -10042,7 +9858,7 @@ task.spawn(function()
     end)
 end)
 
- A:AddSeperator("Select what you will farm.")
+A:AddSeperator("Select what you will farm.")
 
     A:AddToggle({
         Title = "Auto Attack Sea Beast",
@@ -10068,7 +9884,6 @@ if World1 then
   A:AddSeperator("Go to Sea 3 or Sea 2 for Farm maritime events")
 end
 if game.PlaceId == 7449423635 or game.PlaceId == 100117331123089 then
-A:AddSeperator("Select what you will farm.");
 A:AddToggle({
     Title = "Auto Shark",
     Description = "",
@@ -10268,16 +10083,16 @@ task.spawn(function()
 end)
 
 if game.PlaceId == 7449423635 or game.PlaceId == 100117331123089 then
-A:AddSeperator("Frozen Dimension");
+zu:AddSeperator("Frozen Dimension");
 
-A:AddButton({
+zu:AddButton({
 	Title = "Buy Spy",
 	Description = "Buy the spy for finding leviathan",
 	Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("InfoLeviathan", "2");
 	end
 });
-A:AddToggle({
+zu:AddToggle({
     Title = "Teleport Frozen Dimension",
     Description = "turn on for teleport to frozen dimension and start the leviathan gate",
     -- 1. Carrega se o teleporte estava ativo
@@ -10304,7 +10119,7 @@ spawn(function()
 		end;
 	end;
 end); 
-A:AddToggle({
+zu:AddToggle({
 	Title = "Auto Attack Leviathan",
 	Description = "",
 	Default = false,
@@ -10312,8 +10127,8 @@ A:AddToggle({
 		_G.Leviathan1 = I;
 	end,
 });
-A:AddSeperator("Kitsune Island / Event");
-A:AddToggle({
+zu:AddSeperator("Kitsune Island / Event");
+zu:AddToggle({
     Title = "Auto Find Kitsune Island",
     Description = "turn on for finding & tween kitsune island",
     -- 1. Carrega se estava ativado anteriormente
@@ -10364,7 +10179,7 @@ spawn(function()
 		end;
 	end;
 end);
-A:AddToggle({
+zu:AddToggle({
 	Title = "Auto Teleport to Shrine Actived",
 	Description = "",
 	Default = false,
@@ -10395,7 +10210,7 @@ spawn(function()
 		end;
 	end;
 end);
-A:AddToggle({
+zu:AddToggle({
     Title = "Auto Collect Azure Ember",
     Description = "",
     -- 1. Carrega o estado salvo ou false por padrão
@@ -10424,7 +10239,7 @@ spawn(function()
 		end;
 	end;
 end);
-A:AddToggle({
+zu:AddToggle({
     Title = "Auto Trade Azure Ember",
     Description = "",
     -- 1. Carrega se o trade automático estava ligado
@@ -10450,14 +10265,14 @@ spawn(function()
 		end;
 	end;
 end);
-A:AddButton({ Title = "Trade Items Azure", Description = "", Callback = function()
+zu:AddButton({ Title = "Trade Items Azure", Description = "", Callback = function()
 		(replicated.Modules.Net:FindFirstChild("RF/KitsuneStatuePray")):InvokeServer();
 	end });
-A:AddButton({ Title = "Talk with kitsune statue", Description = "", Callback = function()
+zu:AddButton({ Title = "Talk with kitsune statue", Description = "", Callback = function()
 		(replicated.Modules.Net:FindFirstChild("RE/TouchKitsuneStatue")):FireServer();
 	end });
 end
-p:AddSeperator("Dungeon Event / Raiding");
+p:AddSeperator("Raiding");
 e = {
 		"Flame",
 		"Ice",
@@ -11705,16 +11520,16 @@ D:AddButton({ Title = "Buy Ghoul Race (2.5k)", Description = "", Callback = func
 D:AddButton({ Title = "Buy Cyborg Race (2.5k)", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("CyborgTrainer", " Buy");
 	end });
-Z:AddSeperator("Open");
-Z:AddButton({ Title = "Open Awakenings Expert", Description = "", Callback = function()
+kk:AddSeperator("Open");
+kk:AddButton({ Title = "Open Awakenings Expert", Description = "", Callback = function()
 		plr.PlayerGui.Main.AwakeningToggler.Visible = true;
 	end });
-Z:AddButton({ Title = "Open Title Selection", Description = "", Callback = function()
+kk:AddButton({ Title = "Open Title Selection", Description = "", Callback = function()
 		replicated.Remotes.CommF_:InvokeServer("getTitles", true);
 		plr.PlayerGui.Main.Titles.Visible = true;
 	end });
-Z:AddSeperator("Codes");
-Z:AddButton({
+kk:AddSeperator("Codes");
+kk:AddButton({
 	Title = "Redeem All Codes",
 	Description = "",
 	Callback = function()
@@ -11736,14 +11551,14 @@ Z:AddButton({
 	end,
 });
 
-Z:AddSeperator("Team");
-Z:AddButton({ Title = "Set Pirate Team", Description = "", Callback = function()
+kk:AddSeperator("Team");
+kk:AddButton({ Title = "Set Pirate Team", Description = "", Callback = function()
 		Pirates();
 	end });
-Z:AddButton({ Title = "Set Marine Team", Description = "", Callback = function()
+kk:AddButton({ Title = "Set Marine Team", Description = "", Callback = function()
 		Marines();
 	end });
-Z:AddSeperator("Others");
+kk:AddSeperator("Others");
 HakiSt = {
 		"State 0",
 		"State 1",
@@ -11752,7 +11567,7 @@ HakiSt = {
 		"State 4",
 		"State 5",
 	};
-Z:AddDropdown({
+kk:AddDropdown({
 	Title = "Haki States",
 	Description = "",
 	Values = HakiSt,
@@ -11762,7 +11577,7 @@ Z:AddDropdown({
 		_G.SelectStateHaki = I;
 	end,
 });
-Z:AddButton({ Title = "Change Haki", Description = "", Callback = function()
+kk:AddButton({ Title = "Change Haki", Description = "", Callback = function()
 		if _G.SelectStateHaki == "State 0" then
 			replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 0);
 		elseif _G.SelectStateHaki == "State 1" then
@@ -11777,7 +11592,7 @@ Z:AddButton({ Title = "Change Haki", Description = "", Callback = function()
 			replicated.Remotes.CommF_:InvokeServer("ChangeBusoStage", 5);
 		end;
 	end });
-Z:AddButton({ Title = "Nofog", Description = "", Callback = function()
+kk:AddButton({ Title = "Nofog", Description = "", Callback = function()
 		if Lighting:FindFirstChild("LightingLayers") then
 			Lighting.LightingLayers:Destroy();
 		end;
@@ -11788,7 +11603,7 @@ Z:AddButton({ Title = "Nofog", Description = "", Callback = function()
 			Lighting.FantasySky:Destroy();
 		end;
 	end });
-Z:AddToggle({
+kk:AddToggle({
 	Title = "Walk on Water",
 	Description = "walk on water",
 	Default = true,
