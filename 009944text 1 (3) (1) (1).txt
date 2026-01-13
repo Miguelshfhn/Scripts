@@ -170,7 +170,7 @@ Marines = function()
 Pirates = function()
 		replicated.Remotes.CommF_:InvokeServer("SetTeam", "Pirates");
 	end;
-local I = (loadstring(game:HttpGet("https://raw.githubusercontent.com/Dev-NightMystic/Night-Mystic-/refs/heads/main/Ui%20Night%20Mystic")))();
+local I = (loadstring(game:HttpGet("https://pastefy.app/dC5PNp19/raw")))();
 if World1 then
 	Boss = {
 			"The Gorilla King",
@@ -2314,22 +2314,22 @@ QuestNeta = function()
 
 local V=I:NewWindow();
 
--- TABS (somente nomes)
-local i      = V:T("Discord")
-local server = V:T("Status And Server")
-local g      = V:T("Shop")
-local y      = V:T("Main Farm")
-local CS_Tab = V:T("Farm Mastery")
-local x      = V:T("Farm Others")
-local t      = V:T("Sea Events")
-local m      = V:T("Race Upgrade")
-local v      = V:T("Dojo Quest & Drago Race")
-local VI     = V:T("Visuals & ESP")
-local q      = V:T("Local Player")
-local l      = V:T("Teleport")
-local R      = V:T("Get Items & Upgrade")
-local B      = V:T("Raid & Fruit")
-local c      = V:T("Settings & Misc")
+-- TABS (somente nomes alterados)
+local i        = V:T("Discord","rbxassetid://73132811772878")
+local server   = V:T("Status And Server","rbxassetid://122223674767625")
+local g        = V:T("Shop","rbxassetid://134556077676632")
+local y        = V:T("Main Farm","rbxassetid://127561653320876")
+local CS_Tab   = V:T("Farm Mastery","rbxassetid://10709782497")
+local x        = V:T("Farm Others","rbxassetid://72448332143088")
+local t        = V:T("Sea Events","rbxassetid://96788654458681")
+local m        = V:T("Race Upgrade","rbxassetid://115164375298022")
+local v        = V:T("Dojo Quest & Drago Race","rbxassetid://91920478152016")
+local VI       = V:T("Visuals & ESP","rbxassetid://10723346959")
+local q        = V:T("Local Player","rbxassetid://98870151777863")
+local l        = V:T("Teleport","rbxassetid://10734886004")
+local R        = V:T("Get Items & Upgrade","rbxassetid://10709782582")
+local B        = V:T("Raid & Fruit","rbxassetid://10709790875")
+local c        = V:T("Settings & Misc","rbxassetid://127147149367603")
 
 -- SECTIONS (somente nomes alterados)
 local b    = y:AddSection("Auto Farm main");
@@ -4658,6 +4658,7 @@ task.spawn(function()
 end)
 
 
+Discord_Info:AddDiscord("Night Mystic", "gkud3frejh")
 
 b:AddSeperator("Farming")
 
@@ -4666,7 +4667,6 @@ b:AddDropdown({
     Description = "",
     Values = {"Melee","Sword","Blox Fruit","Gun"},
     Default = "Melee",
-    Multi = false,
     Callback = function(I)
         _G.ChooseWP = I
     end,
@@ -4685,7 +4685,6 @@ spawn(function()
         end)
     end
 end)
-
 
 -- VARIAVEIS GLOBAIS
 _G.SelectedFarmMode = "Level"
@@ -9664,7 +9663,7 @@ task.spawn(function()
                         _tp(Island.CFrame)
                     end
 
-                    -- Lógica para  no evento
+                    -- Lógica para entrar no evento
                     if workspace.Map:FindFirstChild("PrehistoricIsland", true) or workspace._WorldOrigin.Locations:FindFirstChild("Prehistoric Island", true) then
                         local promptPart = workspace.Map.PrehistoricIsland.Core:FindFirstChild("ActivationPrompt")
                         if promptPart and promptPart:FindFirstChild("ProximityPrompt") then
