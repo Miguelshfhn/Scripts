@@ -1123,14 +1123,13 @@ task.spawn(function()
 end);
 
 -- ===============================
--- SISTEMA DE PORTAIS (INTEGRADO)
+-- SISTEMA DE PORTAIS EXTRAÍDO
 -- ===============================
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local plr = Players.LocalPlayer
 
--- 1. Definição dos Portais por Sea
 local WorldPortals = {}
 local PlaceId = game.PlaceId
 
@@ -1153,25 +1152,20 @@ elseif PlaceId == 7449423635 or PlaceId == 100117331123089 then -- Sea 3
     }
 end
 
--- 2. Função de Entrada Segura
 local function requestEntranceSafe(portalName, portalPos)
     local HRP = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
-    if not HRP then return false end
-
+    if not HRP then return end
+    
     local beforePos = HRP.Position
     for i = 1, 3 do
         ReplicatedStorage.Remotes.CommF:InvokeServer("requestEntrance", portalName)
-        task.wait(0.4)
-        if (HRP.Position - beforePos).Magnitude > 200 then
-            return true
-        end
-        HRP.CFrame = CFrame.new(portalPos)
         task.wait(0.2)
+        if (HRP.Position - beforePos).Magnitude > 200 then break end
+        HRP.CFrame = CFrame.new(portalPos)
+        task.wait(0.1)
     end
-    return false
 end
 
--- 3. Lógica de Decisão
 local function CheckShortestPath(TargetPosition)
     local HRP = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
     if not HRP then return nil end
@@ -1195,58 +1189,61 @@ local function CheckShortestPath(TargetPosition)
 end
 
 -- =======================
--- TWEEN AJUSTADO COM PORTAIS
+-- TWEEN AJUSTADO POR DISTÂNCIA (SEU ORIGINAL)
 -- =======================
 
-getgenv().TweenSpeedFar = 300
-getgenv().TweenSpeedNear = 600
+getgenv().TweenSpeedFar = 300   
+getgenv().TweenSpeedNear = 600  
 
 _tp = function(I)
     local e = plr.Character;
-    if not e or not e:FindFirstChild("HumanoidRootPart") then return end;
+    if not e or not e:FindFirstChild("HumanoidRootPart") then
+        return;
+    end;
 
-    local HRP = e.HumanoidRootPart;
+    local HRP = e.HumanoidRootPart;  
 
-    -- [ NOVO ] VERIFICA SE O PORTAL É MELHOR ANTES DE TWEENAR
+    -- [PORTAL] Verifica se existe atalho antes de começar o Tween
     local shortcut = CheckShortestPath(I.Position)
     if shortcut then
         HRP.CFrame = CFrame.new(shortcut.Pos)
-        task.wait(0.2)
+        task.wait(0.1)
         requestEntranceSafe(shortcut.Name, shortcut.Pos)
-        task.wait(0.3) -- Delay para carregar o mapa novo
+        task.wait(0.2)
     end
 
-    -- Continua a lógica original
-    shouldTween = true
-    getgenv().OnFarm = false
+    -- SEU CÓDIGO ORIGINAL ABAIXO (NÃO MEXI NO C)
+    shouldTween = true  
+    getgenv().OnFarm = false  
 
-    if HRP.Anchored then
-        HRP.Anchored = false
-        task.wait()
-    end
+    if HRP.Anchored then  
+        HRP.Anchored = false  
+        task.wait()  
+    end  
 
-    local dist = (I.Position - HRP.Position).Magnitude
+    local dist = (I.Position - HRP.Position).Magnitude  
+
     local speed = dist <= 15 and (getgenv().TweenSpeedNear or 600) or (getgenv().TweenSpeedFar or 300)
 
-    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)
-    -- Mantido 'C' como solicitado
-    local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })
+    local info = TweenInfo.new(dist / speed, Enum.EasingStyle.Linear)  
+    local tween = game:GetService("TweenService"):Create(C, info, { CFrame = I })  
 
-    if e.Humanoid.Sit == true then
-        C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)
-    end
+    if e.Humanoid.Sit == true then  
+        C.CFrame = CFrame.new(C.Position.X, I.Y, C.Position.Z)  
+    end  
 
-    tween:Play()
+    tween:Play()  
 
-    task.spawn(function()
-        while tween.PlaybackState == Enum.PlaybackState.Playing do
-            if not shouldTween then
-                tween:Cancel()
-                break
-            end
-            task.wait(.1)
-        end
-        getgenv().OnFarm = true
+    task.spawn(function()  
+        while tween.PlaybackState == Enum.PlaybackState.Playing do  
+            if not shouldTween then  
+                tween:Cancel()  
+                break  
+            end  
+            task.wait(.1)  
+        end  
+
+        getgenv().OnFarm = true  -- Isso faz voltar a equipar a arma no seu script
     end)
 end
 
