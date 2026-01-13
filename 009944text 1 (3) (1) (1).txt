@@ -170,7 +170,7 @@ Marines = function()
 Pirates = function()
 		replicated.Remotes.CommF_:InvokeServer("SetTeam", "Pirates");
 	end;
-local I = (loadstring(game:HttpGet("https://pastefy.app/CIC9P5cl/raw")))();
+local I = (loadstring(game:HttpGet("https://pastefy.app/dC5PNp19/raw")))();
 if World1 then
 	Boss = {
 			"The Gorilla King",
@@ -4667,6 +4667,7 @@ b:AddDropdown({
     Description = "",
     Values = {"Melee","Sword","Blox Fruit","Gun"},
     Default = "Melee",
+    Multi = false,
     Callback = function(I)
         _G.ChooseWP = I
     end,
@@ -4685,6 +4686,7 @@ spawn(function()
         end)
     end
 end)
+
 
 -- VARIAVEIS GLOBAIS
 _G.SelectedFarmMode = "Level"
