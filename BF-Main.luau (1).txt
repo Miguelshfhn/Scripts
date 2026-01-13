@@ -3691,1269 +3691,738 @@ end
         end)
     end
 
-    BuildInterface = {
-        ['Shop Tab'] = {
-            Feature = {
-                {
-                    Type = 'Seperator',
-                    Title = 'Items Rolling',
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Redeem All Codes',
-                    Description = '',
-                    Callback = function()
-                        local v696 = next
-                        local v697 = {
-                            'BANEXPLOIT',
-                            'NOMOREHACK',
-                            'WildDares',
-                            'BossBuild',
-                            'GetPranked',
-                            'WildDares',
-                            'EARN_FRUITS',
-                            'SUB2GAMERROBOT_RESET1',
-                            'KITT_RESET',
-                            'Bignews',
-                            'CHANDLER',
-                            'Fudd10',
-                            'fudd10_v2',
-                            'Sub2UncleKizaru',
-                            'FIGHT4FRUIT',
-                            'kittgaming',
-                            'TRIPLEABUSE',
-                            'Sub2CaptainMaui',
-                            'Sub2Fer999',
-                            'Enyu_is_Pro',
-                            'Magicbus',
-                            'JCWK',
-                            'Starcodeheo',
-                            'Bluxxy',
-                            'SUB2GAMERROBOT_EXP1',
-                            'Sub2NoobMaster123',
-                            'Sub2Daigrock',
-                            'Axiore',
-                            'TantaiGaming',
-                            'StrawHatMaine',
-                            'Sub2OfficialNoobie',
-                            'TheGreatAce',
-                            'JULYUPDATE_RESET',
-                            'ADMINHACKED',
-                            'SEATROLLING',
-                            '24NOADMIN',
-                            'ADMIN_TROLL',
-                            'NEWTROLL',
-                            'SECRET_ADMIN',
-                            'staffbattle',
-                            'NOEXPLOIT',
-                            'NOOB2ADMIN',
-                            'CODESLIDE',
-                            'fruitconcepts',
-                            'krazydares',
-                        }
-                        local v698 = nil
+    
+local Options = Fluent.Options
 
-                        while true do
-                            local v699
+do
+    -- // SHOP TAB //
+    Tabs.Shop:AddSection("Items Rolling")
+    
+    Tabs.Shop:AddButton({
+        Title = 'Redeem All Codes',
+        Description = '',
+        Callback = function()
+            local v696 = next
+            local v697 = {
+                'BANEXPLOIT', 'NOMOREHACK', 'WildDares', 'BossBuild', 'GetPranked', 'WildDares',
+                'EARN_FRUITS', 'SUB2GAMERROBOT_RESET1', 'KITT_RESET', 'Bignews', 'CHANDLER',
+                'Fudd10', 'fudd10_v2', 'Sub2UncleKizaru', 'FIGHT4FRUIT', 'kittgaming',
+                'TRIPLEABUSE', 'Sub2CaptainMaui', 'Sub2Fer999', 'Enyu_is_Pro', 'Magicbus',
+                'JCWK', 'Starcodeheo', 'Bluxxy', 'SUB2GAMERROBOT_EXP1', 'Sub2NoobMaster123',
+                'Sub2Daigrock', 'Axiore', 'TantaiGaming', 'StrawHatMaine', 'Sub2OfficialNoobie',
+                'TheGreatAce', 'JULYUPDATE_RESET', 'ADMINHACKED', 'SEATROLLING', '24NOADMIN',
+                'ADMIN_TROLL', 'NEWTROLL', 'SECRET_ADMIN', 'staffbattle', 'NOEXPLOIT',
+                'NOOB2ADMIN', 'CODESLIDE', 'fruitconcepts', 'krazydares',
+            }
+            local v698 = nil
+            while true do
+                local v699
+                v698, v699 = v696(v697, v698)
+                if v698 == nil then break end
+                vu9.Remotes.Redeem:InvokeServer(v699)
+            end
+        end
+    })
 
-                            v698, v699 = v696(v697, v698)
+    Tabs.Shop:AddToggle("RandomSuprises", {
+        Title = 'Random Suprises',
+        Description = 'Auto roll bones',
+        Default = false,
+        Callback = function(Value) end -- Lógica original era vazia no toggle simples ou vinculada a loop externo
+    })
 
-                            if v698 == nil then
-                                break
-                            end
+    Tabs.Shop:AddSection("Fighing Style")
 
-                            vu9.Remotes.Redeem:InvokeServer(v699)
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Random Suprises',
-                    Description = 'Auto roll bones',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Fighing Style',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Melee',
-                    Description = 'Select any melee your want to buy',
-                    Values = {
-                        'Black Legs',
-                        'Electro',
-                        'Fishman Karate',
-                        'Dragon Claw',
-                        'Superhuman',
-                        'Death Step',
-                        'Electric Claw',
-                        'Sharkman Karate',
-                        'Dragon Talon',
-                        'Godhuman',
-                        'Sanguine Art',
-                    },
-                    Default = '',
-                    Save = false,
-                    OnChanged = function(p700)
-                        if p700 == 'Black Legs' then
-                            vu32.FireRemotes('BuyBlackLeg')
-                        elseif p700 == 'Electro' then
-                            vu32.FireRemotes('BuyElectro')
-                        elseif p700 == 'Fishman Karate' then
-                            vu32.FireRemotes('BuyFishmanKarate')
-                        elseif p700 == 'Dragon Claw' then
-                            vu32.FireRemotes('BlackbeardReward', 'DragonClaw', '1')
-                            vu32.FireRemotes('BlackbeardReward', 'DragonClaw', '2')
-                        elseif p700 == 'Superhuman' then
-                            vu32.FireRemotes('BuySuperhuman')
-                        elseif p700 == 'Death Step' then
-                            vu32.FireRemotes('BuyDeathStep')
-                        elseif p700 == 'Electric Claw' then
-                            vu32.FireRemotes('BuyElectricClaw')
-                        elseif p700 == 'Sharkman Karate' then
-                            vu32.FireRemotes('BuySharkmanKarate')
-                        elseif p700 == 'Dragon Talon' then
-                            vu32.FireRemotes('BuyDragonTalon')
-                        elseif p700 == 'Godhuman' then
-                            vu32.FireRemotes('BuyGodhuman')
-                        elseif p700 == 'Sanguine Art' then
-                            vu32.FireRemotes('BuySanguineArt', true)
-                            vu32.FireRemotes('BuySanguineArt')
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Buy Haki Spawn',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Buy Legendary Sword',
-                    Description = '',
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Refund Stats',
-                    Description = '',
-                    Callback = function()
-                        vu10:InvokeServer('BlackbeardReward', 'Refund', '1')
-                        vu10:InvokeServer('BlackbeardReward', 'Refund', '2')
-                    end,
-                },
-            },
+    Tabs.Shop:AddDropdown("SelectMelee", {
+        Title = 'Select Melee',
+        Description = 'Select any melee your want to buy',
+        Values = {
+            'Black Legs', 'Electro', 'Fishman Karate', 'Dragon Claw', 'Superhuman',
+            'Death Step', 'Electric Claw', 'Sharkman Karate', 'Dragon Talon',
+            'Godhuman', 'Sanguine Art',
         },
-        ['Status Servers'] = {
-            Feature = {
-                {
-                    Type = 'Seperator',
-                    Title = 'Status',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Cake Prince Status',
-                    Content = 'Only Sea 3',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Elite Status',
-                    Content = 'Only Sea 3',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Leviathan Status',
-                    Content = 'Only Sea 3',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Mirage Status',
-                    Content = 'Only Sea 3',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Berries Check',
-                    Content = 'Only Sea 3',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Server',
-                },
-                {
-                    Type = 'Input',
-                    Title = 'Job Id',
-                    Description = 'Input job id of a server your want to join here',
-                    PlaceHolder = '...',
-                    Callback = function(p701)
-                        getgenv().JobId = p701
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Join Job Id',
-                    Callback = function()
-                        game.ReplicatedStorage.__ServerBrowser:InvokeServer('teleport', getgenv().JobId)
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Copy Job Id',
-                    Callback = function()
-                        setclipboard(game.JobId)
-                        vu36:Notify({
-                            Title = 'Servers Status',
-                            Content = 'Copy Succes!',
-                            Duration = 4,
-                        })
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Rejoin Server',
-                    Callback = function()
-                        game.ReplicatedStorage.__ServerBrowser:InvokeServer('teleport', game.JobId)
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Hop Server',
-                    Callback = function()
-                        vu32.HopServers(10)
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Hop Server Low Players',
-                    Callback = function()
-                        vu32.HopLow()
-                    end,
-                },
-            },
-        },
-        ['Config Farm'] = {
-            Feature = {
-                {
-                    Type = 'Toggle',
-                    Title = 'Hop Options',
-                    Description = [[Auto hop server if not have enemies or a items by a function check]],
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Buso',
-                    Description = 'Auto Enable buso haki',
-                    OnChanged = function(p702)
-                        vu32.AutoBuso(p702)
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Awakening V4',
-                    Description = 'Auto turn race v4',
-                    OnChanged = function(p703)
-                        vu32.AutoAwak(p703)
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Safe Mode',
-                    Description = 'Same Y when your health is low',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Spam Skills Options',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Use Melee',
-                    Description = 'Spam Skill Melee',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Melee Skills',
-                    Description = '',
-                    Values = {
-                        'Z',
-                        'X',
-                        'C',
-                    },
-                    Multi = true,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Use Sword',
-                    Description = 'Spam Skill Sword',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Sword Skills',
-                    Description = '',
-                    Values = {
-                        'Z',
-                        'X',
-                    },
-                    Multi = true,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Use Gun',
-                    Description = 'Spam Skill Gun',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Gun Skills',
-                    Description = '',
-                    Values = {
-                        'Z',
-                        'X',
-                    },
-                    Multi = true,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Use Blox Fruit',
-                    Description = 'Spam Skill Blox Fruit',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Blox Fruit Skills',
-                    Description = '',
-                    Values = {
-                        'Z',
-                        'X',
-                        'C',
-                        'V',
-                        'F',
-                    },
-                    Multi = true,
-                },
-            },
-        },
-        ['Farmming Tab'] = {
-            Feature = {
-                {
-                    Type = 'Dropdown',
-                    Title = 'Weapon Type',
-                    Description = 'Select tool your will use for farmming',
-                    Values = {
-                        'Melee',
-                        'Sword',
-                        'Gun',
-                    },
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Farm Mode',
-                    Description = 'Select mode farmming',
-                    Values = {
-                        'Level',
-                        'Cake',
-                        'Bone',
-                    },
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Start Farm',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Find Old Server',
-                    Description = [[EN : Find Old Server To Use Super Fast Attack
- VN : Tim Server Cu De Dung Super Fast Attack]],
-                    OnChanged = function(p704)
-                        vu32.FindOldSV(p704)
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Double Quest',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Dragon Storm Shoot',
-                    Description = 'use dragon storm to farm',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Kill Aura',
-                    Description = 'Auto kill nearest mob',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Travel Dressrosa',
-                    Description = 'Automatically do quest npc in prison to go sea 2',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Travel Zou',
-                    Description = 'Automatically do quest npc in clossium to go sea 3',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Mastery Options',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Mastery Type',
-                    Description = '',
-                    Values = {
-                        'Fruit Mastery',
-                        'Gun Mastery',
-                    },
-                    Default = vu192['Select Mastery Type'],
-                    OnChanged = function(p705)
-                        vu192['Select Mastery Type'] = p705
+        Default = 1,
+        Multi = false,
+        Callback = function(p700)
+            if p700 == 'Black Legs' then
+                vu32.FireRemotes('BuyBlackLeg')
+            elseif p700 == 'Electro' then
+                vu32.FireRemotes('BuyElectro')
+            elseif p700 == 'Fishman Karate' then
+                vu32.FireRemotes('BuyFishmanKarate')
+            elseif p700 == 'Dragon Claw' then
+                vu32.FireRemotes('BlackbeardReward', 'DragonClaw', '1')
+                vu32.FireRemotes('BlackbeardReward', 'DragonClaw', '2')
+            elseif p700 == 'Superhuman' then
+                vu32.FireRemotes('BuySuperhuman')
+            elseif p700 == 'Death Step' then
+                vu32.FireRemotes('BuyDeathStep')
+            elseif p700 == 'Electric Claw' then
+                vu32.FireRemotes('BuyElectricClaw')
+            elseif p700 == 'Sharkman Karate' then
+                vu32.FireRemotes('BuySharkmanKarate')
+            elseif p700 == 'Dragon Talon' then
+                vu32.FireRemotes('BuyDragonTalon')
+            elseif p700 == 'Godhuman' then
+                vu32.FireRemotes('BuyGodhuman')
+            elseif p700 == 'Sanguine Art' then
+                vu32.FireRemotes('BuySanguineArt', true)
+                vu32.FireRemotes('BuySanguineArt')
+            end
+        end
+    })
 
-                        if p705 == 'Gun Mastery' then
-                            Notify('Zinner Hub', [[ENG : You want click when mobs low
-VN : Ban can tu click khi mob yeu mau]], 7)
-                        end
+    Tabs.Shop:AddToggle("AutoBuyHakiSpawn", {
+        Title = 'Auto Buy Haki Spawn',
+        Description = '',
+        Default = false
+    })
 
-                        vu32.Save()
-                    end,
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Skills',
-                    Description = '',
-                    Values = {
-                        'Z',
-                        'X',
-                        'C',
-                        'V',
-                        'F',
-                    },
-                    Multi = true,
-                },
-                {
-                    Type = 'Slider',
-                    Title = 'Low Health(%)',
-                    Description = 'Set % health low for mob',
-                    Max = 100,
-                    Min = 5,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Farm Mastery',
-                    Description = 'Start farmming mastery',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Chest',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Total Chest Claimed',
-                    Content = '...',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Chest',
-                    Description = '',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Chest Counts',
-                    Description = '',
-                    Values = {
-                        '15',
-                        '20',
-                        '25',
-                        '30',
-                        '35',
-                    },
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Chest Hop',
-                    Description = '',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Materials',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Materials',
-                    Description = '',
-                    Values = v679,
-                    Default = vu192['Select Materials'],
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Material',
-                    Description = 'Auto farm material selected',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Boss Options',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Boss',
-                    Values = vu685,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Refresh Boss',
-                    Callback = function()
-                        vu32.UpdateBoss()
-                        vu678['Farmming Tab']['Select Boss']:Refresh(vu685)
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Take Quests',
-                    Description = 'Auto take quest after kill boss',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Boss',
-                    Description = 'Auto Kill Boss Your Selected',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto All Boss',
-                    Description = 'Auto Kill All Boss Alive In Server',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Sword Options',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Farmming 600 Mastery All Swords',
-                    Description = [[Auto farmming all sword in your inventory more 600 and will changing new sword when last sword have mastery more 600]],
-                },
-            },
-        },
-        ['Stack Farmming'] = {
-            Feature = {
-                {
-                    Type = 'Seperator',
-                    Title = 'Berries',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Collect Berries',
-                    Description = 'Auto collect berries spawned in workspace',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Collect Berries [HOP]',
-                    Description = '',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Tiki Outpost',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Tyrant of the skies',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Stacks Function',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Elite Hunter',
-                    Description = 'Auto claim quest and kill elite mobs',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Elite Hunter [HOP]',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Castle Raid',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Factory',
-                    Description = 'Function Only Sea 2',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Darkbeard',
-                    Description = 'Function Only Sea 2',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Admin',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Dough King',
-                    Description = 'Function Only Sea 3',
-                },
-            },
-        },
-        ['Items Farmming'] = {
-            Feature = {
-                {
-                    Type = 'Seperator',
-                    Title = 'Swords',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Saber',
-                    Description = 'Function Only Sea 1',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Pole (1st form)',
-                    Description = 'Function Only Sea 1',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Rengoku',
-                    Description = 'Function Only Sea 2',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Yama',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Tushita',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Hallow Scythe',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Dual Cursed Katana',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Melee',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Superhuman',
-                    Description = 'Function Support All Sea',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Death Step',
-                    Description = 'Function Only Sea 2',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Sharkman Karate',
-                    Description = 'Function Only Sea 2',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Electric Claw',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Dragon Talon',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Godhuman',
-                    Description = [[To get Godhuman your want to own all fighting style v2(superhuman, Death Step, Sharkman Karate, Electric Claw, Dragon Talon) more 400 mastery]],
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Gun',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Soul Guitar',
-                    Description = 'Function Only Sea 3',
-                },
-            },
-        },
-        ['Fruits and Raid'] = {
-            Feature = {
-                {
-                    Type = 'Seperator',
-                    Title = 'Fruits',
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Random Fruits',
-                    Callback = function()
-                        vu32.FireRemotes('Cousin', 'Buy')
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Roll Fruits',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Tween to Fruit Spawn',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Store Fruits',
-                    Description = '',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Raid',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Raid',
-                    Values = {
-                        'Flame',
-                        'Ice',
-                        'Quake',
-                        'Light',
-                        'Dark',
-                        'Spider',
-                        'Rumble',
-                        'Magma',
-                        'Buddha',
-                        'Sand',
-                        'Phoenix',
-                        'Dough',
-                    },
-                    Callback = function(p706)
-                        vu192['Select Raid'] = p706
+    Tabs.Shop:AddToggle("AutoBuyLegendarySword", {
+        Title = 'Auto Buy Legendary Sword',
+        Description = '',
+        Default = false
+    })
 
-                        vu32.Save()
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Buy Chip',
-                    Callback = function()
-                        vu32.FireRemotes('RaidsNpc', 'Select', vu192['Select Raid'] or 'Flame')
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Start Raid',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Kill Raid',
-                    Description = 'Auto kill nearest mob on raid',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Next Islands',
-                    Description = 'Auto next islands raid',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Awaken',
-                    Description = '',
-                },
-            },
-        },
-        ['Local Player'] = {
-            Feature = {
-                {
-                    Type = 'Button',
-                    Title = 'Teleport To Main(Sea 1)',
-                    Callback = function()
-                        vu32.TeleportWorld(1)
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Teleport To Dressrosa(Sea 2)',
-                    Callback = function()
-                        vu32.TeleportWorld(2)
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Teleport To Zou(Sea 3)',
-                    Callback = function()
-                        vu32.TeleportWorld(3)
-                    end,
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Stats',
-                    Values = {
-                        'Melee',
-                        'Defense',
-                        'Gun',
-                        'Demon Fruit',
-                    },
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Stats',
-                    OnChanged = function(p707)
-                        vu32.AutoStats(p707)
-                    end,
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Players',
-                    Description = '',
-                    Values = PlayerList,
-                    Save = false,
-                    Default = '',
-                    OnChanged = function(p708)
-                        getgenv().SelectPlayers = p708
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Refresh Players',
-                    Callback = function()
-                        table.clear(PlayerList)
+    Tabs.Shop:AddButton({
+        Title = 'Refund Stats',
+        Description = '',
+        Callback = function()
+            vu10:InvokeServer('BlackbeardReward', 'Refund', '1')
+            vu10:InvokeServer('BlackbeardReward', 'Refund', '2')
+        end
+    })
 
-                        local v709 = next
-                        local v710, v711 = game.Players:GetPlayers()
+    -- // STATUS SERVERS TAB //
+    Tabs.Status:AddSection("Status")
 
-                        while true do
-                            local v712
+    Tabs.Status:AddParagraph({ Title = 'Cake Prince Status', Content = 'Only Sea 3' })
+    Tabs.Status:AddParagraph({ Title = 'Elite Status', Content = 'Only Sea 3' })
+    Tabs.Status:AddParagraph({ Title = 'Leviathan Status', Content = 'Only Sea 3' })
+    Tabs.Status:AddParagraph({ Title = 'Mirage Status', Content = 'Only Sea 3' })
+    Tabs.Status:AddParagraph({ Title = 'Berries Check', Content = 'Only Sea 3' })
 
-                            v711, v712 = v709(v710, v711)
+    Tabs.Status:AddSection("Server")
 
-                            if v711 == nil then
-                                break
-                            end
-                            if v712.Name ~= vu6.Name then
-                                table.insert(PlayerList, v712.Name)
-                            end
-                        end
+    Tabs.Status:AddInput("JobIdInput", {
+        Title = 'Job Id',
+        Description = 'Input job id of a server your want to join here',
+        Default = '',
+        Placeholder = '...',
+        Callback = function(p701)
+            getgenv().JobId = p701
+        end
+    })
 
-                        vu678['Local Player']['Select Players']:Refresh(PlayerList)
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Teleport To Players',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Specate Players',
-                    Description = '',
-                    OnChanged = function(p713)
-                        if p713 then
-                            if workspace.Characters:FindFirstChild(getgenv().SelectPlayers) then
-                                workspace.Camera.CameraSubject = workspace.Characters[getgenv().SelectPlayers]
-                            end
-                        else
-                            workspace.Camera.CameraSubject = vu6.Character
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'WalkSpeed',
-                    Description = 'Enable bypass walkspeed',
-                },
-                {
-                    Type = 'Slider',
-                    Title = 'Walk Speed',
-                    Max = 350,
-                    Min = 50,
-                    Callback = function(p714)
-                        getgenv().WalkSpeed = p714
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Infinity Range Observation Haki',
-                    Description = '',
-                    OnChanged = function(p715)
-                        if not p715 and RangeOld then
-                            game:GetService('Players').LocalPlayer.VisionRadius.Value = RangeOld
-                        end
-                    end,
-                },
-            },
-        },
-        ['PVP-Combat'] = {
-            Feature = {
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Target',
-                    Description = '',
-                    Values = PlayerList,
-                    Save = false,
-                    Default = '',
-                    OnChanged = function(p716)
-                        getgenv().TargetSelect = p716
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Refresh Target',
-                    Callback = function()
-                        table.clear(PlayerList)
+    Tabs.Status:AddButton({
+        Title = 'Join Job Id',
+        Callback = function()
+            game.ReplicatedStorage.__ServerBrowser:InvokeServer('teleport', getgenv().JobId)
+        end
+    })
 
-                        local v717 = next
-                        local v718, v719 = game.Players:GetPlayers()
+    Tabs.Status:AddButton({
+        Title = 'Copy Job Id',
+        Callback = function()
+            setclipboard(game.JobId)
+            Fluent:Notify({
+                Title = 'Servers Status',
+                Content = 'Copy Succes!',
+                Duration = 4,
+            })
+        end
+    })
 
-                        while true do
-                            local v720
+    Tabs.Status:AddButton({
+        Title = 'Rejoin Server',
+        Callback = function()
+            game.ReplicatedStorage.__ServerBrowser:InvokeServer('teleport', game.JobId)
+        end
+    })
 
-                            v719, v720 = v717(v718, v719)
+    Tabs.Status:AddButton({
+        Title = 'Hop Server',
+        Callback = function()
+            vu32.HopServers(10)
+        end
+    })
 
-                            if v719 == nil then
-                                break
-                            end
-                            if v720.Name ~= vu6.Name then
-                                table.insert(PlayerList, v720.Name)
-                            end
-                        end
+    Tabs.Status:AddButton({
+        Title = 'Hop Server Low Players',
+        Callback = function()
+            vu32.HopLow()
+        end
+    })
 
-                        vu678['PVP-Combat']['Select Target']:Refresh(PlayerList)
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Aimbot Skills',
-                },
-            },
-        },
-        ['Sea Events'] = {
-            Feature = {
-                {
-                    Type = 'Button',
-                    Title = 'No Frog',
-                    Callback = function()
-                        if game:GetService('Lighting'):FindFirstChild('LightingLayers') then
-                            game:GetService('Lighting'):FindFirstChild('LightingLayers'):Destroy()
-                        end
-                    end,
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Boats',
-                    Values = {
-                        'Guardian',
-                        'Dinghy',
-                        'PirateSloop',
-                        'PirateBrigade',
-                        'PirateGrandBrigade',
-                        'MarineSloop',
-                        'MarineBrigade',
-                        'MarineGrandBrigade',
-                        'Beast Hunter',
-                    },
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Teleport To Your Local Boat',
-                    Callback = function()
-                        if vu32.GetLocalBoat() then
-                            vu32.Tweento(vu32.GetLocalBoat().VehicleSeat.CFrame * CFrame.new(0, 2, 0))
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Enable Speed Boats',
-                    Description = '',
-                },
-                {
-                    Type = 'Slider',
-                    Title = 'Boat Speed',
-                    Max = 400,
-                    Min = 180,
-                    Description = 'Set speed for your local boat',
-                },
-                {
-                    Type = 'Dropdown',
-                    Title = 'Select Zone',
-                    Values = {
-                        'Zone 1',
-                        'Zone 2',
-                        'Zone 3',
-                        'Zone 4',
-                        'Zone 5',
-                        'Zone 6',
-                        'Infinity',
-                    },
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Start Auto Sea Events',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Shark and Fish Crew Member',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Terror Shark',
-                    Description = '',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Pirates Ship',
-                    Description = '',
-                    OnChanged = function(p721)
-                        if p721 then
-                            vu36:Notify({
-                                Title = 'Script Warning',
-                                Content = 'Select Skills In Farm Config Tab',
-                                Duration = 8,
-                            })
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Ghost Ship',
-                    Description = '',
-                    OnChanged = function(p722)
-                        if p722 then
-                            vu36:Notify({
-                                Title = 'Script Warning',
-                                Content = 'Select Skills In Farm Config Tab',
-                                Duration = 8,
-                            })
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Sea Beast',
-                    Description = '',
-                    OnChanged = function(p723)
-                        if p723 then
-                            vu36:Notify({
-                                Title = 'Script Warning',
-                                Content = 'Select Skills In Farm Config Tab',
-                                Duration = 8,
-                            })
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Piranha',
-                    Description = '',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Leviathan',
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Buy Spy Leviathan',
-                    Callback = function()
-                        vu32.FireRemotes('InfoLeviathan', '2')
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Craft Beast Hunter',
-                    Callback = function()
-                        vu32.FireRemotes('CraftItem', 'Check', 'LeviathanBoat')
-                        vu32.FireRemotes('CraftItem', 'Craft', 'LeviathanBoat')
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Find Leviathan',
-                    Description = 'Auto finding leviathan boss',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Leviathan',
-                    Description = 'Auto killing leviathan boss',
-                    OnChanged = function(p724)
-                        if p724 then
-                            vu36:Notify({
-                                Title = 'Script Warning',
-                                Content = 'Select Skills In Farm Config Tab',
-                                Duration = 8,
-                            })
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Sail Boat To Tiki',
-                    Description = '',
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Kitsune Events',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Find Kitsune Island',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Collect Azure Member',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Trade Azure Member',
-                    Description = 'Function Only Sea 3',
-                },
-            },
-        },
-        ['Volcano Events'] = {
-            Feature = {
-                {
-                    Type = 'Label',
-                    Title = 'Prehistoric Island',
-                    Content = 'Not Spawned',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Find Prehistoric Island',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Prehistoric Island',
-                    Description = 'auto start event vocalon and Destroy Rocks in island',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Lava Golem',
-                    Description = 'Auto kill lava shit',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Collect Dino Bone',
-                    Description = 'Prehistoric',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Collect Dragon Egg',
-                    Description = 'Prehistoric',
-                },
-            },
-        },
-        Dojo = {
-            Feature = {
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Dojo Trainer',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Blaze Embers',
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Craft Dragon Storm',
-                    Callback = function()
-                        vu32.FireRemotes('CraftItem', 'Check', 'Dragonstorm')
-                        vu32.FireRemotes('CraftItem', 'Craft', 'Dragonstorm')
-                    end,
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Craft Dragon Heart',
-                    Callback = function()
-                        vu32.FireRemotes('CraftItem', 'Check', 'Dragonheart')
-                        vu32.FireRemotes('CraftItem', 'Craft', 'Dragonheart')
-                    end,
-                },
-            },
-        },
-        ['Upgraded Race'] = {
-            Feature = {
-                {
-                    Type = 'Seperator',
-                    Title = 'Mirage Puzzle',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Mirage Puzzle Status',
-                    Content = 'Not completed',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Find Mirage Island',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Teleport To Mirage Island',
-                    Description = 'Function Only Sea 3',
-                    Callback = function()
-                        while true do
-                            task.wait()
-                            CFrame.new(0, 0, 0)
+    -- // CONFIG FARM TAB //
+    Tabs.ConfigFarm:AddToggle("HopOptions", {
+        Title = 'Hop Options',
+        Description = 'Auto hop server if not have enemies or a items by a function check',
+        Default = false
+    })
 
-                            local v725
+    Tabs.ConfigFarm:AddToggle("AutoBuso", {
+        Title = 'Auto Buso',
+        Description = 'Auto Enable buso haki',
+        Default = false,
+        Callback = function(p702)
+            vu32.AutoBuso(p702)
+        end
+    })
 
-                            if vu32.GetHighPart() then
-                                v725 = vu32.GetHighPart().CFrame * CFrame.new(0, 12, 0)
-                            else
-                                v725 = vu7.Map.MysticIsland.WorldPivot * CFrame.new(0, 500, 0)
-                            end
+    Tabs.ConfigFarm:AddToggle("AutoAwakeningV4", {
+        Title = 'Auto Awakening V4',
+        Description = 'Auto turn race v4',
+        Default = false,
+        Callback = function(p703)
+            vu32.AutoAwak(p703)
+        end
+    })
 
-                            vu32.Tweento(v725)
+    Tabs.ConfigFarm:AddToggle("SafeMode", {
+        Title = 'Safe Mode',
+        Description = 'Same Y when your health is low',
+        Default = false
+    })
 
-                            if vu32.GetDistance(v725.Position) <= 50 or vu6.Character.Humanoid.Health <= 0 then
-                                return
-                            end
-                        end
-                    end,
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Pull Lever',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Toggle',
-                    Title = 'Auto Look At Moon',
-                    Description = 'Function Only Sea 3',
-                },
-                {
-                    Type = 'Button',
-                    Title = 'Teleport to gear',
-                    Description = 'Function Only Sea 3',
-                    Callback = function()
-                        local v726 = vu32.GetGear()
+    Tabs.ConfigFarm:AddSection("Spam Skills Options")
 
-                        if v726.Transparency == 0 and not v726.CanCollide then
-                            repeat
-                                task.wait()
-                                vu32.Tweento(v726.CFrame)
-                            until not v726
-                        end
-                    end,
-                },
-                {
-                    Type = 'Seperator',
-                    Title = 'Race Upgraded',
-                },
-                {
-                    Type = 'Label',
-                    Title = 'Watting for Update',
-                    Content = '',
-                },
-            },
-        },
-        Settings = {Feature = {}},
-    }
+    Tabs.ConfigFarm:AddToggle("UseMelee", { Title = 'Use Melee', Description = 'Spam Skill Melee', Default = false })
+    Tabs.ConfigFarm:AddDropdown("MeleeSkills", {
+        Title = 'Melee Skills',
+        Values = {'Z', 'X', 'C'},
+        Multi = true,
+        Default = {}
+    })
+
+    Tabs.ConfigFarm:AddToggle("UseSword", { Title = 'Use Sword', Description = 'Spam Skill Sword', Default = false })
+    Tabs.ConfigFarm:AddDropdown("SwordSkills", {
+        Title = 'Sword Skills',
+        Values = {'Z', 'X'},
+        Multi = true,
+        Default = {}
+    })
+
+    Tabs.ConfigFarm:AddToggle("UseGun", { Title = 'Use Gun', Description = 'Spam Skill Gun', Default = false })
+    Tabs.ConfigFarm:AddDropdown("GunSkills", {
+        Title = 'Gun Skills',
+        Values = {'Z', 'X'},
+        Multi = true,
+        Default = {}
+    })
+
+    Tabs.ConfigFarm:AddToggle("UseBloxFruit", { Title = 'Use Blox Fruit', Description = 'Spam Skill Blox Fruit', Default = false })
+    Tabs.ConfigFarm:AddDropdown("BloxFruitSkills", {
+        Title = 'Blox Fruit Skills',
+        Values = {'Z', 'X', 'C', 'V', 'F'},
+        Multi = true,
+        Default = {}
+    })
+
+    -- // FARMMING TAB //
+    Tabs.Farming:AddDropdown("WeaponType", {
+        Title = 'Weapon Type',
+        Description = 'Select tool your will use for farmming',
+        Values = {'Melee', 'Sword', 'Gun'},
+        Default = 'Melee'
+    })
+
+    Tabs.Farming:AddDropdown("FarmMode", {
+        Title = 'Farm Mode',
+        Description = 'Select mode farmming',
+        Values = {'Level', 'Cake', 'Bone'},
+        Default = 'Level'
+    })
+
+    Tabs.Farming:AddToggle("StartFarm", { Title = 'Start Farm', Default = false })
+
+    Tabs.Farming:AddToggle("FindOldServer", {
+        Title = 'Find Old Server',
+        Description = "EN : Find Old Server To Use Super Fast Attack\nVN : Tim Server Cu De Dung Super Fast Attack",
+        Default = false,
+        Callback = function(p704)
+            vu32.FindOldSV(p704)
+        end
+    })
+
+    Tabs.Farming:AddToggle("DoubleQuest", { Title = 'Double Quest', Default = false })
+    Tabs.Farming:AddToggle("DragonStormShoot", { Title = 'Dragon Storm Shoot', Description = 'use dragon storm to farm', Default = false })
+    Tabs.Farming:AddToggle("KillAura", { Title = 'Kill Aura', Description = 'Auto kill nearest mob', Default = false })
+    Tabs.Farming:AddToggle("AutoTravelDressrosa", { Title = 'Auto Travel Dressrosa', Description = 'Automatically do quest npc in prison to go sea 2', Default = false })
+    Tabs.Farming:AddToggle("AutoTravelZou", { Title = 'Auto Travel Zou', Description = 'Automatically do quest npc in clossium to go sea 3', Default = false })
+
+    Tabs.Farming:AddSection("Mastery Options")
+
+    Tabs.Farming:AddDropdown("SelectMasteryType", {
+        Title = 'Select Mastery Type',
+        Values = {'Fruit Mastery', 'Gun Mastery'},
+        Default = vu192['Select Mastery Type'],
+        Callback = function(p705)
+            vu192['Select Mastery Type'] = p705
+            if p705 == 'Gun Mastery' then
+                Fluent:Notify({
+                    Title = 'Zinner Hub',
+                    Content = "ENG : You want click when mobs low\nVN : Ban can tu click khi mob yeu mau",
+                    Duration = 7
+                })
+            end
+            vu32.Save()
+        end
+    })
+
+    Tabs.Farming:AddDropdown("SelectSkillsMastery", {
+        Title = 'Select Skills',
+        Values = {'Z', 'X', 'C', 'V', 'F'},
+        Multi = true,
+        Default = {}
+    })
+
+    Tabs.Farming:AddSlider("LowHealthMastery", {
+        Title = 'Low Health(%)',
+        Description = 'Set % health low for mob',
+        Max = 100,
+        Min = 5,
+        Default = 15,
+        Callback = function(Value) end
+    })
+
+    Tabs.Farming:AddToggle("FarmMastery", { Title = 'Farm Mastery', Description = 'Start farmming mastery', Default = false })
+
+    Tabs.Farming:AddSection("Chest")
+    
+    Tabs.Farming:AddParagraph({ Title = 'Total Chest Claimed', Content = '...' })
+    Tabs.Farming:AddToggle("AutoChest", { Title = 'Auto Chest', Default = false })
+    
+    Tabs.Farming:AddDropdown("ChestCounts", {
+        Title = 'Chest Counts',
+        Values = {'15', '20', '25', '30', '35'},
+        Default = '15'
+    })
+
+    Tabs.Farming:AddToggle("AutoChestHop", { Title = 'Auto Chest Hop', Default = false })
+
+    Tabs.Farming:AddSection("Materials")
+
+    Tabs.Farming:AddDropdown("SelectMaterials", {
+        Title = 'Select Materials',
+        Values = v679, -- Assumindo que v679 existe no contexto
+        Default = vu192['Select Materials'],
+    })
+
+    Tabs.Farming:AddToggle("AutoMaterial", { Title = 'Auto Material', Description = 'Auto farm material selected', Default = false })
+
+    Tabs.Farming:AddSection("Boss Options")
+
+    local BossDropdown = Tabs.Farming:AddDropdown("SelectBoss", {
+        Title = 'Select Boss',
+        Values = vu685 or {"Boss List"},
+        Default = 1
+    })
+
+    Tabs.Farming:AddButton({
+        Title = 'Refresh Boss',
+        Callback = function()
+            vu32.UpdateBoss()
+            BossDropdown:SetValues(vu685)
+        end
+    })
+
+    Tabs.Farming:AddToggle("TakeQuests", { Title = 'Take Quests', Description = 'Auto take quest after kill boss', Default = false })
+    Tabs.Farming:AddToggle("AutoBoss", { Title = 'Auto Boss', Description = 'Auto Kill Boss Your Selected', Default = false })
+    Tabs.Farming:AddToggle("AutoAllBoss", { Title = 'Auto All Boss', Description = 'Auto Kill All Boss Alive In Server', Default = false })
+
+    Tabs.Farming:AddSection("Sword Options")
+
+    Tabs.Farming:AddToggle("AutoFarmming600MasterySwords", {
+        Title = 'Auto Farmming 600 Mastery All Swords',
+        Description = 'Auto farmming all sword in your inventory more 600 and will changing new sword when last sword have mastery more 600',
+        Default = false
+    })
+
+    -- // STACK FARMMING TAB //
+    Tabs.Stack:AddSection("Berries")
+    Tabs.Stack:AddToggle("AutoCollectBerries", { Title = 'Auto Collect Berries', Description = 'Auto collect berries spawned in workspace', Default = false })
+    Tabs.Stack:AddToggle("AutoCollectBerriesHop", { Title = 'Auto Collect Berries [HOP]', Default = false })
+
+    Tabs.Stack:AddSection("Tiki Outpost")
+    Tabs.Stack:AddToggle("AutoTyrant", { Title = 'Auto Tyrant of the skies', Description = 'Function Only Sea 3', Default = false })
+
+    Tabs.Stack:AddSection("Stacks Function")
+    Tabs.Stack:AddToggle("AutoEliteHunter", { Title = 'Auto Elite Hunter', Description = 'Auto claim quest and kill elite mobs', Default = false })
+    Tabs.Stack:AddToggle("AutoEliteHunterHop", { Title = 'Auto Elite Hunter [HOP]', Default = false })
+    Tabs.Stack:AddToggle("AutoCastleRaid", { Title = 'Auto Castle Raid', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Stack:AddToggle("AutoFactory", { Title = 'Auto Factory', Description = 'Function Only Sea 2', Default = false })
+    Tabs.Stack:AddToggle("AutoDarkbeard", { Title = 'Auto Darkbeard', Description = 'Function Only Sea 2', Default = false })
+    Tabs.Stack:AddToggle("AutoAdmin", { Title = 'Auto Admin', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Stack:AddToggle("AutoDoughKing", { Title = 'Auto Dough King', Description = 'Function Only Sea 3', Default = false })
+
+    -- // ITEMS FARMMING TAB //
+    Tabs.Items:AddSection("Swords")
+    Tabs.Items:AddToggle("AutoSaber", { Title = 'Auto Saber', Description = 'Function Only Sea 1', Default = false })
+    Tabs.Items:AddToggle("AutoPole", { Title = 'Auto Pole (1st form)', Description = 'Function Only Sea 1', Default = false })
+    Tabs.Items:AddToggle("AutoRengoku", { Title = 'Auto Rengoku', Description = 'Function Only Sea 2', Default = false })
+    Tabs.Items:AddToggle("AutoYama", { Title = 'Auto Yama', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Items:AddToggle("AutoTushita", { Title = 'Auto Tushita', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Items:AddToggle("AutoHallowScythe", { Title = 'Auto Hallow Scythe', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Items:AddToggle("AutoDualCursedKatana", { Title = 'Auto Dual Cursed Katana', Description = 'Function Only Sea 3', Default = false })
+
+    Tabs.Items:AddSection("Melee")
+    Tabs.Items:AddToggle("AutoSuperhuman", { Title = 'Auto Superhuman', Description = 'Function Support All Sea', Default = false })
+    Tabs.Items:AddToggle("AutoDeathStep", { Title = 'Auto Death Step', Description = 'Function Only Sea 2', Default = false })
+    Tabs.Items:AddToggle("AutoSharkmanKarate", { Title = 'Auto Sharkman Karate', Description = 'Function Only Sea 2', Default = false })
+    Tabs.Items:AddToggle("AutoElectricClaw", { Title = 'Auto Electric Claw', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Items:AddToggle("AutoDragonTalon", { Title = 'Auto Dragon Talon', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Items:AddToggle("AutoGodhuman", { Title = 'Auto Godhuman', Description = 'To get Godhuman your want to own all fighting style v2(superhuman, Death Step, Sharkman Karate, Electric Claw, Dragon Talon) more 400 mastery', Default = false })
+
+    Tabs.Items:AddSection("Gun")
+    Tabs.Items:AddToggle("AutoSoulGuitar", { Title = 'Auto Soul Guitar', Description = 'Function Only Sea 3', Default = false })
+
+    -- // FRUITS AND RAID TAB //
+    Tabs.FruitsRaid:AddSection("Fruits")
+    Tabs.FruitsRaid:AddButton({
+        Title = 'Random Fruits',
+        Callback = function()
+            vu32.FireRemotes('Cousin', 'Buy')
+        end
+    })
+    Tabs.FruitsRaid:AddToggle("AutoRollFruits", { Title = 'Auto Roll Fruits', Default = false })
+    Tabs.FruitsRaid:AddToggle("TweenToFruitSpawn", { Title = 'Tween to Fruit Spawn', Default = false })
+    Tabs.FruitsRaid:AddToggle("StoreFruits", { Title = 'Store Fruits', Default = false })
+
+    Tabs.FruitsRaid:AddSection("Raid")
+    Tabs.FruitsRaid:AddDropdown("SelectRaid", {
+        Title = 'Select Raid',
+        Values = {'Flame', 'Ice', 'Quake', 'Light', 'Dark', 'Spider', 'Rumble', 'Magma', 'Buddha', 'Sand', 'Phoenix', 'Dough'},
+        Default = 1,
+        Callback = function(p706)
+            vu192['Select Raid'] = p706
+            vu32.Save()
+        end
+    })
+
+    Tabs.FruitsRaid:AddButton({
+        Title = 'Buy Chip',
+        Callback = function()
+            vu32.FireRemotes('RaidsNpc', 'Select', vu192['Select Raid'] or 'Flame')
+        end
+    })
+    Tabs.FruitsRaid:AddToggle("StartRaid", { Title = 'Start Raid', Default = false })
+    Tabs.FruitsRaid:AddToggle("KillRaid", { Title = 'Kill Raid', Description = 'Auto kill nearest mob on raid', Default = false })
+    Tabs.FruitsRaid:AddToggle("NextIslands", { Title = 'Next Islands', Description = 'Auto next islands raid', Default = false })
+    Tabs.FruitsRaid:AddToggle("AutoAwaken", { Title = 'Auto Awaken', Default = false })
+
+    -- // LOCAL PLAYER TAB //
+    Tabs.LocalPlayer:AddButton({
+        Title = 'Teleport To Main(Sea 1)',
+        Callback = function() vu32.TeleportWorld(1) end
+    })
+    Tabs.LocalPlayer:AddButton({
+        Title = 'Teleport To Dressrosa(Sea 2)',
+        Callback = function() vu32.TeleportWorld(2) end
+    })
+    Tabs.LocalPlayer:AddButton({
+        Title = 'Teleport To Zou(Sea 3)',
+        Callback = function() vu32.TeleportWorld(3) end
+    })
+
+    Tabs.LocalPlayer:AddDropdown("SelectStats", {
+        Title = 'Select Stats',
+        Values = {'Melee', 'Defense', 'Gun', 'Demon Fruit'},
+        Default = 1
+    })
+
+    Tabs.LocalPlayer:AddToggle("AutoStats", {
+        Title = 'Auto Stats',
+        Default = false,
+        Callback = function(p707)
+            vu32.AutoStats(p707)
+        end
+    })
+
+    local PlayerDropdown = Tabs.LocalPlayer:AddDropdown("SelectPlayers", {
+        Title = 'Select Players',
+        Values = PlayerList or {},
+        Default = '',
+        Callback = function(p708)
+            getgenv().SelectPlayers = p708
+        end
+    })
+
+    Tabs.LocalPlayer:AddButton({
+        Title = 'Refresh Players',
+        Callback = function()
+            table.clear(PlayerList)
+            local v709 = next
+            local v710, v711 = game.Players:GetPlayers()
+            while true do
+                local v712
+                v711, v712 = v709(v710, v711)
+                if v711 == nil then break end
+                if v712.Name ~= vu6.Name then
+                    table.insert(PlayerList, v712.Name)
+                end
+            end
+            PlayerDropdown:SetValues(PlayerList)
+        end
+    })
+
+    Tabs.LocalPlayer:AddToggle("TeleportToPlayers", { Title = 'Teleport To Players', Default = false })
+
+    Tabs.LocalPlayer:AddToggle("SpecatePlayers", {
+        Title = 'Specate Players',
+        Default = false,
+        Callback = function(p713)
+            if p713 then
+                if workspace.Characters:FindFirstChild(getgenv().SelectPlayers) then
+                    workspace.Camera.CameraSubject = workspace.Characters[getgenv().SelectPlayers]
+                end
+            else
+                workspace.Camera.CameraSubject = vu6.Character
+            end
+        end
+    })
+
+    Tabs.LocalPlayer:AddToggle("WalkSpeedToggle", { Title = 'WalkSpeed', Description = 'Enable bypass walkspeed', Default = false })
+    Tabs.LocalPlayer:AddSlider("WalkSpeedSlider", {
+        Title = 'Walk Speed',
+        Max = 350,
+        Min = 50,
+        Default = 50,
+        Callback = function(p714)
+            getgenv().WalkSpeed = p714
+        end
+    })
+
+    Tabs.LocalPlayer:AddToggle("InfinityRangeHaki", {
+        Title = 'Infinity Range Observation Haki',
+        Default = false,
+        Callback = function(p715)
+            if not p715 and RangeOld then
+                game:GetService('Players').LocalPlayer.VisionRadius.Value = RangeOld
+            end
+        end
+    })
+
+    -- // PVP COMBAT TAB //
+    local TargetDropdown = Tabs.PVP:AddDropdown("SelectTarget", {
+        Title = 'Select Target',
+        Values = PlayerList or {},
+        Default = '',
+        Callback = function(p716)
+            getgenv().TargetSelect = p716
+        end
+    })
+
+    Tabs.PVP:AddButton({
+        Title = 'Refresh Target',
+        Callback = function()
+            table.clear(PlayerList)
+            local v717 = next
+            local v718, v719 = game.Players:GetPlayers()
+            while true do
+                local v720
+                v719, v720 = v717(v718, v719)
+                if v719 == nil then break end
+                if v720.Name ~= vu6.Name then
+                    table.insert(PlayerList, v720.Name)
+                end
+            end
+            TargetDropdown:SetValues(PlayerList)
+        end
+    })
+
+    Tabs.PVP:AddToggle("AimbotSkills", { Title = 'Aimbot Skills', Default = false })
+
+    -- // SEA EVENTS TAB //
+    Tabs.SeaEvents:AddButton({
+        Title = 'No Frog',
+        Callback = function()
+            if game:GetService('Lighting'):FindFirstChild('LightingLayers') then
+                game:GetService('Lighting'):FindFirstChild('LightingLayers'):Destroy()
+            end
+        end
+    })
+
+    Tabs.SeaEvents:AddDropdown("SelectBoats", {
+        Title = 'Select Boats',
+        Values = {'Guardian', 'Dinghy', 'PirateSloop', 'PirateBrigade', 'PirateGrandBrigade', 'MarineSloop', 'MarineBrigade', 'MarineGrandBrigade', 'Beast Hunter'},
+        Default = 1
+    })
+
+    Tabs.SeaEvents:AddButton({
+        Title = 'Teleport To Your Local Boat',
+        Callback = function()
+            if vu32.GetLocalBoat() then
+                vu32.Tweento(vu32.GetLocalBoat().VehicleSeat.CFrame * CFrame.new(0, 2, 0))
+            end
+        end
+    })
+
+    Tabs.SeaEvents:AddToggle("EnableSpeedBoats", { Title = 'Enable Speed Boats', Default = false })
+
+    Tabs.SeaEvents:AddSlider("BoatSpeed", {
+        Title = 'Boat Speed',
+        Description = 'Set speed for your local boat',
+        Max = 400,
+        Min = 180,
+        Default = 180
+    })
+
+    Tabs.SeaEvents:AddDropdown("SelectZone", {
+        Title = 'Select Zone',
+        Values = {'Zone 1', 'Zone 2', 'Zone 3', 'Zone 4', 'Zone 5', 'Zone 6', 'Infinity'},
+        Default = 1
+    })
+
+    Tabs.SeaEvents:AddToggle("StartAutoSeaEvents", { Title = 'Start Auto Sea Events', Default = false })
+    Tabs.SeaEvents:AddToggle("AutoSharkFish", { Title = 'Auto Shark and Fish Crew Member', Default = false })
+    Tabs.SeaEvents:AddToggle("AutoTerrorShark", { Title = 'Auto Terror Shark', Default = false })
+
+    Tabs.SeaEvents:AddToggle("AutoPiratesShip", {
+        Title = 'Auto Pirates Ship',
+        Default = false,
+        Callback = function(p721)
+            if p721 then
+                Fluent:Notify({ Title = 'Script Warning', Content = 'Select Skills In Farm Config Tab', Duration = 8 })
+            end
+        end
+    })
+
+    Tabs.SeaEvents:AddToggle("AutoGhostShip", {
+        Title = 'Auto Ghost Ship',
+        Default = false,
+        Callback = function(p722)
+            if p722 then
+                Fluent:Notify({ Title = 'Script Warning', Content = 'Select Skills In Farm Config Tab', Duration = 8 })
+            end
+        end
+    })
+
+    Tabs.SeaEvents:AddToggle("AutoSeaBeast", {
+        Title = 'Auto Sea Beast',
+        Default = false,
+        Callback = function(p723)
+            if p723 then
+                Fluent:Notify({ Title = 'Script Warning', Content = 'Select Skills In Farm Config Tab', Duration = 8 })
+            end
+        end
+    })
+
+    Tabs.SeaEvents:AddToggle("AutoPiranha", { Title = 'Auto Piranha', Default = false })
+
+    Tabs.SeaEvents:AddSection("Leviathan")
+
+    Tabs.SeaEvents:AddButton({
+        Title = 'Buy Spy Leviathan',
+        Callback = function()
+            vu32.FireRemotes('InfoLeviathan', '2')
+        end
+    })
+
+    Tabs.SeaEvents:AddButton({
+        Title = 'Craft Beast Hunter',
+        Callback = function()
+            vu32.FireRemotes('CraftItem', 'Check', 'LeviathanBoat')
+            vu32.FireRemotes('CraftItem', 'Craft', 'LeviathanBoat')
+        end
+    })
+
+    Tabs.SeaEvents:AddToggle("AutoFindLeviathan", { Title = 'Auto Find Leviathan', Description = 'Auto finding leviathan boss', Default = false })
+
+    Tabs.SeaEvents:AddToggle("AutoLeviathan", {
+        Title = 'Auto Leviathan',
+        Description = 'Auto killing leviathan boss',
+        Default = false,
+        Callback = function(p724)
+            if p724 then
+                Fluent:Notify({ Title = 'Script Warning', Content = 'Select Skills In Farm Config Tab', Duration = 8 })
+            end
+        end
+    })
+
+    Tabs.SeaEvents:AddToggle("AutoSailTiki", { Title = 'Auto Sail Boat To Tiki', Default = false })
+
+    Tabs.SeaEvents:AddSection("Kitsune Events")
+    Tabs.SeaEvents:AddToggle("AutoFindKitsune", { Title = 'Auto Find Kitsune Island', Description = 'Function Only Sea 3', Default = false })
+    Tabs.SeaEvents:AddToggle("AutoCollectAzure", { Title = 'Auto Collect Azure Member', Description = 'Function Only Sea 3', Default = false })
+    Tabs.SeaEvents:AddToggle("AutoTradeAzure", { Title = 'Auto Trade Azure Member', Description = 'Function Only Sea 3', Default = false })
+
+    -- // VOLCANO EVENTS TAB //
+    Tabs.Volcano:AddParagraph({ Title = 'Prehistoric Island', Content = 'Not Spawned' })
+    Tabs.Volcano:AddToggle("AutoFindPrehistoric", { Title = 'Auto Find Prehistoric Island', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Volcano:AddToggle("AutoPrehistoric", { Title = 'Auto Prehistoric Island', Description = 'auto start event vocalon and Destroy Rocks in island', Default = false })
+    Tabs.Volcano:AddToggle("AutoLavaGolem", { Title = 'Auto Lava Golem', Description = 'Auto kill lava shit', Default = false })
+    Tabs.Volcano:AddToggle("AutoCollectDino", { Title = 'Auto Collect Dino Bone', Description = 'Prehistoric', Default = false })
+    Tabs.Volcano:AddToggle("AutoCollectDragonEgg", { Title = 'Auto Collect Dragon Egg', Description = 'Prehistoric', Default = false })
+
+    -- // DOJO TAB //
+    Tabs.Dojo:AddToggle("AutoDojoTrainer", { Title = 'Auto Dojo Trainer', Default = false })
+    Tabs.Dojo:AddToggle("AutoBlazeEmbers", { Title = 'Auto Blaze Embers', Default = false })
+    
+    Tabs.Dojo:AddButton({
+        Title = 'Craft Dragon Storm',
+        Callback = function()
+            vu32.FireRemotes('CraftItem', 'Check', 'Dragonstorm')
+            vu32.FireRemotes('CraftItem', 'Craft', 'Dragonstorm')
+        end
+    })
+    
+    Tabs.Dojo:AddButton({
+        Title = 'Craft Dragon Heart',
+        Callback = function()
+            vu32.FireRemotes('CraftItem', 'Check', 'Dragonheart')
+            vu32.FireRemotes('CraftItem', 'Craft', 'Dragonheart')
+        end
+    })
+
+    -- // UPGRADED RACE TAB //
+    Tabs.Race:AddSection("Mirage Puzzle")
+    Tabs.Race:AddParagraph({ Title = 'Mirage Puzzle Status', Content = 'Not completed' })
+    Tabs.Race:AddToggle("AutoFindMirage", { Title = 'Auto Find Mirage Island', Description = 'Function Only Sea 3', Default = false })
+    
+    Tabs.Race:AddButton({
+        Title = 'Teleport To Mirage Island',
+        Description = 'Function Only Sea 3',
+        Callback = function()
+            while true do
+                task.wait()
+                CFrame.new(0, 0, 0)
+                local v725
+                if vu32.GetHighPart() then
+                    v725 = vu32.GetHighPart().CFrame * CFrame.new(0, 12, 0)
+                else
+                    v725 = vu7.Map.MysticIsland.WorldPivot * CFrame.new(0, 500, 0)
+                end
+                vu32.Tweento(v725)
+                if vu32.GetDistance(v725.Position) <= 50 or vu6.Character.Humanoid.Health <= 0 then
+                    return
+                end
+            end
+        end
+    })
+
+    Tabs.Race:AddToggle("AutoPullLever", { Title = 'Auto Pull Lever', Description = 'Function Only Sea 3', Default = false })
+    Tabs.Race:AddToggle("AutoLookMoon", { Title = 'Auto Look At Moon', Description = 'Function Only Sea 3', Default = false })
+
+    Tabs.Race:AddButton({
+        Title = 'Teleport to gear',
+        Description = 'Function Only Sea 3',
+        Callback = function()
+            local v726 = vu32.GetGear()
+            if v726.Transparency == 0 and not v726.CanCollide then
+                repeat
+                    task.wait()
+                    vu32.Tweento(v726.CFrame)
+                until not v726
+            end
+        end
+    })
+
+    Tabs.Race:AddSection("Race Upgraded")
+    Tabs.Race:AddParagraph({ Title = 'Watting for Update', Content = '' })
+
+end
+
 
     game:GetService('RunService').RenderStepped:Connect(function()
         if getgenv().WalkSpeed then
