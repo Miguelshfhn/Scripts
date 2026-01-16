@@ -1946,15 +1946,7 @@ local Info = Window:MakeTab({
   Icon = "Info"
 })
 
-Info:AddDiscordInvite({
-	Title = "Zenith Server discord",
-	Description = "The official Zenith Hub community — powerful scripts, constant updates, and dedicated support all in one place.",
-	Banner = "rbxassetid://", -- You can put an RGB Color: Color3.fromRGB(0, 0, 0)
-	Logo = "rbxassetid://84262889977081",
-	Invite = "https://discord.gg/mV2ncyDhM9",
-	Members = Undefined, -- Optional
-	Online = Undefined, -- Optional
-})
+
 
 local Farming = Window:MakeTab({
   Title = "Main",
@@ -2018,21 +2010,6 @@ spawn(function()
     end
 end)
 
--- UI SIZE DROPDOWN
-local UISizes = {
-    Small = 0.85,
-    Normal = 1.0,
-    Large = 1.15
-}
-
-Farming:AddDropdown({
-    Name = "UI Size",
-    Options = {"Small", "Normal", "Large"},
-    Default = "Normal",
-    Callback = function(Value)
-        Library:SetUIScale(UISizes[Value])
-    end
-})
 
 
 Farming:AddSection("Farming")
