@@ -1766,144 +1766,141 @@ QuestNeta = function()
     }
 end
 
--- ==========================================
--- INTERCEPTADOR REDZ V5 -> MODERNUI
--- ==========================================
-local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rizeniii/diamond/main/zero/main.luau"))()
 
 local Library = {}
-local WindowProxy = {}
-local TabProxy = {}
+local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rizeniii/diamond/main/zero/main.luau"))()
+local Flags = {}
 
--- Mock de Funções Globais da Redz
-Library.GetMaxScale = function() return 1.5 end
-Library.GetMinScale = function() return 0.5 end
-Library.SetUIScale = function(_, scale) end
+local function GetIcon(name)
+    return "rbxassetid://7733960981"
+end
 
-function Library:MakeWindow(cfg)
+function Library:MakeWindow(Config)
     local UI = ModernUI.new({
-        Title = cfg.Title or "Nice Hub",
-        SubTitle = cfg.SubTitle or "dev",
-        Icon = {"rbxassetid://138770682187300", "rbxassetid://110961158970233"},
+        Title = Config.Title or "Hub",
+        SubTitle = Config.SubTitle or "",
+        Icon = {GetIcon("home"), GetIcon("settings")},
         IconFPS = 0.1,
         FloatingButton = {
-            Icon = {"rbxassetid://138770682187300"},
+            Icon = {GetIcon("home"), GetIcon("settings")},
             Size = 52,
             Position = UDim2.new(1, -70, 0.5, -26)
         }
     })
     
-    self.InternalUI = UI
-    
-    -- Funções da Window
-    function WindowProxy:MakeTab(tabCfg)
-        local InternalTab = UI:CreateTab({
-            Name = tabCfg.Title or "Tab",
-            Icon = {"rbxassetid://138770682187300"}
+    local WindowObj = {}
+
+    function WindowObj:MakeTab(TabConfig)
+        local RealTab = UI:CreateTab({
+            Name = TabConfig.Title,
+            Icon = {GetIcon(TabConfig.Icon), GetIcon(TabConfig.Icon)}
         })
-        
-        local Elements = {}
-        
-        function Elements:AddToggle(tglCfg)
-            return UI:AddToggle(InternalTab, {
-                Name = tglCfg.Name,
-                Default = tglCfg.Default or false,
-                Callback = tglCfg.Callback
+        local TabObj = {}
+        function TabObj:AddToggle(ItemConfig)
+            local flagName = ItemConfig.Flag or ItemConfig.Name
+            UI:AddToggle(RealTab, {
+                Name = ItemConfig.Name,
+                Default = ItemConfig.Default or false,
+                Callback = function(State)
+                    Flags[flagName] = State
+                    if ItemConfig.Callback then ItemConfig.Callback(State) end
+                end
             })
         end
-
-        function Elements:AddButton(btnCfg)
-            return UI:AddButton(InternalTab, {
-                Name = btnCfg.Name,
-                Callback = btnCfg.Callback
+        function TabObj:AddButton(ItemConfig)
+            UI:AddButton(RealTab, {
+                Name = ItemConfig.Name,
+                Callback = ItemConfig.Callback
             })
         end
-
-        function Elements:AddSlider(sldCfg)
-            return UI:AddSlider(InternalTab, {
-                Name = sldCfg.Name,
-                Min = sldCfg.Min or 0,
-                Max = sldCfg.Max or 100,
-                Default = sldCfg.Default or 0,
-                Callback = sldCfg.Callback
+        function TabObj:AddSlider(ItemConfig)
+            UI:AddSlider(RealTab, {
+                Name = ItemConfig.Name,
+                Min = ItemConfig.Min or 0,
+                Max = ItemConfig.Max or 100,
+                Default = ItemConfig.Default or ItemConfig.Min,
+                Callback = ItemConfig.Callback
             })
         end
-
-        function Elements:AddDropdown(drpCfg)
-            if drpCfg.MultiSelect then
-                return UI:AddMultiDropdown(InternalTab, {
-                    Name = drpCfg.Name,
-                    Options = drpCfg.Options,
-                    Default = drpCfg.Default,
-                    Callback = drpCfg.Callback
+        function TabObj:AddDropdown(ItemConfig)
+            if ItemConfig.MultiSelect then
+                UI:AddMultiDropdown(RealTab, {
+                    Name = ItemConfig.Name,
+                    Options = ItemConfig.Options or {},
+                    Default = ItemConfig.Default,
+                    Callback = ItemConfig.Callback
                 })
             else
-                return UI:AddDropdown(InternalTab, {
-                    Name = drpCfg.Name,
-                    Options = drpCfg.Options,
-                    Default = drpCfg.Default,
-                    Callback = drpCfg.Callback
+                UI:AddDropdown(RealTab, {
+                    Name = ItemConfig.Name,
+                    Options = ItemConfig.Options or {},
+                    Default = ItemConfig.Default,
+                    Callback = ItemConfig.Callback
                 })
             end
         end
-
-        function Elements:AddTextBox(txtCfg)
-            -- ModernUI costuma usar Buttons para simular inputs ou tem campos próprios
-            return UI:AddButton(InternalTab, {
-                Name = txtCfg.Name .. " (Click)",
-                Callback = function() print("TextBox interceptado") end
+        function TabObj:AddTextBox(ItemConfig)
+            if UI.AddInput then
+                UI:AddInput(RealTab, {
+                    Name = ItemConfig.Name,
+                    Placeholder = ItemConfig.Placeholder or "...",
+                    Default = ItemConfig.Default or "",
+                    Callback = ItemConfig.Callback
+                })
+            else
+                UI:AddButton(RealTab, {
+                    Name = ItemConfig.Name .. " [Input N/A]",
+                    Callback = function() end
+                })
+            end
+        end
+        function TabObj:AddParagraph(Title, Content)
+            UI:AddSection(RealTab, {
+                Name = Title .. ": " .. (Content or "")
             })
         end
-
-        function Elements:AddParagraph(title, desc)
-            return UI:AddSection(InternalTab, { Name = title .. " - " .. desc })
-        end
-
-        function Elements:AddDiscordInvite(disCfg)
-            return UI:AddInviteDiscord(InternalTab, {
-                Name = disCfg.Title,
-                Link = disCfg.Invite,
-                Icon = disCfg.Logo or "rbxassetid://138770682187300",
+        function TabObj:AddDiscordInvite(ItemConfig)
+            UI:AddInviteDiscord(RealTab, {
+                Name = ItemConfig.Title or "Discord",
+                Link = ItemConfig.Invite or "",
+                Icon = ItemConfig.Icon or "rbxassetid://138770682187300",
                 ButtonText = "Join"
             })
         end
-
-        return Elements
+        return TabObj
     end
 
-    function WindowProxy:NewMinimizer(mCfg) return {CreateMobileMinimizer = function() end} end
-    
-    function WindowProxy:Notify(ntfCfg)
-        return UI:Notify({
-            Title = ntfCfg.Title,
-            Body = ntfCfg.Content,
-            Duration = ntfCfg.Duration or 5
+    function WindowObj:Notify(Config)
+        UI:Notify({
+            Title = Config.Title,
+            Body = Config.Content,
+            Icon = {Config.Image or "rbxassetid://138770682187300"},
+            Duration = Config.Duration or 3
         })
     end
-
-    function WindowProxy:Dialog(dlgCfg)
-        return UI:Notify({
-            Title = dlgCfg.Title,
-            Body = dlgCfg.Content,
-            Duration = 10
+    function WindowObj:Dialog(Config)
+        UI:Notify({
+            Title = Config.Title,
+            Body = Config.Content,
+            Duration = 5
         })
     end
-
-    -- Sistema de Flags (Simulado)
-    local Flags = {}
-    function WindowProxy:SetFlag(id, val) Flags[id] = val end
-    function WindowProxy:GetFlag(id) return Flags[id] end
-
-    return WindowProxy
+    function WindowObj:NewMinimizer()
+        return {
+            CreateMobileMinimizer = function(...) end
+        }
+    end
+    function WindowObj:GetFlag(flag) return Flags[flag] end
+    function WindowObj:SetFlag(flag, value) Flags[flag] = value end
+    function WindowObj:ApplyTheme(theme) UI:ApplyTheme(theme) end
+    return WindowObj
 end
 
--- Substitui o carregamento original
-local function loadstring_replacement(url)
-    return function() return Library end
-end
+function Library:GetMaxScale() return 1 end
+function Library:GetMinScale() return 0.5 end
+function Library:SetUIScale(val) end
 
--- Aqui começa o seu script original, mas ele vai usar o "Library" fake acima.
--- ==========================================
+-- COLE O SEU SCRIPT DO REDZ ABAIXO DESTA LINHA
 
 local Window = Library:MakeWindow({
   Title = "Zenith Hub [Beta]",
