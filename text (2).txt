@@ -1766,7 +1766,144 @@ QuestNeta = function()
     }
 end
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau"))()
+-- ==========================================
+-- INTERCEPTADOR REDZ V5 -> MODERNUI
+-- ==========================================
+local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rizeniii/diamond/main/zero/main.luau"))()
+
+local Library = {}
+local WindowProxy = {}
+local TabProxy = {}
+
+-- Mock de Funções Globais da Redz
+Library.GetMaxScale = function() return 1.5 end
+Library.GetMinScale = function() return 0.5 end
+Library.SetUIScale = function(_, scale) end
+
+function Library:MakeWindow(cfg)
+    local UI = ModernUI.new({
+        Title = cfg.Title or "Nice Hub",
+        SubTitle = cfg.SubTitle or "dev",
+        Icon = {"rbxassetid://138770682187300", "rbxassetid://110961158970233"},
+        IconFPS = 0.1,
+        FloatingButton = {
+            Icon = {"rbxassetid://138770682187300"},
+            Size = 52,
+            Position = UDim2.new(1, -70, 0.5, -26)
+        }
+    })
+    
+    self.InternalUI = UI
+    
+    -- Funções da Window
+    function WindowProxy:MakeTab(tabCfg)
+        local InternalTab = UI:CreateTab({
+            Name = tabCfg.Title or "Tab",
+            Icon = {"rbxassetid://138770682187300"}
+        })
+        
+        local Elements = {}
+        
+        function Elements:AddToggle(tglCfg)
+            return UI:AddToggle(InternalTab, {
+                Name = tglCfg.Name,
+                Default = tglCfg.Default or false,
+                Callback = tglCfg.Callback
+            })
+        end
+
+        function Elements:AddButton(btnCfg)
+            return UI:AddButton(InternalTab, {
+                Name = btnCfg.Name,
+                Callback = btnCfg.Callback
+            })
+        end
+
+        function Elements:AddSlider(sldCfg)
+            return UI:AddSlider(InternalTab, {
+                Name = sldCfg.Name,
+                Min = sldCfg.Min or 0,
+                Max = sldCfg.Max or 100,
+                Default = sldCfg.Default or 0,
+                Callback = sldCfg.Callback
+            })
+        end
+
+        function Elements:AddDropdown(drpCfg)
+            if drpCfg.MultiSelect then
+                return UI:AddMultiDropdown(InternalTab, {
+                    Name = drpCfg.Name,
+                    Options = drpCfg.Options,
+                    Default = drpCfg.Default,
+                    Callback = drpCfg.Callback
+                })
+            else
+                return UI:AddDropdown(InternalTab, {
+                    Name = drpCfg.Name,
+                    Options = drpCfg.Options,
+                    Default = drpCfg.Default,
+                    Callback = drpCfg.Callback
+                })
+            end
+        end
+
+        function Elements:AddTextBox(txtCfg)
+            -- ModernUI costuma usar Buttons para simular inputs ou tem campos próprios
+            return UI:AddButton(InternalTab, {
+                Name = txtCfg.Name .. " (Click)",
+                Callback = function() print("TextBox interceptado") end
+            })
+        end
+
+        function Elements:AddParagraph(title, desc)
+            return UI:AddSection(InternalTab, { Name = title .. " - " .. desc })
+        end
+
+        function Elements:AddDiscordInvite(disCfg)
+            return UI:AddInviteDiscord(InternalTab, {
+                Name = disCfg.Title,
+                Link = disCfg.Invite,
+                Icon = disCfg.Logo or "rbxassetid://138770682187300",
+                ButtonText = "Join"
+            })
+        end
+
+        return Elements
+    end
+
+    function WindowProxy:NewMinimizer(mCfg) return {CreateMobileMinimizer = function() end} end
+    
+    function WindowProxy:Notify(ntfCfg)
+        return UI:Notify({
+            Title = ntfCfg.Title,
+            Body = ntfCfg.Content,
+            Duration = ntfCfg.Duration or 5
+        })
+    end
+
+    function WindowProxy:Dialog(dlgCfg)
+        return UI:Notify({
+            Title = dlgCfg.Title,
+            Body = dlgCfg.Content,
+            Duration = 10
+        })
+    end
+
+    -- Sistema de Flags (Simulado)
+    local Flags = {}
+    function WindowProxy:SetFlag(id, val) Flags[id] = val end
+    function WindowProxy:GetFlag(id) return Flags[id] end
+
+    return WindowProxy
+end
+
+-- Substitui o carregamento original
+local function loadstring_replacement(url)
+    return function() return Library end
+end
+
+-- Aqui começa o seu script original, mas ele vai usar o "Library" fake acima.
+-- ==========================================
 
 local Window = Library:MakeWindow({
   Title = "Zenith Hub [Beta]",
