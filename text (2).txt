@@ -1766,140 +1766,7 @@ QuestNeta = function()
     }
 end
 
-
-local Library = {}
-local ModernUI = loadstring(game:HttpGet("https://pastefy.app/yBouGSgL/raw"))()
-local Flags = {}
-
-function Library:MakeWindow(Config)
-    local UI = ModernUI.new({
-        Title = Config.Title or "Nice Hub",
-        SubTitle = Config.SubTitle or "dev by real_redz",
-        Icon = {"rbxassetid://105245380363493", "rbxassetid://105245380363493"},
-        IconFPS = 0,
-        FloatingButton = {
-            Icon = {"rbxassetid://105245380363493"},
-            Size = 52,
-            Position = UDim2.new(1, -70, 0.5, -26)
-        }
-    })
-
-    local WindowWrapper = {}
-
-    function WindowWrapper:MakeTab(TabConfig)
-        local RealTab = UI:CreateTab({
-            Name = TabConfig.Title or "Main",
-            Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-        })
-
-        local TabWrapper = {}
-
-        -- Seção (Redz usa string direta)
-        function TabWrapper:AddSection(text)
-            UI:AddSection(RealTab, {
-                Name = tostring(text)
-            })
-        end
-
-        -- Toggle
-        function TabWrapper:AddToggle(ItemConfig)
-            UI:AddToggle(RealTab, {
-                Name = ItemConfig.Name,
-                Default = ItemConfig.Default or false,
-                Callback = function(v)
-                    local flag = ItemConfig.Flag or ItemConfig.Name
-                    Flags[flag] = v
-                    if ItemConfig.Callback then ItemConfig.Callback(v) end
-                end
-            })
-        end
-
-        -- Slider (Ajustado para Redz)
-        function TabWrapper:AddSlider(ItemConfig)
-            UI:AddSlider(RealTab, {
-                Name = ItemConfig.Name,
-                Min = ItemConfig.Min or 0,
-                Max = ItemConfig.Max or 100,
-                Default = ItemConfig.Default or 0,
-                Callback = function(v)
-                    -- O "Rounding" da Redz a gente ignora pois a ModernUI já lida com valores
-                    if ItemConfig.Callback then ItemConfig.Callback(v) end
-                end
-            })
-        end
-
-        -- Botão
-        function TabWrapper:AddButton(ItemConfig)
-            UI:AddButton(RealTab, {
-                Name = ItemConfig.Name,
-                Callback = ItemConfig.Callback
-            })
-        end
-
-        -- Dropdown
-        function TabWrapper:AddDropdown(ItemConfig)
-            if ItemConfig.MultiSelect or ItemConfig.Multi then
-                UI:AddMultiDropdown(RealTab, {
-                    Name = ItemConfig.Name,
-                    Options = ItemConfig.Options or ItemConfig.Values or {},
-                    Default = ItemConfig.Default or {},
-                    Callback = ItemConfig.Callback
-                })
-            else
-                UI:AddDropdown(RealTab, {
-                    Name = ItemConfig.Name,
-                    Options = ItemConfig.Options or ItemConfig.Values or {},
-                    Default = ItemConfig.Default,
-                    Callback = ItemConfig.Callback
-                })
-            end
-        end
-
-        -- TextBox
-        function TabWrapper:AddTextBox(ItemConfig)
-            UI:AddInput(RealTab, {
-                Name = ItemConfig.Name,
-                Default = ItemConfig.Default or "",
-                Placeholder = ItemConfig.Placeholder or "...",
-                Callback = ItemConfig.Callback
-            })
-        end
-
-        return TabWrapper
-    end
-
-    -- Como não tem Dialog, mandamos uma Notificação
-    function WindowWrapper:Dialog(ItemConfig)
-        UI:Notify({
-            Title = ItemConfig.Title or "Aviso",
-            Body = ItemConfig.Content or "",
-            Duration = 5
-        })
-    end
-
-    function WindowWrapper:Notify(ItemConfig)
-        UI:Notify({
-            Title = ItemConfig.Title or "Notificação",
-            Body = ItemConfig.Content or "",
-            Duration = ItemConfig.Duration or 3
-        })
-    end
-
-    -- Ignora funções de escala e minimizador para não travar
-    function WindowWrapper:NewMinimizer() return {CreateMobileMinimizer = function() end} end
-    function WindowWrapper:GetFlag(f) return Flags[f] end
-    function WindowWrapper:SetFlag(f, v) Flags[f] = v end
-
-    return WindowWrapper
-end
-
--- Funções vazias para evitar erro de "nil" no script original
-function Library:SetUIScale(v) end
-function Library:GetMaxScale() return 1 end
-function Library:GetMinScale() return 1 end
-
--- ABAIXO VOCÊ COLA O SEU SCRIPT
-
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau"))()
 
 local Window = Library:MakeWindow({
   Title = "Zenith Hub [Beta]",
@@ -1946,7 +1813,15 @@ local Info = Window:MakeTab({
   Icon = "Info"
 })
 
-
+Info:AddDiscordInvite({
+	Title = "Zenith Server discord",
+	Description = "The official Zenith Hub community — powerful scripts, constant updates, and dedicated support all in one place.",
+	Banner = "rbxassetid://", -- You can put an RGB Color: Color3.fromRGB(0, 0, 0)
+	Logo = "rbxassetid://84262889977081",
+	Invite = "https://discord.gg/mV2ncyDhM9",
+	Members = Undefined, -- Optional
+	Online = Undefined, -- Optional
+})
 
 local Farming = Window:MakeTab({
   Title = "Main",
@@ -2010,6 +1885,21 @@ spawn(function()
     end
 end)
 
+-- UI SIZE DROPDOWN
+local UISizes = {
+    Small = 0.85,
+    Normal = 1.0,
+    Large = 1.15
+}
+
+Farming:AddDropdown({
+    Name = "UI Size",
+    Options = {"Small", "Normal", "Large"},
+    Default = "Normal",
+    Callback = function(Value)
+        Library:SetUIScale(UISizes[Value])
+    end
+})
 
 
 Farming:AddSection("Farming")
