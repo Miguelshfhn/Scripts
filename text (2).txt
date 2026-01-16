@@ -1768,139 +1768,153 @@ end
 
 
 local Library = {}
-local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rizeniii/diamond/main/zero/main.luau"))()
+local ModernUI = loadstring(game:HttpGet("https://pastefy.app/yBouGSgL/raw"))()
 local Flags = {}
 
-local function GetIcon(name)
-    return "rbxassetid://7733960981"
-end
-
 function Library:MakeWindow(Config)
-    local UI = ModernUI.new({
-        Title = Config.Title or "Hub",
-        SubTitle = Config.SubTitle or "",
-        Icon = {GetIcon("home"), GetIcon("settings")},
-        IconFPS = 0.1,
+    -- Inicializa a UI real
+    local Window = ModernUI.new({
+        Title = Config.Title or "Nice Hub",
+        SubTitle = Config.SubTitle or "dev by real_redz",
+        Icon = {"rbxassetid://105245380363493", "rbxassetid://105245380363493"},
+        IconFPS = 0,
         FloatingButton = {
-            Icon = {GetIcon("home"), GetIcon("settings")},
+            Icon = {"rbxassetid://105245380363493"},
             Size = 52,
             Position = UDim2.new(1, -70, 0.5, -26)
         }
     })
-    
-    local WindowObj = {}
 
-    function WindowObj:MakeTab(TabConfig)
-        local RealTab = UI:CreateTab({
-            Name = TabConfig.Title,
-            Icon = {GetIcon(TabConfig.Icon), GetIcon(TabConfig.Icon)}
+    local WindowWrapper = {}
+
+    -- Função para criar Abas (Redz usa MakeTab)
+    function WindowWrapper:MakeTab(TabConfig)
+        local RealTab = Window:CreateTab({
+            Name = TabConfig.Title or "Main",
+            Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
         })
-        local TabObj = {}
-        function TabObj:AddToggle(ItemConfig)
-            local flagName = ItemConfig.Flag or ItemConfig.Name
-            UI:AddToggle(RealTab, {
+
+        local TabWrapper = {}
+
+        -- Toggles
+        function TabWrapper:AddToggle(ItemConfig)
+            local flag = ItemConfig.Flag or ItemConfig.Name
+            Window:AddToggle(RealTab, {
                 Name = ItemConfig.Name,
                 Default = ItemConfig.Default or false,
-                Callback = function(State)
-                    Flags[flagName] = State
-                    if ItemConfig.Callback then ItemConfig.Callback(State) end
+                Callback = function(v)
+                    Flags[flag] = v
+                    if ItemConfig.Callback then ItemConfig.Callback(v) end
                 end
             })
         end
-        function TabObj:AddButton(ItemConfig)
-            UI:AddButton(RealTab, {
+
+        -- Botões
+        function TabWrapper:AddButton(ItemConfig)
+            Window:AddButton(RealTab, {
                 Name = ItemConfig.Name,
                 Callback = ItemConfig.Callback
             })
         end
-        function TabObj:AddSlider(ItemConfig)
-            UI:AddSlider(RealTab, {
+
+        -- Dropdowns
+        function TabWrapper:AddDropdown(ItemConfig)
+            if ItemConfig.MultiSelect then
+                Window:AddMultiDropdown(RealTab, {
+                    Name = ItemConfig.Name,
+                    Options = ItemConfig.Options or {},
+                    Default = ItemConfig.Default or {},
+                    Callback = ItemConfig.Callback
+                })
+            else
+                Window:AddDropdown(RealTab, {
+                    Name = ItemConfig.Name,
+                    Options = ItemConfig.Options or {},
+                    Default = ItemConfig.Default,
+                    Callback = ItemConfig.Callback
+                })
+            end
+        end
+
+        -- Sliders
+        function TabWrapper:AddSlider(ItemConfig)
+            Window:AddSlider(RealTab, {
                 Name = ItemConfig.Name,
                 Min = ItemConfig.Min or 0,
                 Max = ItemConfig.Max or 100,
-                Default = ItemConfig.Default or ItemConfig.Min,
+                Default = ItemConfig.Default or 0,
                 Callback = ItemConfig.Callback
             })
         end
-        function TabObj:AddDropdown(ItemConfig)
-            if ItemConfig.MultiSelect then
-                UI:AddMultiDropdown(RealTab, {
-                    Name = ItemConfig.Name,
-                    Options = ItemConfig.Options or {},
-                    Default = ItemConfig.Default,
-                    Callback = ItemConfig.Callback
-                })
-            else
-                UI:AddDropdown(RealTab, {
-                    Name = ItemConfig.Name,
-                    Options = ItemConfig.Options or {},
-                    Default = ItemConfig.Default,
-                    Callback = ItemConfig.Callback
-                })
-            end
-        end
-        function TabObj:AddTextBox(ItemConfig)
-            if UI.AddInput then
-                UI:AddInput(RealTab, {
-                    Name = ItemConfig.Name,
-                    Placeholder = ItemConfig.Placeholder or "...",
-                    Default = ItemConfig.Default or "",
-                    Callback = ItemConfig.Callback
-                })
-            else
-                UI:AddButton(RealTab, {
-                    Name = ItemConfig.Name .. " [Input N/A]",
-                    Callback = function() end
-                })
-            end
-        end
-        function TabObj:AddParagraph(Title, Content)
-            UI:AddSection(RealTab, {
-                Name = Title .. ": " .. (Content or "")
+
+        -- Textbox (Input)
+        function TabWrapper:AddTextBox(ItemConfig)
+            Window:AddInput(RealTab, {
+                Name = ItemConfig.Name,
+                Default = ItemConfig.Default or "",
+                Placeholder = ItemConfig.Placeholder or "input...",
+                Callback = ItemConfig.Callback
             })
         end
-        function TabObj:AddDiscordInvite(ItemConfig)
-            UI:AddInviteDiscord(RealTab, {
+
+        -- Paragraphs
+        function TabWrapper:AddParagraph(title, content)
+            Window:AddParagraph(RealTab, {
+                Name = title,
+                Content = content or ""
+            })
+        end
+
+        -- Discord
+        function TabWrapper:AddDiscordInvite(ItemConfig)
+            Window:AddInviteDiscord(RealTab, {
                 Name = ItemConfig.Title or "Discord",
                 Link = ItemConfig.Invite or "",
-                Icon = ItemConfig.Icon or "rbxassetid://138770682187300",
+                Icon = "rbxassetid://138770682187300",
                 ButtonText = "Join"
             })
         end
-        return TabObj
+
+        return TabWrapper
     end
 
-    function WindowObj:Notify(Config)
-        UI:Notify({
-            Title = Config.Title,
-            Body = Config.Content,
-            Icon = {Config.Image or "rbxassetid://138770682187300"},
-            Duration = Config.Duration or 3
+    -- Notificações
+    function WindowWrapper:Notify(ItemConfig)
+        Window:Notify({
+            Title = ItemConfig.Title,
+            Body = ItemConfig.Content or "",
+            Duration = ItemConfig.Duration or 5
         })
     end
-    function WindowObj:Dialog(Config)
-        UI:Notify({
-            Title = Config.Title,
-            Body = Config.Content,
-            Duration = 5
+
+    -- Diálogos (ModernUI usa Notify para isso na falta de Dialog nativo)
+    function WindowWrapper:Dialog(ItemConfig)
+        Window:Notify({
+            Title = ItemConfig.Title,
+            Body = ItemConfig.Content,
+            Duration = 7
         })
     end
-    function WindowObj:NewMinimizer()
-        return {
-            CreateMobileMinimizer = function(...) end
-        }
+
+    -- Minimizer Dummy (Para não dar erro no script do Redz)
+    function WindowWrapper:NewMinimizer()
+        return { CreateMobileMinimizer = function() end }
     end
-    function WindowObj:GetFlag(flag) return Flags[flag] end
-    function WindowObj:SetFlag(flag, value) Flags[flag] = value end
-    function WindowObj:ApplyTheme(theme) UI:ApplyTheme(theme) end
-    return WindowObj
+
+    -- Flags
+    function WindowWrapper:GetFlag(f) return Flags[f] end
+    function WindowWrapper:SetFlag(f, v) Flags[f] = v end
+
+    return WindowWrapper
 end
 
+-- Outras funções da Redz Library
 function Library:GetMaxScale() return 1 end
-function Library:GetMinScale() return 0.5 end
-function Library:SetUIScale(val) end
+function Library:GetMinScale() return 1 end
+function Library:SetUIScale(v) end
 
--- COLE O SEU SCRIPT DO REDZ ABAIXO DESTA LINHA
+-- [COLE O RESTANTE DO SEU SCRIPT ABAIXO]
+
 
 local Window = Library:MakeWindow({
   Title = "Zenith Hub [Beta]",
