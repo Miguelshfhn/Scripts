@@ -773,139 +773,39 @@ Hop = function()
         end
     end)
 end
-_G.Speed = 350
+-- [[ CONFIGURAÇÕES GERAIS ]] --
+_G.Speed = 350 
 _G.Settings = {
-    ShouldTween = true,
-    UsePortals = true -- Ativa o uso inteligente de portais
+    ShouldTween = true
 }
 
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
 local LocalPlayer = Players.LocalPlayer
-local PlaceId = game.PlaceId
 
-local World1 = {
-    ["Sky3"] = Vector3.new(-7894, 5547, -380),
-    ["Sky3Exit"] = Vector3.new(-4607, 874, -1667),
-    ["UnderWater"] = Vector3.new(61163, 11, 1819),
-    ["Underwater City"] = Vector3.new(61165, 0, 1897),
-    ["Pirate Village"] = Vector3.new(-1242, 4, 3901),
-    ["UnderwaterExit"] = Vector3.new(4050, -1, -1814)
-}
-
-local World2 = {
-    ["Swan Mansion"] = Vector3.new(-390, 332, 673),
-    ["Swan Room"] = Vector3.new(2285, 15, 905),
-    ["Cursed Ship"] = Vector3.new(923, 126, 32852)
-}
-
-local World3 = {
-    ["Floating Turtle"] = Vector3.new(-12462, 375, -7552),
-    ["Hydra Island"] = Vector3.new(5657, 1013, -335),
-    ["Mansion"] = Vector3.new(-12462, 375, -7552),
-    ["Castle"] = Vector3.new(-5036, 315, -3179),
-    ["Dimensional Shift"] = Vector3.new(-2097, 4776, -15013),
-    ["Beautiful Pirate"] = Vector3.new(5319, 23, -93),
-    ["Beautiful Room"] = Vector3.new(5314, 22, -125)
-}
-
-local CurrentPortals = {}
-if PlaceId == 2753915549 or PlaceId == 4442272183 then
-    CurrentPortals = World1
-elseif PlaceId == 7449423635 then
-    CurrentPortals = World2
-elseif PlaceId == 7449423635 then -- Nota: IDs do Sea 3 podem variar, ajustado para padrão
-    CurrentPortals = World3
-else
-    -- Fallback para os IDs específicos que estavam no seu código antigo
-    if PlaceId == 100117331123089 then CurrentPortals = World3
-    elseif PlaceId == 79091703265657 then CurrentPortals = World2
-    else CurrentPortals = World1 end
-end
-
+-- [[ LIMPEZA DO SISTEMA ANTIGO ]] --
+-- Remove o bloco "Rip_Indra" antigo para evitar conflitos
 local oldBlock = workspace:FindFirstChild("Rip_Indra")
 if oldBlock then oldBlock:Destroy() end
 
+-- [[ MOTOR DE MOVIMENTO (NOVO) ]] --
 local currentTween = nil
-
-function requestEntrance(VectorPos)
-    game.ReplicatedStorage.Remotes.CommF_:InvokeServer("requestEntrance", VectorPos)
-end
-
-function CheckNearestTeleporter(TargetCFrame)
-    if not _G.Settings.UsePortals then return nil end
-    
-    local MyPos = LocalPlayer.Character.HumanoidRootPart.Position
-    local TargetPos = TargetCFrame.Position
-    
-    local BestPortal = nil
-    local ShortestDist = math.huge
-    
-    -- Distância direta sem portal
-    local DirectDistance = (MyPos - TargetPos).Magnitude
-    
-    for Name, PortalPos in pairs(CurrentPortals) do
-        local DistToTargetFromPortal = (PortalPos - TargetPos).Magnitude
-        
-        -- Se a distância do portal até o destino for menor que a menor registrada
-        if DistToTargetFromPortal < ShortestDist then
-            ShortestDist = DistToTargetFromPortal
-            BestPortal = PortalPos
-        end
-    end
-    
-    -- Só usa o portal se ele estiver significativamente mais perto do destino do que você está agora
-    -- E se você não estiver já muito perto do portal
-    if BestPortal and ShortestDist < DirectDistance then
-        local DistToPortal = (MyPos - BestPortal).Magnitude
-        -- Se valer a pena (economizar pelo menos 1000 studs de viagem)
-        if (DistToPortal + ShortestDist) < DirectDistance or (DirectDistance > 3000 and ShortestDist < 1000) then
-            return BestPortal
-        end
-    end
-    return nil
-end
 
 local function NewTP(TargetCFrame)
     if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
     if not _G.Settings.ShouldTween then return end
 
     local RootPart = LocalPlayer.Character.HumanoidRootPart
-    
-    -- Verifica se vale a pena usar um portal antes de iniciar o tween longo
-    local SmartPortal = CheckNearestTeleporter(TargetCFrame)
-    
-    if SmartPortal then
-        -- Tween até o portal primeiro
-        local DistToPortal = (SmartPortal - RootPart.Position).Magnitude
-        local PortalDuration = DistToPortal / _G.Speed
-        local PortalInfo = TweenInfo.new(PortalDuration, Enum.EasingStyle.Linear)
-        
-        if currentTween then currentTween:Cancel() end
-        
-        currentTween = TweenService:Create(RootPart, PortalInfo, {CFrame = CFrame.new(SmartPortal)})
-        currentTween:Play()
-        
-        -- Espera chegar no portal
-        currentTween.Completed:Wait()
-        
-        -- Entra no portal
-        requestEntrance(SmartPortal)
-        task.wait(0.5) -- Espera o teleporte do jogo
-        
-        -- Recalcula e vai para o destino final (recursivo)
-        NewTP(TargetCFrame)
-        return
-    end
-
-    -- Lógica Padrão de Tween Direto
     local Distance = (TargetCFrame.Position - RootPart.Position).Magnitude
     
-    if Distance <= 10 then
+    -- Se estiver muito perto, teleporta instantaneamente para evitar tremedeira
+    if Distance <= 5 then
         RootPart.CFrame = TargetCFrame
         return
     end
 
+    -- Cancela o tween anterior se houver um novo comando de movimento
     if currentTween then currentTween:Cancel() end
 
     local duration = Distance / _G.Speed
@@ -915,7 +815,11 @@ local function NewTP(TargetCFrame)
     currentTween:Play()
 end
 
+-- [[ INTERCEPTADORES DE COMPATIBILIDADE ]] --
+-- Estas funções agora redirecionam os comandos antigos para o novo sistema
+
 _tp = function(target)
+    -- Se passarem uma instância (Part), extraímos o CFrame dela
     if typeof(target) == "Instance" then target = target.CFrame end
     NewTP(target)
 end
@@ -939,6 +843,7 @@ StopTween = function()
     end
 end
 
+-- [[ ESTABILIZAÇÃO, ANTI-QUEDA E NOCLIP ]] --
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -946,6 +851,7 @@ task.spawn(function()
             local root = char and char:FindFirstChild("HumanoidRootPart")
             
             if root then
+                -- BodyVelocity (BodyClip) para o boneco não cair enquanto atravessa o mapa
                 if not root:FindFirstChild("BodyClip") then
                     local BV = Instance.new("BodyVelocity")
                     BV.Name = "BodyClip"
@@ -954,6 +860,7 @@ task.spawn(function()
                     BV.Velocity = Vector3.new(0, 0, 0)
                 end
                 
+                -- NoClip: Desativa colisões para não travar em paredes durante o Tween
                 for _, part in pairs(char:GetDescendants()) do
                     if part:IsA("BasePart") then
                         part.CanCollide = false
@@ -963,7 +870,6 @@ task.spawn(function()
         end)
     end
 end)
-
 
 function BTP(p)
     local player = game.Players.LocalPlayer
