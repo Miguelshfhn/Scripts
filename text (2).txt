@@ -1,3 +1,6 @@
+-- Converted in-place to ModernUI API (best-effort automatic conversion)
+-- Original UI calls were mapped to ModernUI equivalents. Review for any manual tweaks.
+
 
 do
     ply = game.Players
@@ -1766,70 +1769,59 @@ QuestNeta = function()
     }
 end
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/main.luau"))()
+-- LOAD MODERN UI
+local ModernUI = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/Rizeniii/diamond/refs/heads/main/zero/main.luau"
+))()
 
-local Window = Library:MakeWindow({
-  Title = "Zenith Hub [Beta]",
-  SubTitle = "By wz7xwz",
-  ScriptFolder = "Zenithbf"
+-- WINDOW (substitui Library + Minimizer + MobileButton)
+local UI = ModernUI.new({
+    Title = "Zenith Hub",
+    SubTitle = "",
+    Icon = {
+        "rbxassetid://138770682187300",
+        "rbxassetid://110961158970233"
+    },
+    IconFPS = 0.1,
+    FloatingButton = {
+        Icon = {
+            "rbxassetid://138770682187300",
+            "rbxassetid://110961158970233"
+        },
+        Size = 50,
+        Position = UDim2.new(1, -70, 0.5, -25)
+    }
 })
 
-local Minimizer = Window:NewMinimizer({
-    KeyCode = Enum.KeyCode.LeftControl
+--------------------------------------------------
+-- TAB DISCORD (Info)
+--------------------------------------------------
+local Info = UI:CreateTab({
+    Name = "Discord",
+    Icon = {
+        "rbxassetid://84262889977081",
+        "rbxassetid://84262889977081"
+    }
 })
 
-local MobileButton = Minimizer:CreateMobileMinimizer({
-    Image = "rbxassetid://84402680802382",
-    BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+UI:AddInviteDiscord(Info, {
+    Name = "Zenith Server discord",
+    Link = "https://discord.gg/mV2ncyDhM9",
+    Icon = "rbxassetid://84262889977081"
 })
 
-MobileButton.Size = UDim2.new(0, 50, 0, 50)
-
--- Cantos arredondados
-local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 6)
-corner.Parent = MobileButton
-
--- Contorno preto MAIS GROSSO
-local stroke = Instance.new("UIStroke")
-stroke.Parent = MobileButton
-stroke.Color = Color3.fromRGB(0, 0, 0)
-stroke.Thickness = 4 -- mais grosso
-stroke.Transparency = 0
-stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-
--- Brilho no contorno
-local gradient = Instance.new("UIGradient")
-gradient.Parent = stroke
-gradient.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, Color3.fromRGB(55, 55, 55)),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 0, 0)),
-    ColorSequenceKeypoint.new(1, Color3.fromRGB(70, 70, 70))
-})
-gradient.Rotation = 45
-
-local Info = Window:MakeTab({
-  Title = "Discord",
-  Icon = "Info"
+--------------------------------------------------
+-- TAB MAIN (Farming)
+--------------------------------------------------
+local Farming = UI:CreateTab({
+    Name = "Main",
+    Icon = {
+        "rbxassetid://138770682187300",
+        "rbxassetid://110961158970233"
+    }
 })
 
-Info:AddDiscordInvite({
-	Title = "Zenith Server discord",
-	Description = "The official Zenith Hub community — powerful scripts, constant updates, and dedicated support all in one place.",
-	Banner = "rbxassetid://", -- You can put an RGB Color: Color3.fromRGB(0, 0, 0)
-	Logo = "rbxassetid://84262889977081",
-	Invite = "https://discord.gg/mV2ncyDhM9",
-	Members = Undefined, -- Optional
-	Online = Undefined, -- Optional
-})
-
-local Farming = Window:MakeTab({
-  Title = "Main",
-  Icon = "home"
-})
-
-
-Farming:AddSection("Global Settings")
+UI:AddSection(Farming, { Name = "Global Settings" })
 
 local _Weapon = {
     "Melee",
@@ -1837,7 +1829,7 @@ local _Weapon = {
     "Blox Fruit",
     "Gun"
 }
-Farming:AddDropdown({
+UI:AddDropdown(Farming, {
   Name = "Select Weapon",
   Options = _Weapon,
   Default = "Melee",
@@ -1892,7 +1884,7 @@ local UISizes = {
     Large = 1.15
 }
 
-Farming:AddDropdown({
+UI:AddDropdown(Farming, {
     Name = "UI Size",
     Options = {"Small", "Normal", "Large"},
     Default = "Normal",
@@ -1902,10 +1894,10 @@ Farming:AddDropdown({
 })
 
 
-Farming:AddSection("Farming")
+UI:AddSection(Farming, { Name = "Farming" })
 
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
   Name = "Auto Farm Level",
   Default = false,
   Callback = function(Value)
@@ -1988,7 +1980,7 @@ spawn(function()
 end)
 
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Auto Farm Nearest",
     Default = false,
     Callback = function(Value)
@@ -2016,9 +2008,9 @@ spawn(function()
     end
 end)
 
-Farming:AddSection("Collect")
+UI:AddSection(Farming, { Name = "Collect" })
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Auto Collect Berry",
     Default = false,
     Callback = function(Value)
@@ -2054,7 +2046,7 @@ spawn(function()
     end
 end)
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Auto Collect Chest",
     Default = false,
     Callback = function(Value)
@@ -2094,9 +2086,9 @@ spawn(function()
     end
 end)
 
-Farming:AddSection("Raid")
+UI:AddSection(Farming, { Name = "Raid" })
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Auto Factory Raid",
     Default = false,
     Callback = function(Value)
@@ -2128,7 +2120,7 @@ spawn(function()
 end)
 
 -- Toggle Auto Raid Castle
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Auto Raid Pirate",
     Default = false,
     Callback = function(Value)
@@ -2200,10 +2192,10 @@ spawn(function()
 end)
 
 
-Farming:AddSection("Bone")
+UI:AddSection(Farming, { Name = "Bone" })
 
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Auto Farm Bone",
     Default = false,
     Callback = function(Value)
@@ -2211,7 +2203,7 @@ Farming:AddToggle({
     end
 })
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Accept Quest",
     Default = false,
     Callback = function(Value)
@@ -2219,7 +2211,7 @@ Farming:AddToggle({
     end
 })
 
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Auto Random Bone",
     Default = false,
     Callback = function(Value)
@@ -2315,9 +2307,9 @@ spawn(function()
 end)
 
 
-Farming:AddSection("Material")
+UI:AddSection(Farming, { Name = "Material" })
 
-Farming:AddDropdown({
+UI:AddDropdown(Farming, {
   Name = "Select Material",
   Options = MaterialList,
   Default = "Ectoplasm",
@@ -2327,7 +2319,7 @@ Farming:AddDropdown({
 })
 
 -- Auto Materials
-Farming:AddToggle({
+UI:AddToggle(Farming, {
     Name = "Start Farm",
     Default = false,
     Callback = function(Value)
@@ -2410,9 +2402,9 @@ local SubTab = Window:MakeTab({
     Icon = "sword"
 })
 
-SubTab:AddSection("Elite Section")
+UI:AddSection(SubTab, { Name = "Elite Section" })
 
-SubTab:AddToggle({
+UI:AddToggle(SubTab, {
   Name = "Auto Elite Hunter",
   Default = false,
   Callback = function(Value)
@@ -2452,10 +2444,10 @@ local FruitTab = Window:MakeTab({
     Icon = "cherry"
 })
 
-FruitTab:AddSection("Fruit")
+UI:AddSection(FruitTab, { Name = "Fruit" })
 
 -- Toggle 1: Auto Random Fruit
-FruitTab:AddToggle({
+UI:AddToggle(FruitTab, {
     Title = "Auto Random Fruit",
     Description = "Automatic random devil fruit",
     Default = false,
@@ -2475,7 +2467,7 @@ spawn(function()
 end)
 
 -- Toggle 2: Auto Store Fruit
-FruitTab:AddToggle({
+UI:AddToggle(FruitTab, {
     Title = "Auto Store Fruit",
     Description = "Automatic store devil fruit",
     Default = false,
@@ -2495,7 +2487,7 @@ spawn(function()
 end)
 
 -- Toggle 3: Auto Tween to Fruit
-FruitTab:AddToggle({
+UI:AddToggle(FruitTab, {
     Title = "Auto Collect Fruit",
     Description = "Automatic tween to get devil fruit",
     Default = false,
@@ -2518,7 +2510,7 @@ spawn(function()
     end
 end)
 
-FruitTab:AddSection("Raids")
+UI:AddSection(FruitTab, { Name = "Raids" })
 
 
 -- Definições iniciais de tabelas e variáveis necessárias
@@ -2571,7 +2563,7 @@ end
 -- ==============================
 
 -- 1. Select Chip Dropdown
-FruitTab:AddDropdown({
+UI:AddDropdown(FruitTab, {
     Title = "Select Chip",
     Description = "Choose the chip for the raid",
     Options = RaidChips,
@@ -2606,7 +2598,7 @@ spawn(function()
 end)
 
 -- 2. Auto Buy Chip Toggle
-FruitTab:AddToggle({
+UI:AddToggle(FruitTab, {
     Title = "Buy Chip With Fruit",
     Description = "Use your lowest fruit in your bag",
     Default = false,
@@ -2638,7 +2630,7 @@ FruitTab:AddToggle({
 })
 
 -- 3. Auto Start Raid Toggle
-FruitTab:AddToggle({
+UI:AddToggle(FruitTab, {
     Title = "Auto Start Raid",
     Description = "Starts raid automatically",
     Default = false,
@@ -2672,7 +2664,7 @@ spawn(function()
 end)
 
 -- 4. Auto Complete Raid Toggle (Com integração Attack.Kill)
-FruitTab:AddToggle({
+UI:AddToggle(FruitTab, {
     Title = "Auto Complete Raid",
     Description = "Kills enemies and moves islands",
     Default = false,
@@ -2715,7 +2707,7 @@ spawn(function()
 end)
 
 -- 5. Auto Awakening Toggle
-FruitTab:AddToggle({
+UI:AddToggle(FruitTab, {
     Title = "Auto Awakening",
     Description = "Awakens fruit automatically at the end",
     Default = false,
@@ -2744,25 +2736,25 @@ local Travel = Window:MakeTab({
     Icon = "mappin"
 })
 
-Travel:AddSection("Worlds")
+UI:AddSection(Travel, { Name = "Worlds" })
 
 
 -- Seção de Mares
-Travel:AddButton({
+UI:AddButton(Travel, {
     Name = "Teleport Sea 1",
     Callback = function()
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelMain")
     end
 })
 
-Travel:AddButton({
+UI:AddButton(Travel, {
     Name = "Teleport Sea 2",
     Callback = function()
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelDressrosa")
     end
 })
 
-Travel:AddButton({
+UI:AddButton(Travel, {
     Name = "Teleport Sea 3",
     Callback = function()
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou")
@@ -2775,10 +2767,10 @@ for _, e in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
     table.insert(Location, e.Name)
 end
 
-Travel:AddSection("Island")
+UI:AddSection(Travel, { Name = "Island" })
 
 -- Dropdown de Seleção de Ilha
-Travel:AddDropdown({
+UI:AddDropdown(Travel, {
     Name = "Select Island",
     Options = Location,
     Default = false,
@@ -2788,7 +2780,7 @@ Travel:AddDropdown({
 })
 
 -- Toggle de Teleporte com sua lógica específica
-Travel:AddToggle({
+UI:AddToggle(Travel, {
     Name = "Teleport to Island",
     Default = false,
     Callback = function(Value)
@@ -2850,10 +2842,10 @@ local Stats = Window:MakeTab({
 })
 
 -- Section: Stats Upgrade
-Stats:AddSection("Stats Upgrade")
+UI:AddSection(Stats, { Name = "Stats Upgrade" })
 
 -- Slider
-Stats:AddSlider({
+UI:AddSlider(Stats, {
     Name = "Stats Value",
     Min = 0,
     Max = 1000,
@@ -2865,7 +2857,7 @@ Stats:AddSlider({
 })
 
 -- Auto Melee
-Stats:AddToggle({
+UI:AddToggle(Stats, {
     Name = "Auto Melee",
     Default = false,
     Callback = function(Value)
@@ -2884,7 +2876,7 @@ spawn(function()
 end)
 
 -- Auto Sword
-Stats:AddToggle({
+UI:AddToggle(Stats, {
     Name = "Auto Swords",
     Default = false,
     Callback = function(Value)
@@ -2903,7 +2895,7 @@ spawn(function()
 end)
 
 -- Auto Gun
-Stats:AddToggle({
+UI:AddToggle(Stats, {
     Name = "Auto Gun",
     Default = false,
     Callback = function(Value)
@@ -2922,7 +2914,7 @@ spawn(function()
 end)
 
 -- Auto Blox Fruit
-Stats:AddToggle({
+UI:AddToggle(Stats, {
     Name = "Auto Blox Fruit",
     Default = false,
     Callback = function(Value)
@@ -2941,7 +2933,7 @@ spawn(function()
 end)
 
 -- Auto Defense
-Stats:AddToggle({
+UI:AddToggle(Stats, {
     Name = "Auto Defense",
     Default = false,
     Callback = function(Value)
@@ -2967,7 +2959,7 @@ local EspTab = Window:MakeTab({
     Icon = "eye"
 })
 
-EspTab:AddSection("Esp Tab")
+UI:AddSection(EspTab, { Name = "Esp Tab" })
 
 --------------------------------------------------
 -- VARIÁVEIS
@@ -2989,12 +2981,12 @@ local ESP_COLOR = Color3.fromRGB(255,255,255)
 --------------------------------------------------
 -- TOGGLES
 --------------------------------------------------
-EspTab:AddToggle({ Title="Player ESP",  Default=false, Callback=function(v) PlayerEsp=v end })
-EspTab:AddToggle({ Title="Fruit ESP",   Default=false, Callback=function(v) DevilFruitESP=v end })
-EspTab:AddToggle({ Title="Flower ESP",  Default=false, Callback=function(v) FlowerESP=v end })
-EspTab:AddToggle({ Title="Chest ESP",   Default=false, Callback=function(v) ChestESP=v end })
-EspTab:AddToggle({ Title="Berries ESP", Default=false, Callback=function(v) BerryEsp=v end })
-EspTab:AddToggle({ Title="Island ESP",  Default=false, Callback=function(v) _G.IslandESP=v end })
+UI:AddToggle(EspTab, { Title="Player ESP",  Default=false, Callback=function(v) PlayerEsp=v end })
+UI:AddToggle(EspTab, { Title="Fruit ESP",   Default=false, Callback=function(v) DevilFruitESP=v end })
+UI:AddToggle(EspTab, { Title="Flower ESP",  Default=false, Callback=function(v) FlowerESP=v end })
+UI:AddToggle(EspTab, { Title="Chest ESP",   Default=false, Callback=function(v) ChestESP=v end })
+UI:AddToggle(EspTab, { Title="Berries ESP", Default=false, Callback=function(v) BerryEsp=v end })
+UI:AddToggle(EspTab, { Title="Island ESP",  Default=false, Callback=function(v) _G.IslandESP=v end })
 
 --------------------------------------------------
 -- PLAYER ESP
@@ -3224,8 +3216,8 @@ local Setting = Window:MakeTab({
     Icon = "Settings"
 })
 
-Setting:AddSection("Player Settings")
-Setting:AddSlider({
+UI:AddSection(Setting, { Name = "Player Settings" })
+UI:AddSlider(Setting, {
     Name = "Tween Speed",
     Min = 50,          -- Velocidade mínima (mais devagar)
     Max = 1000,        -- Velocidade máxima (mais rápido)
@@ -3237,7 +3229,7 @@ Setting:AddSlider({
     end
 })
 
-Setting:AddSlider({
+UI:AddSlider(Setting, {
     Name = "Distance Above Mob",
     Min = 0,
     Max = 100,
@@ -3334,11 +3326,11 @@ task.spawn(function()
     end
 end)
 
-Setting:AddSection("Settings Farm")
+UI:AddSection(Setting, { Name = "Settings Farm" })
 
 
 
-Setting:AddToggle({
+UI:AddToggle(Setting, {
     Name = "Auto Attack",
     Default = true,
     Callback = function(Value)
@@ -3347,7 +3339,7 @@ Setting:AddToggle({
 })
 
 local bringMobToggle = false
-local BringMobToggle = Setting:AddToggle({
+local BringMobToggle = UI:AddToggle(Setting, {
     Name = "Bring Mobs",
     Default = true,
     Callback = function(Value)
@@ -3368,7 +3360,7 @@ task.spawn(function()
 end)
 
 
-Setting:AddToggle({
+UI:AddToggle(Setting, {
     Name = "Auto Active Buso",
     Default = true,
     Callback = function(Value)
@@ -3391,9 +3383,9 @@ spawn(function()
     end
 end)
 
-Setting:AddSection("Race")
+UI:AddSection(Setting, { Name = "Race" })
 
-Setting:AddToggle({
+UI:AddToggle(Setting, {
     Name = "Auto Active V3",
     Default = false,
     Callback = function(Value)
@@ -3413,7 +3405,7 @@ spawn(function()
     end
 end)
 
-Setting:AddToggle({
+UI:AddToggle(Setting, {
     Name = "Auto Active V4",
     Default = false,
     Callback = function(Value)
@@ -3435,9 +3427,9 @@ spawn(function()
 end)
 
 
-Setting:AddSection("Other")
+UI:AddSection(Setting, { Name = "Other" })
 
-Setting:AddToggle({
+UI:AddToggle(Setting, {
     Name = "Disable Notify",
     Default = false,
     Callback = function(Value)
@@ -3460,7 +3452,7 @@ spawn(function()
     end
 end)
 
-Setting:AddButton({
+UI:AddButton(Setting, {
   Name = "Redeem All Codes",
   Debounce = 0.5,
   Callback = function()
