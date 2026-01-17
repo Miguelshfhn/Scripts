@@ -1766,96 +1766,53 @@ QuestNeta = function()
     }
 end
 
-local ModernUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/Rizeniii/diamond/refs/heads/main/zero/main.luau"))()
 
-local UI = ModernUI.new({
-    Title = "Zenith Hub [Beta]",
+-- Carregando Fluent UI
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local SaveManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/SaveManager.lua"))()
+local InterfaceManager = loadstring(game:HttpGet("https://raw.githubusercontent.com/dawid-scripts/Fluent/master/Addons/InterfaceManager.lua"))()
+
+local Window = Fluent:CreateWindow({
+    Title = "Zenith Hub [Fluent]",
     SubTitle = "By wz7xwz",
-    Icon = {
-        "rbxassetid://84402680802382",
-        "rbxassetid://84402680802382"
-    },
-    IconFPS = 0.1,
-    FloatingButton = {
-        Icon = {"rbxassetid://84402680802382", "rbxassetid://84402680802382"},
-        Size = 52,
-        Position = UDim2.new(1, -70, 0.5, -26)
-    }
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
 })
 
--- VARIABLES / SERVICES
-local plr = game.Players.LocalPlayer
-local replicated = game:GetService("ReplicatedStorage")
-local RunSer = game:GetService("RunService")
-local workspace = game:GetService("Workspace")
-
--- TABS
-local Info = UI:CreateTab({
-    Name = "Discord",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
-local Farming = UI:CreateTab({
-    Name = "Main",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
-local SubTab = UI:CreateTab({
-    Name = "Sub Farming",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
-local FruitTab = UI:CreateTab({
-    Name = "Fruit/Raids",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
-local Travel = UI:CreateTab({
-    Name = "Travel",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
-local Stats = UI:CreateTab({
-    Name = "Stats",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
-local EspTab = UI:CreateTab({
-    Name = "ESP",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
-local Setting = UI:CreateTab({
-    Name = "Setting",
-    Icon = {"rbxassetid://7733960981", "rbxassetid://7733960981"}
-})
-
--- INFO TAB
-UI:AddInviteDiscord(Info, {
-    Name = "Zenith Server discord",
-    Link = "https://discord.gg/mV2ncyDhM9",
-    Icon = "rbxassetid://84262889977081",
-    ButtonText = "Join"
-})
-
--- FARMING TAB
-UI:AddSection(Farming, { Name = "Global Settings" })
-
-local _Weapon = {
-    "Melee",
-    "Sword",
-    "Blox Fruit",
-    "Gun"
+local Tabs = {
+    Main = Window:AddTab({ Title = "Farming", Icon = "sword" }),
+    Sub = Window:AddTab({ Title = "Sub Farming", Icon = "skull" }),
+    Fruit = Window:AddTab({ Title = "Fruit/Raid", Icon = "apple" }),
+    Travel = Window:AddTab({ Title = "Travel", Icon = "map" }),
+    Stats = Window:AddTab({ Title = "Stats", Icon = "bar-chart" }),
+    ESP = Window:AddTab({ Title = "ESP", Icon = "eye" }),
+    Settings = Window:AddTab({ Title = "Settings", Icon = "settings" })
 }
 
-UI:AddDropdown(Farming, {
-    Name = "Select Weapon",
-    Options = _Weapon,
-    Default = "Melee",
-    Callback = function(Value)
-        _G.ChooseWP = Value
-    end
+local Options = Fluent.Options
+
+--------------------------------------------------------------------------------
+-- TAB: MAIN (FARMING)
+--------------------------------------------------------------------------------
+
+Tabs.Main:AddParagraph({
+    Title = "Global Settings",
+    Content = "Select your weapon"
 })
+
+local Dropdown_Weapon = Tabs.Main:AddDropdown("SelectWeapon", {
+    Title = "Select Weapon",
+    Values = {"Melee", "Sword", "Blox Fruit", "Gun"},
+    Multi = false,
+    Default = "Melee",
+})
+
+Dropdown_Weapon:OnChanged(function(Value)
+    _G.ChooseWP = Value
+end)
 
 spawn(function()
     while wait(Sec) do
@@ -1897,15 +1854,15 @@ spawn(function()
     end
 end)
 
-UI:AddSection(Farming, { Name = "Farming" })
-
-UI:AddToggle(Farming, {
-    Name = "Auto Farm Level",
-    Default = false,
-    Callback = function(Value)
-        _G.Level = Value
-    end
+Tabs.Main:AddParagraph({
+    Title = "Farming",
+    Content = "Main farming functions"
 })
+
+local Toggle_Level = Tabs.Main:AddToggle("AutoFarmLevel", {Title = "Auto Farm Level", Default = false })
+Toggle_Level:OnChanged(function()
+    _G.Level = Options.AutoFarmLevel.Value
+end)
 
 spawn(function()
     while wait(Sec) do
@@ -1917,7 +1874,6 @@ spawn(function()
 
                 if Root and Humanoid and Humanoid.Health > 0 then  
                     local QuestGui = plr.PlayerGui.Main.Quest  
-                    
                     if QuestGui.Visible == false then  
                         _tp(QuestNeta()[6])  
                         if (Root.Position - QuestNeta()[6].Position).Magnitude <= 5 then  
@@ -1932,7 +1888,6 @@ spawn(function()
                             if workspace.Enemies:FindFirstChild(QuestNeta()[1]) then  
                                 local TargetMob = nil
                                 local MaxDistance = math.huge
-
                                 for i, v in pairs(workspace.Enemies:GetChildren()) do
                                     if v.Name == QuestNeta()[1] and Attack.Alive(v) then
                                         local Distance = (Root.Position - v.HumanoidRootPart.Position).Magnitude
@@ -1942,7 +1897,6 @@ spawn(function()
                                         end
                                     end
                                 end
-
                                 if TargetMob then
                                     repeat
                                         wait()
@@ -1967,13 +1921,10 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(Farming, {
-    Name = "Auto Farm Nearest",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoFarmNear = Value
-    end
-})
+local Toggle_Near = Tabs.Main:AddToggle("AutoFarmNearest", {Title = "Auto Farm Nearest", Default = false })
+Toggle_Near:OnChanged(function()
+    _G.AutoFarmNear = Options.AutoFarmNearest.Value
+end)
 
 spawn(function()
     while wait() do
@@ -1994,15 +1945,12 @@ spawn(function()
     end
 end)
 
-UI:AddSection(Farming, { Name = "Collect" })
+Tabs.Main:AddParagraph({Title = "Collect", Content = ""})
 
-UI:AddToggle(Farming, {
-    Name = "Auto Collect Berry",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoBerry = Value
-    end
-})
+local Toggle_Berry = Tabs.Main:AddToggle("AutoCollectBerry", {Title = "Auto Collect Berry", Default = false })
+Toggle_Berry:OnChanged(function()
+    _G.AutoBerry = Options.AutoCollectBerry.Value
+end)
 
 spawn(function()
     while wait(Sec) do
@@ -2011,7 +1959,6 @@ spawn(function()
             local Players = game:GetService("Players")
             local Player = Players.LocalPlayer
             local BerryBush = CollectionService:GetTagged("BerryBush")
-            local Distance, Nearest = math.huge
             for i = 1, # BerryBush do
                 local Bush = BerryBush[i]
                 for AttributeName, BerryName in pairs(Bush:GetAttributes()) do
@@ -2033,16 +1980,13 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(Farming, {
-    Name = "Auto Collect Chest",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoFarmChest = Value
-    end
-})
+local Toggle_Chest = Tabs.Main:AddToggle("AutoCollectChest", {Title = "Auto Collect Chest", Default = false })
+Toggle_Chest:OnChanged(function()
+    _G.AutoFarmChest = Options.AutoCollectChest.Value
+end)
 
 spawn(function()
-    while task.wait(0.1) do 
+    while task.wait(0.1) do
         if _G.AutoFarmChest then
             pcall(function()
                 local CollectionService = game:GetService("CollectionService")
@@ -2074,15 +2018,12 @@ spawn(function()
     end
 end)
 
-UI:AddSection(Farming, { Name = "Raid" })
+Tabs.Main:AddParagraph({Title = "Raid & Bone", Content = ""})
 
-UI:AddToggle(Farming, {
-    Name = "Auto Factory Raid",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoFactory = Value
-    end
-})
+local Toggle_Factory = Tabs.Main:AddToggle("AutoFactory", {Title = "Auto Factory Raid", Default = false })
+Toggle_Factory:OnChanged(function()
+    _G.AutoFactory = Options.AutoFactory.Value
+end)
 
 spawn(function()
     while wait(Sec) do
@@ -2103,31 +2044,21 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(Farming, {
-    Name = "Auto Raid Pirate",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoRaidCastle = Value
-    end
-})
+local Toggle_Pirate = Tabs.Main:AddToggle("AutoRaidPirate", {Title = "Auto Raid Pirate", Default = false })
+Toggle_Pirate:OnChanged(function()
+    _G.AutoRaidCastle = Options.AutoRaidPirate.Value
+end)
 
 spawn(function()
     while task.wait(Sec) do
         if _G.AutoRaidCastle then
             pcall(function()
-                local Character = plr.Character or plr.CharacterAdded:Wait()
-                local Root = Character:FindFirstChild("HumanoidRootPart")
-                local TargetCFrame = CFrame.new(
-                    -5496.17432, 313.768921, -2841.53027,
-                    0.924894512, 7.37058015e-09, 0.380223751,
-                    3.5881019e-08, 1, -1.06665446e-07,
-                    -0.380223751, 1.12297109e-07, 0.924894512
-                )
-                local CheckCFrame = CFrame.new(
-                    -5539.3115234375, 313.80053710938, -2972.3723144531
-                )
-
-                if (CheckCFrame.Position - Root.Position).Magnitude <= 500 then
+                local TargetCFrame = CFrame.new(-5496.17432, 313.768921, -2841.53027, 0.924894512, 7.37058015e-09, 0.380223751, 3.5881019e-08, 1, -1.06665446e-07, -0.380223751, 1.12297109e-07, 0.924894512)
+                local CheckCFrame = CFrame.new(-5539.3115234375, 313.80053710938, -2972.3723144531)
+                
+                -- Se estiver perto do Castle
+                local Root = plr.Character:FindFirstChild("HumanoidRootPart")
+                if Root and (CheckCFrame.Position - Root.Position).Magnitude <= 500 then
                     for _, e in pairs(workspace.Enemies:GetChildren()) do
                         if not _G.AutoRaidCastle then break end
                         if e:FindFirstChild("HumanoidRootPart") and e:FindFirstChild("Humanoid") and e.Humanoid.Health > 0 then
@@ -2135,21 +2066,12 @@ spawn(function()
                                 repeat
                                     task.wait()
                                     G.Kill(e, _G.AutoRaidCastle)
-                                until not _G.AutoRaidCastle
-                                or not e.Parent
-                                or e.Humanoid.Health <= 0
-                                or not workspace.Enemies:FindFirstChild(e.Name)
+                                until not _G.AutoRaidCastle or not e.Parent or e.Humanoid.Health <= 0 or not workspace.Enemies:FindFirstChild(e.Name)
                             end
                         end
                     end
                 else
-                    local EnemyList = {
-                        "Galley Pirate","Galley Captain","Raider","Mercenary",
-                        "Vampire","Zombie","Snow Trooper","Winter Warrior",
-                        "Lab Subordinate","Horned Warrior","Magma Ninja","Lava Pirate",
-                        "Ship Deckhand","Ship Engineer","Ship Steward","Ship Officer",
-                        "Arctic Warrior","Snow Lurker","Sea Soldier","Water Fighter"
-                    }
+                    local EnemyList = {"Galley Pirate","Galley Captain","Raider","Mercenary","Vampire","Zombie","Snow Trooper","Winter Warrior","Lab Subordinate","Horned Warrior","Magma Ninja","Lava Pirate","Ship Deckhand","Ship Engineer","Ship Steward","Ship Officer","Arctic Warrior","Snow Lurker","Sea Soldier","Water Fighter"}
                     for _, n in pairs(replicated:GetChildren()) do
                         if not _G.AutoRaidCastle then break end
                         if table.find(EnemyList, n.Name) then
@@ -2163,31 +2085,20 @@ spawn(function()
     end
 end)
 
-UI:AddSection(Farming, { Name = "Bone" })
+local Toggle_Bone = Tabs.Main:AddToggle("AutoFarmBone", {Title = "Auto Farm Bone", Default = false })
+Toggle_Bone:OnChanged(function()
+    _G.AutoFarm_Bone = Options.AutoFarmBone.Value
+end)
 
-UI:AddToggle(Farming, {
-    Name = "Auto Farm Bone",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoFarm_Bone = Value
-    end
-})
+local Toggle_AcceptQuest = Tabs.Main:AddToggle("AcceptQuest", {Title = "Accept Quest (Bone)", Default = false })
+Toggle_AcceptQuest:OnChanged(function()
+    _G.AcceptQuest = Options.AcceptQuest.Value
+end)
 
-UI:AddToggle(Farming, {
-    Name = "Accept Quest",
-    Default = false,
-    Callback = function(Value)
-        _G.AcceptQuest = Value
-    end
-})
-
-UI:AddToggle(Farming, {
-    Name = "Auto Random Bone",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Random_Bone = Value
-    end
-})
+local Toggle_RandomBone = Tabs.Main:AddToggle("AutoRandomBone", {Title = "Auto Random Bone", Default = false })
+Toggle_RandomBone:OnChanged(function()
+    _G.Auto_Random_Bone = Options.AutoRandomBone.Value
+end)
 
 spawn(function()
     while task.wait(1) do
@@ -2198,7 +2109,6 @@ spawn(function()
 end)
 
 local portalDebounce = false
-
 spawn(function()
     while task.wait() do
         if _G.AutoFarm_Bone then
@@ -2223,7 +2133,7 @@ spawn(function()
                 else
                     portalDebounce = false
                 end
- 
+
                 if _G.AcceptQuest and not QuestUI.Visible then          
                     local distToNPC = (PosQ.Position - hrp.Position).Magnitude    
                     if distToNPC > 5 then    
@@ -2251,7 +2161,6 @@ spawn(function()
                         end          
                         return closest          
                     end          
-
                     local targetMob = GetClosestMob()          
                     if targetMob then          
                         repeat  
@@ -2267,28 +2176,28 @@ spawn(function()
     end
 end)
 
-UI:AddSection(Farming, { Name = "Material" })
+Tabs.Main:AddParagraph({Title = "Materials", Content = ""})
 
-UI:AddDropdown(Farming, {
-    Name = "Select Material",
-    Options = MaterialList,
+-- Material List precisa estar definida globalmente ou passada aqui, assumindo que existe:
+local MaterialList = MaterialList or {"Ectoplasm"} -- Fallback
+
+local Dropdown_Mat = Tabs.Main:AddDropdown("SelectMaterial", {
+    Title = "Select Material",
+    Values = MaterialList,
+    Multi = false,
     Default = "Ectoplasm",
-    Callback = function(Value)
-        getgenv().SelectMaterial = Value
-    end
 })
+Dropdown_Mat:OnChanged(function(Value)
+    getgenv().SelectMaterial = Value
+end)
 
-UI:AddToggle(Farming, {
-    Name = "Start Farm",
-    Default = false,
-    Callback = function(Value)
-        getgenv().AutoMaterial = Value
-    end
-})
+local Toggle_Mat = Tabs.Main:AddToggle("StartFarmMat", {Title = "Start Farm Material", Default = false })
+Toggle_Mat:OnChanged(function()
+    getgenv().AutoMaterial = Options.StartFarmMat.Value
+end)
 
 spawn(function()
     local plr = game.Players.LocalPlayer
-
     local function processEnemy(v, EnemyName)
         if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
             if v.Name == EnemyName then
@@ -2353,16 +2262,16 @@ spawn(function()
     end
 end)
 
--- SUB FARMING TAB
-UI:AddSection(SubTab, { Name = "Elite Section" })
+--------------------------------------------------------------------------------
+-- TAB: SUB FARMING
+--------------------------------------------------------------------------------
 
-UI:AddToggle(SubTab, {
-    Name = "Auto Elite Hunter",
-    Default = false,
-    Callback = function(Value)
-        _G.FarmEliteHunt = Value
-    end
-})
+Tabs.Sub:AddParagraph({Title = "Elite Hunter", Content = ""})
+
+local Toggle_Elite = Tabs.Sub:AddToggle("AutoEliteHunter", {Title = "Auto Elite Hunter", Default = false })
+Toggle_Elite:OnChanged(function()
+    _G.FarmEliteHunt = Options.AutoEliteHunter.Value
+end)
 
 spawn(function()
     while wait(Sec) do
@@ -2375,7 +2284,7 @@ spawn(function()
                                 _tp(v.HumanoidRootPart.CFrame)
                             end
                         end
-                        for i, v in pairs(Enemies:GetChildren()) do
+                        for i, v in pairs(workspace.Enemies:GetChildren()) do
                             if (string.find(v.Name, "Diablo") or string.find(v.Name, "Urban") or string.find(v.Name, "Deandre")) and Attack.Alive(v) then
                                 repeat
                                     wait()
@@ -2392,17 +2301,16 @@ spawn(function()
     end
 end)
 
--- FRUIT TAB
-UI:AddSection(FruitTab, { Name = "Fruit" })
+--------------------------------------------------------------------------------
+-- TAB: FRUIT / RAID
+--------------------------------------------------------------------------------
 
-UI:AddToggle(FruitTab, {
-    Name = "Auto Random Fruit",
-    Default = false,
-    Callback = function(I)
-        _G.Random_Auto = I
-    end,
-})
+Tabs.Fruit:AddParagraph({Title = "Fruit", Content = ""})
 
+local Toggle_RandFruit = Tabs.Fruit:AddToggle("AutoRandomFruit", {Title = "Auto Random Fruit", Default = false })
+Toggle_RandFruit:OnChanged(function()
+    _G.Random_Auto = Options.AutoRandomFruit.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
@@ -2413,14 +2321,10 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(FruitTab, {
-    Name = "Auto Store Fruit",
-    Default = false,
-    Callback = function(I)
-        _G.StoreF = I
-    end,
-})
-
+local Toggle_StoreFruit = Tabs.Fruit:AddToggle("AutoStoreFruit", {Title = "Auto Store Fruit", Default = false })
+Toggle_StoreFruit:OnChanged(function()
+    _G.StoreF = Options.AutoStoreFruit.Value
+end)
 spawn(function()
     while wait(Sec) do
         if _G.StoreF then
@@ -2431,14 +2335,10 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(FruitTab, {
-    Name = "Auto Collect Fruit",
-    Default = false,
-    Callback = function(I)
-        _G.TwFruits = I
-    end,
-})
-
+local Toggle_CollectFruit = Tabs.Fruit:AddToggle("AutoCollectFruit", {Title = "Auto Collect Fruit (Tween)", Default = false })
+Toggle_CollectFruit:OnChanged(function()
+    _G.TwFruits = Options.AutoCollectFruit.Value
+end)
 spawn(function()
     while wait(Sec) do
         if _G.TwFruits then
@@ -2453,60 +2353,22 @@ spawn(function()
     end
 end)
 
-UI:AddSection(FruitTab, { Name = "Raids" })
+Tabs.Fruit:AddParagraph({Title = "Raids", Content = ""})
 
-local RaidChips = {
-    "Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", 
-    "Magma", "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"
-}
+local RaidChips = {"Flame", "Ice", "Quake", "Light", "Dark", "String", "Rumble", "Magma", "Human: Buddha", "Sand", "Bird: Phoenix", "Dough"}
 
-function IsIslandRaid(cu)
-    local locs = game:GetService("Workspace")["_WorldOrigin"].Locations
-    if locs:FindFirstChild("Island " .. cu) then
-        local min = 4500
-        for _, v in ipairs(locs:GetChildren()) do
-            if v.Name == "Island " .. cu then
-                local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                if dist < min then
-                    min = dist
-                end
-            end
-        end
-        for _, v in ipairs(locs:GetChildren()) do
-            if v.Name == "Island " .. cu then
-                local dist = (v.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-                if dist <= min then
-                    return v
-                end
-            end
-        end
-    end
-end
-
-function getNextIsland()
-    local order = {5, 4, 3, 2, 1}
-    for _, id in ipairs(order) do
-        local island = IsIslandRaid(id)
-        if island then
-            local dist = (island.Position - plr.Character.HumanoidRootPart.Position).Magnitude
-            if dist <= 4500 then
-                return island
-            end
-        end
-    end
-end
-
-UI:AddDropdown(FruitTab, {
-    Name = "Select Chip",
-    Options = RaidChips,
+local Dropdown_Chip = Tabs.Fruit:AddDropdown("SelectChip", {
+    Title = "Select Chip",
+    Values = RaidChips,
+    Multi = false,
     Default = "Flame",
-    Callback = function(Value)
-        _G.SelectChip = Value
-    end,
 })
+Dropdown_Chip:OnChanged(function(Value)
+    _G.SelectChip = Value
+end)
 
 spawn(function()
-    while task.wait(1) do 
+    while task.wait(1) do
         if _G.AutoSelectDungeon then
             pcall(function()
                 if GetBP("Flame-Flame") then _G.SelectChip = "Flame"
@@ -2528,45 +2390,40 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(FruitTab, {
-    Name = "Buy Chip With Fruit",
-    Default = false,
-    Callback = function(Value)
-        _G.AutoBuyChip = Value
-        task.spawn(function()
-            while _G.AutoBuyChip do
-                if not GetBP("Special Microchip") then
-                    local I = {} 
-                    for _, data in next, replicated.Remotes.CommF_:InvokeServer("GetFruits") do
-                        local rarity = tostring(data.Rarity or ""):lower()
-                        if data.Price <= 1150000 or rarity == "common" or rarity == "uncommon" or rarity == "rare" then
-                            table.insert(I, data.Name)
-                        end
-                    end
-                    for _, fruitName in pairs(I) do
-                        if not GetBP("Special Microchip") then
-                            replicated.Remotes.CommF_:InvokeServer("LoadFruit", fruitName)
-                            replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
-                        end
+local Toggle_BuyChip = Tabs.Fruit:AddToggle("BuyChip", {Title = "Buy Chip With Fruit", Default = false })
+Toggle_BuyChip:OnChanged(function()
+    _G.AutoBuyChip = Options.BuyChip.Value
+    
+    task.spawn(function()
+        while _G.AutoBuyChip do
+            if not GetBP("Special Microchip") then
+                local I = {} 
+                for _, data in next, replicated.Remotes.CommF_:InvokeServer("GetFruits") do
+                    local rarity = tostring(data.Rarity or ""):lower()
+                    if data.Price <= 1150000 or rarity == "common" or rarity == "uncommon" or rarity == "rare" then
+                        table.insert(I, data.Name)
                     end
                 end
-                task.wait(3)
+                for _, fruitName in pairs(I) do
+                    if not GetBP("Special Microchip") then
+                        replicated.Remotes.CommF_:InvokeServer("LoadFruit", fruitName)
+                        replicated.Remotes.CommF_:InvokeServer("RaidsNpc", "Select", _G.SelectChip)
+                    end
+                end
             end
-        end)
-    end,
-})
+            task.wait(3)
+        end
+    end)
+end)
 
-UI:AddToggle(FruitTab, {
-    Name = "Auto Start Raid",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_StartRaid = Value
-    end,
-})
+local Toggle_StartRaid = Tabs.Fruit:AddToggle("AutoStartRaid", {Title = "Auto Start Raid", Default = false })
+Toggle_StartRaid:OnChanged(function()
+    _G.Auto_StartRaid = Options.AutoStartRaid.Value
+end)
 
 spawn(function()
     while true do
-        task.wait(5) 
+        task.wait(5)
         if _G.Auto_StartRaid then
             pcall(function()
                 if plr.PlayerGui.Main.TopHUDList.RaidTimer.Visible == false then
@@ -2587,13 +2444,10 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(FruitTab, {
-    Name = "Auto Complete Raid",
-    Default = false,
-    Callback = function(Value)
-        _G.Raiding = Value
-    end,
-})
+local Toggle_Raiding = Tabs.Fruit:AddToggle("AutoCompleteRaid", {Title = "Auto Complete Raid", Default = false })
+Toggle_Raiding:OnChanged(function()
+    _G.Raiding = Options.AutoCompleteRaid.Value
+end)
 
 spawn(function()
     while task.wait() do
@@ -2620,13 +2474,10 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(FruitTab, {
-    Name = "Auto Awakening",
-    Default = false,
-    Callback = function(Value)
-        G.Auto_Awakener = Value
-    end,
-})
+local Toggle_Awaken = Tabs.Fruit:AddToggle("AutoAwaken", {Title = "Auto Awakening", Default = false })
+Toggle_Awaken:OnChanged(function()
+    G.Auto_Awakener = Options.AutoAwaken.Value
+end)
 
 spawn(function()
     while task.wait(1) do
@@ -2639,214 +2490,195 @@ spawn(function()
     end
 end)
 
+--------------------------------------------------------------------------------
+-- TAB: TRAVEL
+--------------------------------------------------------------------------------
 
--- TRAVEL TAB
-UI:AddSection(Travel, { Name = "Worlds" })
-
-UI:AddButton(Travel, {
-    Name = "Teleport Sea 1",
+Tabs.Travel:AddButton({
+    Title = "Teleport Sea 1",
     Callback = function()
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelMain")
     end
 })
 
-UI:AddButton(Travel, {
-    Name = "Teleport Sea 2",
+Tabs.Travel:AddButton({
+    Title = "Teleport Sea 2",
     Callback = function()
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelDressrosa")
     end
 })
 
-UI:AddButton(Travel, {
-    Name = "Teleport Sea 3",
+Tabs.Travel:AddButton({
+    Title = "Teleport Sea 3",
     Callback = function()
         game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou")
     end
 })
 
 local Location = {}
-for _, e in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
-    table.insert(Location, e.Name)
+if workspace:FindFirstChild("_WorldOrigin") and workspace._WorldOrigin:FindFirstChild("Locations") then
+    for _, e in pairs(workspace._WorldOrigin.Locations:GetChildren()) do
+        table.insert(Location, e.Name)
+    end
 end
 
-UI:AddSection(Travel, { Name = "Island" })
-
-UI:AddDropdown(Travel, {
-    Name = "Select Island",
-    Options = Location,
-    Default = false,
-    Callback = function(I)
-        _G.Island = I
-    end,
+local Dropdown_Island = Tabs.Travel:AddDropdown("SelectIsland", {
+    Title = "Select Island",
+    Values = Location,
+    Multi = false,
+    Default = "",
 })
+Dropdown_Island:OnChanged(function(Value)
+    _G.Island = Value
+end)
 
-UI:AddToggle(Travel, {
-    Name = "Teleport to Island",
-    Default = false,
-    Callback = function(Value)
-        _G.Teleport = Value
-        if Value then
-            local plr = game.Players.LocalPlayer
-            local Character = plr.Character or plr.CharacterAdded:Wait()
-            local Root = Character:WaitForChild("HumanoidRootPart")
-            
-            local targetIsland = workspace._WorldOrigin.Locations:FindFirstChild(_G.Island)
-            
-            if targetIsland then
-                spawn(function()
-                    Root.CFrame = Root.CFrame * CFrame.new(0, 700, 0)
-                    wait(0.1) 
-                    local destination = targetIsland.CFrame * CFrame.new(0, 700, 0)
-                    repeat
-                        wait()
-                        if _tp then
-                            _tp(destination)
-                        else
-                            Root.CFrame = destination
-                        end
-                    until not _G.Teleport or (Root.Position - destination.p).Magnitude < 10
-                    
-                    if _G.Teleport then
-                        Root.CFrame = targetIsland.CFrame * CFrame.new(0, 5, 0) 
+local Toggle_TPIsland = Tabs.Travel:AddToggle("TeleportToIsland", {Title = "Teleport to Island", Default = false })
+Toggle_TPIsland:OnChanged(function()
+    _G.Teleport = Options.TeleportToIsland.Value
+    
+    if _G.Teleport then
+        local plr = game.Players.LocalPlayer
+        local Character = plr.Character or plr.CharacterAdded:Wait()
+        local Root = Character:WaitForChild("HumanoidRootPart")
+        local targetIsland = workspace._WorldOrigin.Locations:FindFirstChild(_G.Island)
+        
+        if targetIsland then
+            spawn(function()
+                Root.CFrame = Root.CFrame * CFrame.new(0, 700, 0)
+                wait(0.1) 
+                local destination = targetIsland.CFrame * CFrame.new(0, 700, 0)
+                repeat
+                    wait()
+                    if _tp then
+                        _tp(destination)
+                    else
+                        Root.CFrame = destination
                     end
-                    _G.Teleport = false
-                end)
-            else
+                until not _G.Teleport or (Root.Position - destination.p).Magnitude < 10
+                if _G.Teleport then
+                    Root.CFrame = targetIsland.CFrame * CFrame.new(0, 5, 0)
+                end
                 _G.Teleport = false
-            end
+                Options.TeleportToIsland:SetValue(false)
+            end)
+        else
+            _G.Teleport = false
+            Options.TeleportToIsland:SetValue(false)
         end
-    end,
-})
+    end
+end)
 
--- STATS TAB
-UI:AddSection(Stats, { Name = "Stats Upgrade" })
+--------------------------------------------------------------------------------
+-- TAB: STATS
+--------------------------------------------------------------------------------
 
-UI:AddSlider(Stats, {
-    Name = "Stats Value",
+local Slider_Stats = Tabs.Stats:AddSlider("StatsValue", {
+    Title = "Stats Value",
+    Default = 10,
     Min = 0,
     Max = 1000,
-    Default = 10,
+    Rounding = 1,
     Callback = function(Value)
         pSats = Value
     end
 })
 
-UI:AddToggle(Stats, {
-    Name = "Auto Melee",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Melee = Value
-    end
-})
-
+local Toggle_Melee = Tabs.Stats:AddToggle("AutoMelee", {Title = "Auto Melee", Default = false })
+Toggle_Melee:OnChanged(function()
+    _G.Auto_Melee = Options.AutoMelee.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
-            if _G.Auto_Melee then
-                statsSetings("Melee", pSats)
-            end
+            if _G.Auto_Melee then statsSetings("Melee", pSats) end
         end)
     end
 end)
 
-UI:AddToggle(Stats, {
-    Name = "Auto Swords",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Sword = Value
-    end
-})
-
+local Toggle_Sword = Tabs.Stats:AddToggle("AutoSword", {Title = "Auto Sword", Default = false })
+Toggle_Sword:OnChanged(function()
+    _G.Auto_Sword = Options.AutoSword.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
-            if _G.Auto_Sword then
-                statsSetings("Sword", pSats)
-            end
+            if _G.Auto_Sword then statsSetings("Sword", pSats) end
         end)
     end
 end)
 
-UI:AddToggle(Stats, {
-    Name = "Auto Gun",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Gun = Value
-    end
-})
-
+local Toggle_Gun = Tabs.Stats:AddToggle("AutoGun", {Title = "Auto Gun", Default = false })
+Toggle_Gun:OnChanged(function()
+    _G.Auto_Gun = Options.AutoGun.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
-            if _G.Auto_Gun then
-                statsSetings("Gun", pSats)
-            end
+            if _G.Auto_Gun then statsSetings("Gun", pSats) end
         end)
     end
 end)
 
-UI:AddToggle(Stats, {
-    Name = "Auto Blox Fruit",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_DevilFruit = Value
-    end
-})
-
+local Toggle_Devil = Tabs.Stats:AddToggle("AutoDevil", {Title = "Auto Blox Fruit", Default = false })
+Toggle_Devil:OnChanged(function()
+    _G.Auto_DevilFruit = Options.AutoDevil.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
-            if _G.Auto_DevilFruit then
-                statsSetings("Devil", pSats)
-            end
+            if _G.Auto_DevilFruit then statsSetings("Devil", pSats) end
         end)
     end
 end)
 
-UI:AddToggle(Stats, {
-    Name = "Auto Defense",
-    Default = false,
-    Callback = function(Value)
-        _G.Auto_Defense = Value
-    end
-})
-
+local Toggle_Defense = Tabs.Stats:AddToggle("AutoDefense", {Title = "Auto Defense", Default = false })
+Toggle_Defense:OnChanged(function()
+    _G.Auto_Defense = Options.AutoDefense.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
-            if _G.Auto_Defense then
-                statsSetings("Defense", pSats)
-            end
+            if _G.Auto_Defense then statsSetings("Defense", pSats) end
         end)
     end
 end)
 
--- ESP TAB
-UI:AddSection(EspTab, { Name = "Esp Tab" })
+--------------------------------------------------------------------------------
+-- TAB: ESP
+--------------------------------------------------------------------------------
 
-PlayerEsp     = false
-DevilFruitESP = false
-FlowerESP     = false
-ChestESP      = false
-BerryEsp      = false
-_G.IslandESP  = false
+local PlayerEsp = false
+local DevilFruitESP = false
+local FlowerESP = false
+local ChestESP = false
+local BerryEsp = false
+_G.IslandESP = false
 
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local CollectionService = game:GetService("CollectionService")
-local ESP_FONT  = Enum.Font.Cartoon
+local ESP_FONT = Enum.Font.Cartoon
 local ESP_COLOR = Color3.fromRGB(255,255,255)
 
-UI:AddToggle(EspTab, { Name="Player ESP",  Default=false, Callback=function(v) PlayerEsp=v end })
-UI:AddToggle(EspTab, { Name="Fruit ESP",   Default=false, Callback=function(v) DevilFruitESP=v end })
-UI:AddToggle(EspTab, { Name="Flower ESP",  Default=false, Callback=function(v) FlowerESP=v end })
-UI:AddToggle(EspTab, { Name="Chest ESP",   Default=false, Callback=function(v) ChestESP=v end })
-UI:AddToggle(EspTab, { Name="Berries ESP", Default=false, Callback=function(v) BerryEsp=v end })
-UI:AddToggle(EspTab, { Name="Island ESP",  Default=false, Callback=function(v) _G.IslandESP=v end })
+local Toggle_ESP_Player = Tabs.ESP:AddToggle("EspPlayer", {Title = "Player ESP", Default = false })
+Toggle_ESP_Player:OnChanged(function() PlayerEsp = Options.EspPlayer.Value end)
 
+local Toggle_ESP_Fruit = Tabs.ESP:AddToggle("EspFruit", {Title = "Fruit ESP", Default = false })
+Toggle_ESP_Fruit:OnChanged(function() DevilFruitESP = Options.EspFruit.Value end)
+
+local Toggle_ESP_Flower = Tabs.ESP:AddToggle("EspFlower", {Title = "Flower ESP", Default = false })
+Toggle_ESP_Flower:OnChanged(function() FlowerESP = Options.EspFlower.Value end)
+
+local Toggle_ESP_Chest = Tabs.ESP:AddToggle("EspChest", {Title = "Chest ESP", Default = false })
+Toggle_ESP_Chest:OnChanged(function() ChestESP = Options.EspChest.Value end)
+
+local Toggle_ESP_Berry = Tabs.ESP:AddToggle("EspBerry", {Title = "Berries ESP", Default = false })
+Toggle_ESP_Berry:OnChanged(function() BerryEsp = Options.EspBerry.Value end)
+
+local Toggle_ESP_Island = Tabs.ESP:AddToggle("EspIsland", {Title = "Island ESP", Default = false })
+Toggle_ESP_Island:OnChanged(function() _G.IslandESP = Options.EspIsland.Value end)
+
+-- ESP Functions
 function EspPly()
 	for _,plr in pairs(Players:GetPlayers()) do
-		if plr ~= LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
+		if plr ~= Players.LocalPlayer and plr.Character and plr.Character:FindFirstChild("Head") then
 			if PlayerEsp then
 				if not plr.Character.Head:FindFirstChild("ESP") then
 					local gui = Instance.new("BillboardGui", plr.Character.Head)
@@ -2862,12 +2694,9 @@ function EspPly()
 					txt.TextStrokeTransparency = 0
 					txt.TextScaled = true
 				end
-				plr.Character.Head.ESP.TextLabel.Text =
-					plr.Name.." | Lv. "..plr.Data.Level.Value
+				plr.Character.Head.ESP.TextLabel.Text = plr.Name.." | Lv. "..plr.Data.Level.Value
 			else
-				if plr.Character.Head:FindFirstChild("ESP") then
-					plr.Character.Head.ESP:Destroy()
-				end
+				if plr.Character.Head:FindFirstChild("ESP") then plr.Character.Head.ESP:Destroy() end
 			end
 		end
 	end
@@ -2891,12 +2720,10 @@ function DevEsp()
 					txt.TextStrokeTransparency = 0
 					txt.TextScaled = true
 				end
-				local dist = (LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3
+				local dist = (Players.LocalPlayer.Character.Head.Position - v.Handle.Position).Magnitude/3
 				v.Handle.ESP.TextLabel.Text = v.Name.." | "..math.floor(dist).." M"
 			else
-				if v.Handle:FindFirstChild("ESP") then
-					v.Handle.ESP:Destroy()
-				end
+				if v.Handle:FindFirstChild("ESP") then v.Handle.ESP:Destroy() end
 			end
 		end
 	end
@@ -2921,7 +2748,7 @@ function flowerEsp()
 					txt.TextScaled = true
 				end
 				local name = v.Name=="Flower1" and "Blue Flower" or "Red Flower"
-				local dist = (LocalPlayer.Character.Head.Position - v.Position).Magnitude/3
+				local dist = (Players.LocalPlayer.Character.Head.Position - v.Position).Magnitude/3
 				v.ESP.TextLabel.Text = name.." | "..math.floor(dist).." M"
 			else
 				if v:FindFirstChild("ESP") then v.ESP:Destroy() end
@@ -2931,6 +2758,7 @@ function flowerEsp()
 end
 
 function ChestEsp()
+    local CollectionService = game:GetService("CollectionService")
 	for _,e in pairs(CollectionService:GetTagged("_ChestTagged")) do
 		if ChestESP then
 			if not e:FindFirstChild("ESP") then
@@ -2948,7 +2776,7 @@ function ChestEsp()
 				txt.TextStrokeTransparency = 0
 				txt.TextScaled = true
 			end
-			local dist = (LocalPlayer.Character.Head.Position - e:GetPivot().Position).Magnitude/3
+			local dist = (Players.LocalPlayer.Character.Head.Position - e:GetPivot().Position).Magnitude/3
 			e.ESP.BillboardGui.TextLabel.Text = "Chest | "..math.floor(dist).." M"
 		else
 			if e:FindFirstChild("ESP") then e.ESP:Destroy() end
@@ -2957,6 +2785,7 @@ function ChestEsp()
 end
 
 function berriesEsp()
+    local CollectionService = game:GetService("CollectionService")
 	if not BerryEsp then
 		for _,v in pairs(workspace:GetChildren()) do
 			if v.Name=="BerryESPPart" then v:Destroy() end
@@ -2981,7 +2810,7 @@ function berriesEsp()
 		txt.TextColor3=ESP_COLOR
 		txt.TextStrokeTransparency=0
 		txt.TextScaled=true
-		local dist=(LocalPlayer.Character.Head.Position-pos).Magnitude/3
+		local dist=(Players.LocalPlayer.Character.Head.Position-pos).Magnitude/3
 		txt.Text="Berry | "..math.floor(dist).." M"
 	end
 end
@@ -3025,29 +2854,36 @@ task.spawn(function()
 	end
 end)
 
--- SETTINGS TAB
-UI:AddSection(Setting, { Name = "Player Settings" })
+--------------------------------------------------------------------------------
+-- TAB: SETTINGS
+--------------------------------------------------------------------------------
 
-UI:AddSlider(Setting, {
-    Name = "Tween Speed",
+Tabs.Settings:AddParagraph({Title = "Player Settings", Content = ""})
+
+local Slider_Tween = Tabs.Settings:AddSlider("TweenSpeed", {
+    Title = "Tween Speed",
+    Default = 360,
     Min = 50,
     Max = 1000,
-    Default = 360,
+    Rounding = 1,
     Callback = function(Value)
+        _G.Settings = _G.Settings or {} 
         _G.Settings.TweenSpeed = Value
     end
 })
 
-UI:AddSlider(Setting, {
-    Name = "Distance Above Mob",
+local Slider_Dist = Tabs.Settings:AddSlider("DistanceMob", {
+    Title = "Distance Above Mob",
+    Default = 20,
     Min = 0,
     Max = 100,
-    Default = 20,
+    Rounding = 1,
     Callback = function(Value)
         _G.DistanceAboveMob = Value
     end
 })
 
+-- BRING MOB LOGIC
 local BRING_TIME = 3
 local RELEASE_TIME = 5
 local RANGE_PLAYER = 200
@@ -3057,10 +2893,7 @@ local function GetQuestMobPosition(MobName)
     local pos = Vector3.zero
     local count = 0
     for _, v in pairs(workspace.Enemies:GetChildren()) do
-        if v.Name == MobName
-        and v:FindFirstChild("HumanoidRootPart")
-        and v:FindFirstChild("Humanoid")
-        and v.Humanoid.Health > 0 then
+        if v.Name == MobName and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health > 0 then
             pos += v.HumanoidRootPart.Position
             count += 1
         end
@@ -3088,11 +2921,7 @@ local function BringQuestMob()
             local distPlayer = (hrp.Position - playerHRP.Position).Magnitude
             local distMob = (hrp.Position - mobPos).Magnitude
             if distPlayer <= RANGE_PLAYER and distMob <= RANGE_PULL and distMob > 5 then
-                hrp.CFrame = CFrame.new(
-                    mobPos.X,
-                    mobPos.Y,
-                    mobPos.Z
-                )
+                hrp.CFrame = CFrame.new(mobPos.X, mobPos.Y, mobPos.Z)
                 hrp.CanCollide = false
             end
         end
@@ -3116,54 +2945,34 @@ task.spawn(function()
     end
 end)
 
-UI:AddSection(Setting, { Name = "Settings Farm" })
+Tabs.Settings:AddParagraph({Title = "Settings Farm", Content = ""})
 
-UI:AddToggle(Setting, {
-    Name = "Auto Attack",
-    Default = true,
-    Callback = function(Value)
-        _G.Seriality = Value
-    end
-})
+local Toggle_AutoAtk = Tabs.Settings:AddToggle("AutoAttack", {Title = "Auto Attack", Default = true })
+Toggle_AutoAtk:OnChanged(function()
+    _G.Seriality = Options.AutoAttack.Value
+end)
 
 local bringMobToggle = false
-UI:AddToggle(Setting, {
-    Name = "Bring Mobs",
-    Default = true,
-    Callback = function(Value)
-        bringMobToggle = Value
-        if bringMobToggle then
-            warn("⚙️ Bring Mob: Đã bật")
-        else
-            warn("⛔ Bring Mob: Đã tắt")
-        end
-    end
-})
-
+local Toggle_Bring = Tabs.Settings:AddToggle("BringMobs", {Title = "Bring Mobs", Default = true })
+Toggle_Bring:OnChanged(function()
+    bringMobToggle = Options.BringMobs.Value
+    if bringMobToggle then warn("⚙️ Bring Mob: On") else warn("⛔ Bring Mob: Off") end
+end)
 task.spawn(function()
     while task.wait(0) do
-        if bringMobToggle then
-            pcall(BringMob)
-        end
+        if bringMobToggle then pcall(BringMob) end
     end
 end)
 
-UI:AddToggle(Setting, {
-    Name = "Auto Active Buso",
-    Default = true,
-    Callback = function(Value)
-        Boud = Value
-    end
-})
-
+local Toggle_Buso = Tabs.Settings:AddToggle("AutoBuso", {Title = "Auto Active Buso", Default = true })
+Toggle_Buso:OnChanged(function()
+    Boud = Options.AutoBuso.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
             if Boud then
-                local _HasBuso = {
-                    "HasBuso",
-                    "Buso"
-                }
+                local _HasBuso = {"HasBuso", "Buso"}
                 if not plr.Character:FindFirstChild(_HasBuso[1]) then
                     replicated.Remotes.CommF_:InvokeServer(_HasBuso[2])
                 end
@@ -3172,16 +2981,12 @@ spawn(function()
     end
 end)
 
-UI:AddSection(Setting, { Name = "Race" })
+Tabs.Settings:AddParagraph({Title = "Race", Content = ""})
 
-UI:AddToggle(Setting, {
-    Name = "Auto Active V3",
-    Default = false,
-    Callback = function(Value)
-        _G.RaceClickAutov3 = Value
-    end
-})
-
+local Toggle_V3 = Tabs.Settings:AddToggle("AutoV3", {Title = "Auto Active V3", Default = false })
+Toggle_V3:OnChanged(function()
+    _G.RaceClickAutov3 = Options.AutoV3.Value
+end)
 spawn(function()
     while wait(.2) do
         pcall(function()
@@ -3195,14 +3000,10 @@ spawn(function()
     end
 end)
 
-UI:AddToggle(Setting, {
-    Name = "Auto Active V4",
-    Default = false,
-    Callback = function(Value)
-        _G.RaceClickAutov4 = Value
-    end
-})
-
+local Toggle_V4 = Tabs.Settings:AddToggle("AutoV4", {Title = "Auto Active V4", Default = false })
+Toggle_V4:OnChanged(function()
+    _G.RaceClickAutov4 = Options.AutoV4.Value
+end)
 spawn(function()
     while wait(.2) do
         pcall(function()
@@ -3217,16 +3018,12 @@ spawn(function()
     end
 end)
 
-UI:AddSection(Setting, { Name = "Other" })
+Tabs.Settings:AddParagraph({Title = "Other", Content = ""})
 
-UI:AddToggle(Setting, {
-    Name = "Disable Notify",
-    Default = false,
-    Callback = function(Value)
-        RemoveDamage = Value
-    end
-})
-
+local Toggle_Notify = Tabs.Settings:AddToggle("DisableNotify", {Title = "Disable Notify", Default = false })
+Toggle_Notify:OnChanged(function()
+    RemoveDamage = Options.DisableNotify.Value
+end)
 spawn(function()
     while wait(Sec) do
         pcall(function()
@@ -3241,27 +3038,14 @@ spawn(function()
     end
 end)
 
-UI:AddButton(Setting, {
-  Name = "Redeem All Codes",
-  Callback = function()
-        local codes = {
-            "LIGHTNINGABUSE","1LOSTADMIN","ADMINFIGHT","GIFTING_HOURS","NOMOREHACK",
-            "BANEXPLOIT","WildDares","BossBuild","GetPranked","EARN_FRUITS",
-            "SUB2GAMERROBOT_RESET1","KITT_RESET","Bignews","CHANDLER","Fudd10",
-            "fudd10_v2","Sub2UncleKizaru","FIGHT4FRUIT","kittgaming","TRIPLEABUSE",
-            "Sub2CaptainMaui","Sub2Fer999","Enyu_is_Pro","Magicbus","JCWK",
-            "Starcodeheo","Bluxxy","SUB2GAMERROBOT_EXP1","Sub2NoobMaster123",
-            "Sub2Daigrock","Axiore","TantaiGaming","StrawHatMaine","Sub2OfficialNoobie",
-            "TheGreatAce","JULYUPDATE_RESET","ADMINHACKED","SEATROLLING","24NOADMIN",
-            "ADMIN_TROLL","NEWTROLL","SECRET_ADMIN","staffbattle","NOEXPLOIT",
-            "NOOB2ADMIN","CODESLIDE","fruitconcepts","krazydares"
-        }
+Tabs.Settings:AddButton({
+    Title = "Redeem All Codes",
+    Callback = function()
+        local codes = {"LIGHTNINGABUSE","1LOSTADMIN","ADMINFIGHT","GIFTING_HOURS","NOMOREHACK","BANEXPLOIT","WildDares","BossBuild","GetPranked","EARN_FRUITS","SUB2GAMERROBOT_RESET1","KITT_RESET","Bignews","CHANDLER","Fudd10","fudd10_v2","Sub2UncleKizaru","FIGHT4FRUIT","kittgaming","TRIPLEABUSE","Sub2CaptainMaui","Sub2Fer999","Enyu_is_Pro","Magicbus","JCWK","Starcodeheo","Bluxxy","SUB2GAMERROBOT_EXP1","Sub2NoobMaster123","Sub2Daigrock","Axiore","TantaiGaming","StrawHatMaine","Sub2OfficialNoobie","TheGreatAce","JULYUPDATE_RESET","ADMINHACKED","SEATROLLING","24NOADMIN","ADMIN_TROLL","NEWTROLL","SECRET_ADMIN","staffbattle","NOEXPLOIT","NOOB2ADMIN","CODESLIDE","fruitconcepts","krazydares"}
         local ReplicatedStorage = game:GetService("ReplicatedStorage")
         local RemotesFolder = ReplicatedStorage:WaitForChild("Remotes")
         local RedeemRemote = RemotesFolder:FindFirstChild("Redeem")
-        if not RedeemRemote then
-            return
-        end
+        if not RedeemRemote then return end
         for _, code in ipairs(codes) do
             task.wait(0)
             pcall(function()
@@ -3272,13 +3056,13 @@ UI:AddButton(Setting, {
                 end
             end)
         end
-  end
+    end
 })
 
+-- LOGICA DE ATAQUE (NO BOTTOM DO SEU PEDIDO)
+local player = game.Players.LocalPlayer
 local function IsEntityAlive(entity)
-    if not entity then
-        return false
-    end
+    if not entity then return false end
     local humanoid = entity:FindFirstChild("Humanoid")
     return humanoid and humanoid.Health > 0
 end
@@ -3314,9 +3098,7 @@ end
 function AttackNoCoolDown()
     local player = game:GetService("Players").LocalPlayer
     local character = player.Character
-    if not character then
-        return
-    end
+    if not character then return end
     local equippedWeapon = nil
     for _, item in ipairs(character:GetChildren()) do
         if item:IsA("Tool") then
@@ -3324,52 +3106,30 @@ function AttackNoCoolDown()
             break
         end
     end
-    if not equippedWeapon then
-        return
-    end
+    if not equippedWeapon then return end
     local enemiesInRange = GetEnemiesInRange(character, 60)
-    if # enemiesInRange == 0 then
-        return
-    end
+    if # enemiesInRange == 0 then return end
     local storage = game:GetService("ReplicatedStorage")
     local modules = storage:FindFirstChild("Modules")
-    if not modules then
-        return
-    end
+    if not modules then return end
     local attackEvent = storage:WaitForChild("Modules"):WaitForChild("Net"):WaitForChild("RE/RegisterAttack")
     local hitEvent = storage:WaitForChild("Modules"):WaitForChild("Net"):WaitForChild("RE/RegisterHit")
-    if not attackEvent or not hitEvent then
-        return
-    end
+    if not attackEvent or not hitEvent then return end
     local targets, mainTarget = {}, nil
     for _, enemy in ipairs(enemiesInRange) do
         if not enemy:GetAttribute("IsBoat") then
-            local HitboxLimbs = {
-                "RightLowerArm",
-                "RightUpperArm",
-                "LeftLowerArm",
-                "LeftUpperArm",
-                "RightHand",
-                "LeftHand"
-            }
+            local HitboxLimbs = {"RightLowerArm","RightUpperArm","LeftLowerArm","LeftUpperArm","RightHand","LeftHand"}
             local head = enemy:FindFirstChild(HitboxLimbs[math.random(# HitboxLimbs)]) or enemy.PrimaryPart
             if head then
-                table.insert(targets, {
-                    enemy,
-                    head
-                })
+                table.insert(targets, {enemy, head})
                 mainTarget = head
             end
         end
     end
-    if not mainTarget then
-        return
-    end
+    if not mainTarget then return end
     attackEvent:FireServer(0)
     local playerScripts = player:FindFirstChild("PlayerScripts")
-    if not playerScripts then
-        return
-    end
+    if not playerScripts then return end
     local localScript = playerScripts:FindFirstChildOfClass("LocalScript")
     while not localScript do
         playerScripts.ChildAdded:Wait()
@@ -3428,12 +3188,10 @@ end
 task.spawn(function()
     RunSer.Heartbeat:Connect(function()
         pcall(function()
-            if not _G.Seriality then
-                return
-            end
+            if not _G.Seriality then return end
             AttackNoCoolDown()
             local Pretool = game.Players.LocalPlayer.Character:FindFirstChildOfClass("Tool")
-            local ToolTip = Pretool.ToolTip
+            local ToolTip = Pretool and Pretool.ToolTip
             local MobAura, Mon = get_Monster()
             if ToolTip == "Blox Fruit" then
                 if MobAura then
@@ -3448,3 +3206,15 @@ task.spawn(function()
         end)
     end)
 end)
+
+-- Config Managers
+SaveManager:SetLibrary(Fluent)
+InterfaceManager:SetLibrary(Fluent)
+SaveManager:IgnoreThemeSettings()
+SaveManager:SetIgnoreIndexes({})
+InterfaceManager:SetFolder("ZenithFluent")
+SaveManager:SetFolder("ZenithFluent/Hub")
+InterfaceManager:BuildInterfaceSection(Tabs.Settings)
+SaveManager:BuildConfigSection(Tabs.Settings)
+Window:SelectTab(1)
+Fluent:Notify({Title = "Zenith Hub", Content = "Script Loaded Successfully", Duration = 5})
