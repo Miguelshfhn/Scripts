@@ -1,3 +1,147 @@
+-- =========================================================
+-- ADAPTADOR REDZ PARA FLUENT (COLE NO TOPO)
+-- =========================================================
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+local Library = {
+    Flags = {},
+    Theme = "Dark"
+}
+
+function Library:SetUIScale(scale) end
+function Library:GetMaxScale() return 1.5 end
+function Library:GetMinScale() return 0.5 end
+
+function Library:MakeWindow(cfg) 
+    local Window = Fluent:CreateWindow({
+        Title = cfg.Title or "Fluent",
+        SubTitle = cfg.SubTitle or "",
+        TabWidth = 160,
+        Size = UDim2.fromOffset(580, 460),
+        Acrylic = true,
+        Theme = "Dark"
+    })
+
+    local WindowProxy = { fluentWin = Window }
+
+    function WindowProxy:MakeTab(tabCfg)
+        local Tab = self.fluentWin:AddTab({ Title = tabCfg.Title, Icon = tabCfg.Icon or "" })
+        local TabProxy = { fluentTab = Tab }
+
+        -- Toggle
+        function TabProxy:AddToggle(tCfg)
+            local id = tCfg.Flag or tCfg.Name
+            local tog = self.fluentTab:AddToggle(id, {
+                Title = tCfg.Name,
+                Default = tCfg.Default or false
+            })
+            tog:OnChanged(function(val)
+                Library.Flags[id] = val
+                if tCfg.Callback then tCfg.Callback(val) end
+            end)
+            return tog
+        end
+
+        -- Button
+        function TabProxy:AddButton(bCfg)
+            return self.fluentTab:AddButton({
+                Title = bCfg.Name,
+                Description = bCfg.Description or "",
+                Callback = bCfg.Callback
+            })
+        end
+
+        -- Slider
+        function TabProxy:AddSlider(sCfg)
+            local id = sCfg.Flag or sCfg.Name
+            local sli = self.fluentTab:AddSlider(id, {
+                Title = sCfg.Name,
+                Min = sCfg.Min,
+                Max = sCfg.Max,
+                Default = sCfg.Default,
+                Rounding = 1,
+                Callback = sCfg.Callback
+            })
+            return sli
+        end
+
+        -- Dropdown
+        function TabProxy:AddDropdown(dCfg)
+            local id = dCfg.Flag or dCfg.Name
+            local drop = self.fluentTab:AddDropdown(id, {
+                Title = dCfg.Name,
+                Values = dCfg.Options,
+                Multi = dCfg.MultiSelect or false,
+                Default = dCfg.Default,
+                Callback = dCfg.Callback
+            })
+            return drop
+        end
+
+        -- TextBox (Input)
+        function TabProxy:AddTextBox(iCfg)
+            local input = self.fluentTab:AddInput(iCfg.Name, {
+                Title = iCfg.Name,
+                Default = iCfg.Default,
+                Placeholder = iCfg.Placeholder,
+                Callback = iCfg.Callback
+            })
+            return input
+        end
+
+        -- Paragraph
+        function TabProxy:AddParagraph(title, content)
+            return self.fluentTab:AddParagraph({ Title = title, Content = content })
+        end
+
+        -- Discord Invite
+        function TabProxy:AddDiscordInvite(dCfg)
+            return self.fluentTab:AddButton({
+                Title = dCfg.Title,
+                Description = "Invite: " .. dCfg.Invite,
+                Callback = function() setclipboard(dCfg.Invite) end
+            })
+        end
+
+        return TabProxy
+    end
+
+    function WindowProxy:Notify(nCfg)
+        Fluent:Notify({
+            Title = nCfg.Title,
+            Content = nCfg.Content,
+            Duration = nCfg.Duration or 5
+        })
+    end
+
+    function WindowProxy:Dialog(dCfg)
+        local buttons = {}
+        for _, opt in ipairs(dCfg.Options or {}) do
+            table.insert(buttons, { Title = opt.Name, Callback = opt.Callback })
+        end
+        Window:Dialog({ Title = dCfg.Title, Content = dCfg.Content, Buttons = buttons })
+    end
+
+    function WindowProxy:GetFlag(id) return Library.Flags[id] end
+    function WindowProxy:SetFlag(id, val) Library.Flags[id] = val end
+    
+    function WindowProxy:NewMinimizer() 
+        return { CreateMobileMinimizer = function() end } 
+    end
+
+    return WindowProxy
+end
+
+-- =========================================================
+-- FIM DO ADAPTADOR (SEU SCRIPT COMEÇA ABAIXO)
+-- =========================================================
+
+-- Agora você pode colar o seu código original da Redz aqui embaixo
+-- sem precisar mudar quase nada!
+
+
+
+
 hookfunction(require(game:GetService("ReplicatedStorage").Effect.Container.Death), function()
     -- empty block
 end)
