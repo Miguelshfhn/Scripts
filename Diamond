@@ -5334,7 +5334,7 @@ outros:AddToggle({
 
 
 -- Toggles da UI
-Outros:AddToggle({
+outros:AddToggle({
     Title = "Auto Farm Tyrant Of The Skies",
     Description = "",
     Default = false,
