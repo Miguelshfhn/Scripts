@@ -5183,10 +5183,44 @@ spawn(function()
 	end;
 end);
 
-outros:AddSeperator("Misc Rais Boss")
+outros:AddToggle({
+    Title = "Auto Law Raid",
+    Description = "",
+    Default = false,
+    Callback = function(state)
+        _G.AutoLawKak = state
+    end,
+});
+
+spawn(function()
+    while wait(Sec) do
+        if _G.AutoLawKak then
+            pcall(function()
+                -- Comprar o Microchip
+                replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "Microchip", "2")
+                
+                -- Iniciar a raid
+                fireclickdetector(workspace.Map.CircleIsland.RaidSummon.Button.Main.ClickDetector)
+                
+                -- Procurar inimigo "Order"
+                local enemy = GetConnectionEnemies("Order")
+                if enemy then
+                    repeat
+                        task.wait()
+                        G.Kill(enemy, _G.AutoLawKak)
+                    until not _G.AutoLawKak or not enemy.Parent or enemy.Humanoid.Health <= 0
+                else
+                    _tp(CFrame.new(-6217.2021484375, 28.047645568848, -5053.1357421875))
+                end
+            end)
+        end
+    end
+end)
+
+outros:AddSeperator("Misc Raid Boss")
 
 outros:AddToggle({
-    Title = "Stop when got God Chalice in Elite Huntee",
+    Title = "Stop when got God Chalice in Elite Hunter",
     Description = "",
     -- 1. Carrega o estado salvo ou inicia como true (padrão do seu script)
     Default = GetSetting("StopChalice_Save", true),
@@ -5991,42 +6025,8 @@ spawn(function()
 	end;
 end);
 
-RR:AddSeperator("Law");
 
-RR:AddToggle({
-    Title = "Auto Law Raid",
-    Description = "",
-    Default = false,
-    Callback = function(state)
-        _G.AutoLawKak = state
-    end,
-});
 
-spawn(function()
-    while wait(Sec) do
-        if _G.AutoLawKak then
-            pcall(function()
-                -- Comprar o Microchip
-                replicated.Remotes.CommF_:InvokeServer("BlackbeardReward", "Microchip", "2")
-                
-                -- Iniciar a raid
-                fireclickdetector(workspace.Map.CircleIsland.RaidSummon.Button.Main.ClickDetector)
-                
-                -- Procurar inimigo "Order"
-                local enemy = GetConnectionEnemies("Order")
-                if enemy then
-                    repeat
-                        task.wait()
-                        G.Kill(enemy, _G.AutoLawKak)
-                    until not _G.AutoLawKak or not enemy.Parent or enemy.Humanoid.Health <= 0
-                else
-                    _tp(CFrame.new(-6217.2021484375, 28.047645568848, -5053.1357421875))
-                end
-            end)
-        end
-    end
-end)
-end
 if World1 then
 RR:AddSeperator("world 1 items");
 RR:AddToggle({
