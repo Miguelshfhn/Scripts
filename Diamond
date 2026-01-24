@@ -4914,98 +4914,8 @@ spawn(function()
     end
 end)
 end
-if World3 then
-outros:AddSeperator("Rip_Indra");
-outros:AddToggle({
-    Title = "Auto Kill Rip Indra",
-    Description = "",
-    -- 1. Carrega se estava ligado ou não
-    Default = GetSetting("AutoRipIndra_Save", false),
-    Callback = function(I)
-        _G.AutoRipIngay = I
-        
-        -- 2. Salva na tabela
-        _G.SaveData["AutoRipIndra_Save"] = I
-        
-        -- 3. Grava no arquivo Settings.json
-        SaveSettings()
-    end,
-})
 
-spawn(function()
-	while wait(Sec) do
-		pcall(function()
-			if _G.AutoRipIngay then
-				local I = GetConnectionEnemies("rip_indra");
-				if not GetWP("Dark Dagger") or not GetIn("Valkyrie") and I then
-					repeat
-						wait();
-						G.Kill(I, _G.AutoRipIngay);
-					until not _G.AutoRipIngay or not I.Parent or I.Humanoid.Health <= 0;
-				else
-					replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602, -0.405007899, -4.31682743e-08, .914313197, -1.90943332e-08, 1, 3.8755779e-08, -0.914313197, -1.76180437e-09, -0.405007899));
-					wait(.1);
-					_tp(CFrame.new(-5344.822265625, 423.98541259766, -2725.0930175781));
-				end;
-			end;
-		end);
-	end;
-end);
-outros:AddToggle({
-    Title = "Auto Active Cores",
-    Description = "",
-    -- 1. Carrega o estado salvo ou false por padrão
-    Default = GetSetting("AutoActiveCores_Save", false),
-    Callback = function(I)
-        _G.AutoUnHaki = I
-        
-        -- 2. Guarda na tabela de salvamento
-        _G.SaveData["AutoActiveCores_Save"] = I
-        
-        -- 3. Salva no arquivo Settings.json
-        SaveSettings()
-    end,
-})
 
-AuraSkin = function(I)
-		local e = { [1] = { StorageName = I, Type = "AuraSkin", Context = "Equip" } };
-		(((replicated:WaitForChild("Modules")):WaitForChild("Net")):WaitForChild("RF/FruitCustomizerRF")):InvokeServer(unpack(e));
-	end;
-VaildColor = function(I)
-		if I and I.BrickColor then
-			return tostring(I.BrickColor) == "Lime green";
-		end;
-	end;
-HakiCalculate = function(I)
-		local e = { ["Really red"] = "Pure Red", Oyster = "Snow White", ["Hot pink"] = "Winter Sky" };
-		if I and I.BrickColor then
-			return e[tostring(I.BrickColor)];
-		end;
-	end;
-spawn(function()
-	while wait(Sec) do
-		if _G.AutoUnHaki then
-			pcall(function()
-				local I = workspace.Map["Boat Castle"]:FindFirstChild("Summoner");
-				if I and I:FindFirstChild("Circle") then
-					for I, e in pairs((I:FindFirstChild("Circle")):GetChildren()) do
-						if e.Name == "Part" then
-							local I = e:FindFirstChild("Part");
-							if VaildColor(I) == false then
-								AuraSkin(HakiCalculate(e));
-								repeat
-									wait();
-									_tp(e.CFrame);
-								until VaildColor(I) == true or not _G.AutoUnHaki;
-							end;
-						end;
-					end;
-				end;
-			end);
-		end;
-	end;
-end);
-end
 T:AddSeperator("Settings");
 
 
@@ -5236,6 +5146,43 @@ spawn(function()
 		end);
 	end;
 end);
+
+outros:AddToggle({
+    Title = "Auto Kill Rip Indra",
+    Description = "",
+    -- 1. Carrega se estava ligado ou não
+    Default = GetSetting("AutoRipIndra_Save", false),
+    Callback = function(I)
+        _G.AutoRipIngay = I
+        
+        -- 2. Salva na tabela
+        _G.SaveData["AutoRipIndra_Save"] = I
+        
+        -- 3. Grava no arquivo Settings.json
+        SaveSettings()
+    end,
+})
+
+spawn(function()
+	while wait(Sec) do
+		pcall(function()
+			if _G.AutoRipIngay then
+				local I = GetConnectionEnemies("rip_indra");
+				if not GetWP("Dark Dagger") or not GetIn("Valkyrie") and I then
+					repeat
+						wait();
+						G.Kill(I, _G.AutoRipIngay);
+					until not _G.AutoRipIngay or not I.Parent or I.Humanoid.Health <= 0;
+				else
+					replicated.Remotes.CommF_:InvokeServer("requestEntrance", Vector3.new(-5097.93164, 316.447021, -3142.66602, -0.405007899, -4.31682743e-08, .914313197, -1.90943332e-08, 1, 3.8755779e-08, -0.914313197, -1.76180437e-09, -0.405007899));
+					wait(.1);
+					_tp(CFrame.new(-5344.822265625, 423.98541259766, -2725.0930175781));
+				end;
+			end;
+		end);
+	end;
+end);
+
 outros:AddToggle({
     Title = "Stop when got God Chalice",
     Description = "",
@@ -5262,6 +5209,63 @@ spawn(function()
 		end;
 	end;
 end);
+
+
+outros:AddToggle({
+    Title = "Auto Active Cores",
+    Description = "",
+    -- 1. Carrega o estado salvo ou false por padrão
+    Default = GetSetting("AutoActiveCores_Save", false),
+    Callback = function(I)
+        _G.AutoUnHaki = I
+        
+        -- 2. Guarda na tabela de salvamento
+        _G.SaveData["AutoActiveCores_Save"] = I
+        
+        -- 3. Salva no arquivo Settings.json
+        SaveSettings()
+    end,
+})
+
+AuraSkin = function(I)
+		local e = { [1] = { StorageName = I, Type = "AuraSkin", Context = "Equip" } };
+		(((replicated:WaitForChild("Modules")):WaitForChild("Net")):WaitForChild("RF/FruitCustomizerRF")):InvokeServer(unpack(e));
+	end;
+VaildColor = function(I)
+		if I and I.BrickColor then
+			return tostring(I.BrickColor) == "Lime green";
+		end;
+	end;
+HakiCalculate = function(I)
+		local e = { ["Really red"] = "Pure Red", Oyster = "Snow White", ["Hot pink"] = "Winter Sky" };
+		if I and I.BrickColor then
+			return e[tostring(I.BrickColor)];
+		end;
+	end;
+spawn(function()
+	while wait(Sec) do
+		if _G.AutoUnHaki then
+			pcall(function()
+				local I = workspace.Map["Boat Castle"]:FindFirstChild("Summoner");
+				if I and I:FindFirstChild("Circle") then
+					for I, e in pairs((I:FindFirstChild("Circle")):GetChildren()) do
+						if e.Name == "Part" then
+							local I = e:FindFirstChild("Part");
+							if VaildColor(I) == false then
+								AuraSkin(HakiCalculate(e));
+								repeat
+									wait();
+									_tp(e.CFrame);
+								until VaildColor(I) == true or not _G.AutoUnHaki;
+							end;
+						end;
+					end;
+				end;
+			end);
+		end;
+	end;
+end);
+end
 
 
 
