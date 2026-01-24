@@ -5183,8 +5183,10 @@ spawn(function()
 	end;
 end);
 
+outros:AddSeperator("Misc Rais Boss")
+
 outros:AddToggle({
-    Title = "Stop when got God Chalice",
+    Title = "Stop when got God Chalice in Elite Huntee",
     Description = "",
     -- 1. Carrega o estado salvo ou inicia como true (padrão do seu script)
     Default = GetSetting("StopChalice_Save", true),
