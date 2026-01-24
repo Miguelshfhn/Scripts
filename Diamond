@@ -5193,7 +5193,6 @@ T:AddInput({
 
 outros:AddSeperator("Raid Boss")
 
-outros:AddSeperator("Elite Hunter");
 
 outros:AddToggle({
 	Title = "Auto Elite Hunter",
