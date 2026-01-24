@@ -5216,6 +5216,7 @@ spawn(function()
         end
     end
 end)
+end
 
 outros:AddSeperator("Misc Raid Boss")
 
