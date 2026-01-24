@@ -5218,6 +5218,7 @@ spawn(function()
 end)
 
 
+
 -- Toggle 2: O Farm Principal (com o sistema Anti-Queda)
 outros:AddToggle({
     Title = "Auto Farm Cake Prince",
@@ -5236,7 +5237,7 @@ outros:AddToggle({
                         local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
                         if not hrp then return end
                         
-                        -- SISTEMA ANTI-QUEDA (Mantém a altura)
+                        -- SISTEMA ANTI-QUEDA (Mantém a altura constante)
                         if not hrp:FindFirstChild("VelocityLock") then
                             local bv = Instance.new("BodyVelocity")
                             bv.Name = "VelocityLock"
@@ -5270,13 +5271,20 @@ outros:AddToggle({
                             return  
                         end  
 
-                        -- Prioridade 2: Quest (Só executa se o outro Toggle estiver ON)
+                        -- Prioridade 2: Quest (Com espera de 1.5s)
                         if _G.AcceptQuest and not plr.PlayerGui.Main.Quest.Visible then  
                             local questPos = CFrame.new(-1927.92, 45, -12842.54)
-                            _tp(questPos)
+                            _tp(questPos) -- Vai até o NPC
+                            
+                            -- Verifica se chegou perto do NPC
                             if (hrp.Position - questPos.Position).Magnitude <= 40 then  
-                                local q = {{"StartQuest", "CakeQuest2", 2}, {"StartQuest", "CakeQuest2", 1}, {"StartQuest", "CakeQuest1", 1}, {"StartQuest", "CakeQuest1", 2}}  
-                                game.ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(q[math.random(1, 4)]))  
+                                task.wait(1.5) -- ESPERA DE 1.5 SEGUNDOS SOLICITADA
+                                
+                                -- Checa novamente se ainda está no NPC e se a quest ainda não foi pega
+                                if _G.AutoFarm_Cake and _G.AcceptQuest and not plr.PlayerGui.Main.Quest.Visible then
+                                    local q = {{"StartQuest", "CakeQuest2", 2}, {"StartQuest", "CakeQuest2", 1}, {"StartQuest", "CakeQuest1", 1}, {"StartQuest", "CakeQuest1", 2}}  
+                                    game.ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(q[math.random(1, 4)]))  
+                                end
                             end  
                             return  
                         end  
@@ -5411,7 +5419,7 @@ spawn(function()
 	end;
 end);
 
--- Toggle 1: Apenas para aceitar a Quest
+
 outros:AddToggle({
     Title = "Accept Quest Cake Prince",
     Description = "",
