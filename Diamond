@@ -5217,6 +5217,115 @@ spawn(function()
     end
 end)
 
+outros:AddToggle({
+    Title = "Auto Farm Cake",
+    Description = "",
+    Default = false,
+    Callback = function(Value)
+        _G.AutoFarm_Cake = Value
+        _G.StartFarm = Value
+        _G.AcceptQuest = Value -- Opcional: assume que você quer pegar quest também
+
+        if Value then
+            spawn(function()
+                while _G.AutoFarm_Cake do
+                    task.wait()
+                    pcall(function()
+                        local plr = game.Players.LocalPlayer
+                        local hrp = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
+                        if not hrp then return end
+                        
+                        -- CRIAÇÃO DO FLOAT (Evita cair)
+                        if not hrp:FindFirstChild("VelocityLock") then
+                            local bv = Instance.new("BodyVelocity")
+                            bv.Name = "VelocityLock"
+                            bv.Velocity = Vector3.new(0, 0, 0)
+                            bv.MaxForce = Vector3.new(0, math.huge, 0) -- Trava apenas o eixo Y (altura)
+                            bv.Parent = hrp
+                        end
+
+                        local enemies = workspace:FindFirstChild("Enemies")  
+                        if not enemies then return end  
+                        
+                        local CakePos = CFrame.new(-2091.91, 70.00, -12142.83)  
+                        local PortalEntrance = CFrame.new(-2151.82, 149.32, -12404.91)  
+                        local mirror = workspace.Map:FindFirstChild("CakeLoaf")  
+                        mirror = mirror and mirror:FindFirstChild("BigMirror")  
+                        local other = mirror and mirror:FindFirstChild("Other")  
+                        local portalOpen = other and other.Transparency == 0  
+                        local boss = enemies:FindFirstChild("Cake Prince") or enemies:FindFirstChild("Dough King")  
+
+                        -- Lógica de Boss/Portal
+                        if boss or portalOpen then  
+                            if boss and boss:FindFirstChild("Humanoid") and boss.Humanoid.Health > 0 and boss.PrimaryPart then  
+                                local bossPos = boss.PrimaryPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad(-90), 0, 0)  
+                                _tp(bossPos)  
+                                G.Kill(boss, true)  
+                                return  
+                            end  
+                            if (hrp.Position - PortalEntrance.Position).Magnitude < 500 then  
+                                _tp(PortalEntrance) -- Simplificado para manter altura
+                            end  
+                            return  
+                        end  
+
+                        -- Lógica de Quest e Mobs
+                        local CAKE_MOBS = {"Cookie Crafter", "Cake Guard", "Baking Staff", "Head Baker"}  
+                        
+                        -- Pegar Quest sem cair
+                        if _G.AcceptQuest and not plr.PlayerGui.Main.Quest.Visible then  
+                            local questPos = CFrame.new(-1927.92, 45, -12842.54) -- Aumentei um pouco o Y para não bater no chão
+                            _tp(questPos)
+                            if (hrp.Position - questPos.Position).Magnitude <= 40 then  
+                                local q = {{"StartQuest", "CakeQuest2", 2}, {"StartQuest", "CakeQuest2", 1}, {"StartQuest", "CakeQuest1", 1}, {"StartQuest", "CakeQuest1", 2}}  
+                                game.ReplicatedStorage.Remotes.CommF_:InvokeServer(unpack(q[math.random(1, 4)]))  
+                            end  
+                            return  
+                        end  
+
+                        -- Procurar Mob mais próximo
+                        local bestMob = nil  
+                        local bestDist = math.huge  
+                        for _, mob in ipairs(enemies:GetChildren()) do  
+                            if table.find(CAKE_MOBS, mob.Name) and mob:FindFirstChild("Humanoid") and mob.Humanoid.Health > 0 then  
+                                local dist = (mob.HumanoidRootPart.Position - hrp.Position).Magnitude  
+                                if dist < bestDist then 
+                                    bestDist = dist 
+                                    bestMob = mob 
+                                end  
+                            end  
+                        end  
+
+                        if bestMob then  
+                            -- Loop de combate mantendo a posição acima do mob
+                            repeat task.wait()
+                                if not _G.AutoFarm_Cake or not bestMob.Parent or bestMob.Humanoid.Health <= 0 then break end
+                                if (workspace.Map.CakeLoaf.BigMirror.Other.Transparency == 0) or enemies:FindFirstChild("Cake Prince") then break end
+                                
+                                local combatPos = bestMob.HumanoidRootPart.CFrame * CFrame.new(0, 25, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+                                _tp(combatPos)
+                                G.Kill(bestMob, true)
+                            until false
+                        else  
+                            -- Se não achou mob, fica voando na posição central para não cair
+                            _tp(CFrame.new(-1927.92, 100, -12842.54))
+                        end  
+                    end)
+                end
+            end)
+        else
+            -- Limpeza ao desligar: Remove o BodyVelocity para o personagem voltar ao normal
+            pcall(function()
+                local hrp = game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+                if hrp and hrp:FindFirstChild("VelocityLock") then
+                    hrp.VelocityLock:Destroy()
+                end
+            end)
+        end
+    end
+})
+
+
 outros:AddSeperator("Misc Raid Boss")
 
 outros:AddToggle({
