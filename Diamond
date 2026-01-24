@@ -5333,7 +5333,8 @@ outros:AddToggle({
 })
 
 
-outros:AddToggle({
+-- Toggles da UI
+Outros:AddToggle({
     Title = "Auto Farm Tyrant Of The Skies",
     Description = "",
     Default = false,
@@ -5345,9 +5346,10 @@ outros:AddToggle({
 
 
 
-
-
-local FarmHeight = 45 
+---
+-- CONFIGURAÇÕES E VARIÁVEIS
+---
+_G.MobHeight = _G.MobHeight or 37
 
 -- NoClip Reforçado
 spawn(function()
@@ -5445,7 +5447,7 @@ spawn(function()
 
                 -- [1] PRIORIDADE: BOSS
                 if boss and boss:FindFirstChild("Humanoid") and boss.Humanoid.Health > 0 then
-                    _tp(boss.HumanoidRootPart.CFrame * CFrame.new(0, FarmHeight, 0))
+                    _tp(boss.HumanoidRootPart.CFrame * CFrame.new(0, _G.MobHeight, 0))
                     EquipWeapon(_G.SelectWeapon)
                     _G.Kill(boss, true)
 
@@ -5510,7 +5512,7 @@ spawn(function()
                         end
 
                         if closestEnemy then
-                            _tp(closestEnemy.HumanoidRootPart.CFrame * CFrame.new(0, FarmHeight, 0))
+                            _tp(closestEnemy.HumanoidRootPart.CFrame * CFrame.new(0, _G.MobHeight, 0))
                             EquipWeapon(_G.SelectWeapon)
                             _G.Kill(closestEnemy, true)
                         else
@@ -5522,6 +5524,7 @@ spawn(function()
         end
     end
 end)
+
 
 
 outros:AddSeperator("Misc Raid Boss")
