@@ -179,19 +179,11 @@ Information={
 Version="v2.0.1",
 GitHubOwner="tlredz"
 },
-
 Default={
 Theme="Darker",
-UISize={
-Type="Dropdown",
-Options={
-Small=UDim2.fromOffset(450,320),
-Medium=UDim2.fromOffset(550,380),
-Large=UDim2.fromOffset(700,500)
-},
-Selected="Medium"
-},
+UISize={X=550,Y=380},
 TabSize=160
+         
 },
 
 Themes=r,
